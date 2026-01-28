@@ -1,11 +1,7 @@
--- RLS Policies for Profiles
+-- RLS Policies for Profiles (id = user id)
 drop policy if exists "Public profiles are viewable by everyone." on public.profiles;
 create policy "Public profiles are viewable by everyone." on public.profiles
   for select using (true);
-
-drop policy if exists "Users can insert their own profile." on public.profiles;
-create policy "Users can insert their own profile." on public.profiles
-  for insert with check (auth.uid() = id);
 
 drop policy if exists "Users can update their own profile." on public.profiles;
 create policy "Users can update their own profile." on public.profiles
