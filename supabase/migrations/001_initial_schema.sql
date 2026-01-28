@@ -1,5 +1,5 @@
 -- Create profiles table for user metadata
-create table public.profiles (
+create table if not exists public.profiles (
   id uuid references auth.users on delete cascade not null primary key,
   email text,
   full_name text,
@@ -43,7 +43,7 @@ create or replace trigger on_auth_user_created
   for each row execute procedure public.handle_new_user();
 
 -- Create companies table
-create table public.companies (
+create table if not exists public.companies (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references public.profiles on delete cascade not null,
   name text not null,
@@ -74,7 +74,7 @@ create policy "Users can delete their own companies." on public.companies
   for delete using ((select auth.uid()) = user_id);
 
 -- Create contacts table
-create table public.contacts (
+create table if not exists public.contacts (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references public.profiles on delete cascade not null,
   company_id uuid references public.companies on delete set null,
@@ -104,7 +104,7 @@ create policy "Users can delete their own contacts." on public.contacts
   for delete using ((select auth.uid()) = user_id);
 
 -- Create projects table
-create table public.projects (
+create table if not exists public.projects (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references public.profiles on delete cascade not null,
   company_id uuid references public.companies on delete set null,
@@ -134,7 +134,7 @@ create policy "Users can delete their own projects." on public.projects
   for delete using ((select auth.uid()) = user_id);
 
 -- Create activities table
-create table public.activities (
+create table if not exists public.activities (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references public.profiles on delete cascade not null,
   contact_id uuid references public.contacts on delete set null,
