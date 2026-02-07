@@ -86,20 +86,22 @@ const Companies = () => {
     <Layout>
       <section className="py-10">
         <div className="container mx-auto px-4">
-          <h1 className="font-display text-3xl font-bold text-foreground mb-6">Şirketler</h1>
+          <h1 className="font-display text-3xl font-bold text-foreground mb-6 text-center">Şirketler</h1>
 
-          {/* Search + Filters */}
-          <div className="flex flex-col gap-3 md:flex-row md:items-center mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Şirket ara..."
-                className="h-11 w-full rounded-xl border border-border bg-card pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
+          {/* Search */}
+          <div className="relative mx-auto max-w-xl mb-4">
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Şirket ara..."
+              className="h-11 w-full rounded-xl border border-border bg-card pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+
+          {/* Filters */}
+          <div className="flex justify-center gap-3 mb-4">
             <select
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -120,7 +122,7 @@ const Companies = () => {
             </select>
           </div>
 
-          <p className="mb-6 text-sm text-muted-foreground">{filtered.length} şirket bulundu</p>
+          <p className="mb-6 text-sm text-muted-foreground text-center">{filtered.length} şirket bulundu</p>
 
           {/* Company Grid */}
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -155,9 +157,9 @@ const Companies = () => {
                   </div>
 
                   {/* Content */}
-                  <div className="px-5 pb-5 -mt-7">
-                    {/* Avatar */}
-                    <div className={`mb-3 flex h-14 w-14 items-center justify-center rounded-xl ${colors.bg} font-display text-base font-bold ${colors.fg} shadow-md border-2 border-background`}>
+                  <div className="relative px-5 pb-5 pt-10">
+                    {/* Avatar - positioned to straddle banner */}
+                    <div className={`absolute -top-7 left-5 flex h-14 w-14 items-center justify-center rounded-xl ${colors.bg} font-display text-base font-bold ${colors.fg} shadow-md border-2 border-background z-10`}>
                       {getInitials(company.name)}
                     </div>
 
