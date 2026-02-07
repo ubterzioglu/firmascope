@@ -115,18 +115,15 @@ const CompanyDetail = () => {
 
       <div className="container mx-auto px-4 pt-16">
 
-        {/* Description */}
-        <p className="mt-3 text-sm text-muted-foreground">{company.desc}</p>
-
         {/* Meta cards row */}
-        <div className="mt-4 flex flex-wrap justify-center gap-1.5 md:flex-nowrap">
+        <div className="mt-2 flex flex-wrap gap-1.5 md:flex-nowrap md:max-w-3xl">
           {metaItems.map((item) => (
             <div
               key={item.label}
-              className="flex w-[calc(50%-0.375rem)] items-center justify-center gap-2 rounded-lg border-2 border-border/80 bg-card px-2.5 py-1.5 shadow-md md:w-0 md:flex-1"
+              className="flex w-[calc(50%-0.375rem)] items-center gap-1.5 rounded-lg border-2 border-border/80 bg-card px-2 py-1 shadow-md md:w-auto md:min-w-[120px]"
             >
               <item.icon className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
-              <div className="text-center">
+              <div>
                 <div className="text-[9px] leading-tight text-muted-foreground">{item.label}</div>
                 <div className="text-xs font-semibold text-foreground">{item.value}</div>
               </div>
