@@ -5,7 +5,7 @@ import WhySection from "@/components/WhySection";
 import CTASection from "@/components/CTASection";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import heroKeyhole from "@/assets/hero-keyhole.jpg";
+import heroKeyhole from "@/assets/hero.jpg";
 
 const Index = () => {
   return (
