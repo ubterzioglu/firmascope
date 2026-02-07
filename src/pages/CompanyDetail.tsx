@@ -86,8 +86,8 @@ const CompanyDetail = () => {
       </div>
 
       <div className="container mx-auto px-4">
-        {/* Company header */}
-        <div className="-mt-14 flex items-end">
+        {/* Company header - centered on banner/content boundary */}
+        <div className="-mt-12 flex items-center">
           {/* Logo / Initials */}
           <div className="z-10">
             {company.logo ? (
@@ -102,8 +102,8 @@ const CompanyDetail = () => {
               </div>
             )}
           </div>
-          {/* Name badge - overlaps behind logo */}
-          <div className="-ml-3 mb-1 rounded-r-lg bg-alm-orange px-4 pl-6 py-1.5 shadow-md">
+          {/* Name badge - tucked behind logo */}
+          <div className="-ml-3 rounded-r-lg bg-alm-orange px-4 pl-6 py-2 shadow-md">
             <h1 className="font-display text-sm font-bold text-primary-foreground md:text-base">
               {company.name}
             </h1>
