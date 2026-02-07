@@ -123,7 +123,7 @@ const CompanyDetail = () => {
           {metaItems.map((item) => (
             <div
               key={item.label}
-              className="flex w-[calc(50%-0.375rem)] items-center justify-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5 md:w-0 md:flex-1"
+              className="flex w-[calc(50%-0.375rem)] items-center justify-center gap-2 rounded-lg border-2 border-border/80 bg-card px-2.5 py-1.5 shadow-md md:w-0 md:flex-1"
             >
               <item.icon className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
               <div className="text-center">
@@ -159,7 +159,7 @@ const CompanyDetail = () => {
           <div className="space-y-6">
             {activeTab === 0 && (
               <>
-                <div className="rounded-2xl border border-border bg-card p-6">
+                <div className="card-elevated p-6">
                   <h3 className="font-display text-lg font-bold text-foreground">Şirket Bilgileri</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{company.desc}</p>
                   <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
@@ -186,7 +186,7 @@ const CompanyDetail = () => {
                   </ul>
                 </div>
                 {company.reviews > 0 && (
-                  <div className="rounded-2xl border border-border bg-card p-6">
+                  <div className="card-elevated p-6">
                     <h3 className="font-display text-lg font-bold text-foreground">Çalışan Memnuniyeti</h3>
                     <p className="mt-3 text-sm text-muted-foreground">Veriler yükleniyor...</p>
                   </div>
@@ -194,7 +194,7 @@ const CompanyDetail = () => {
               </>
             )}
             {activeTab === 1 && (
-              <div className="rounded-2xl border border-border bg-card p-10 text-center">
+              <div className="card-elevated p-10 text-center">
                 <MessageSquare className="mx-auto h-10 w-10 text-muted-foreground/40" />
                 <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk değerlendirmeyi sen yaz</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -206,7 +206,7 @@ const CompanyDetail = () => {
               </div>
             )}
             {activeTab === 2 && (
-              <div className="rounded-2xl border border-border bg-card p-10 text-center">
+              <div className="card-elevated p-10 text-center">
                 <Banknote className="mx-auto h-10 w-10 text-muted-foreground/40" />
                 <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk maaş bilgisini sen ekle</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -218,7 +218,7 @@ const CompanyDetail = () => {
               </div>
             )}
             {activeTab === 3 && (
-              <div className="rounded-2xl border border-border bg-card p-10 text-center">
+              <div className="card-elevated p-10 text-center">
                 <UserCheck className="mx-auto h-10 w-10 text-muted-foreground/40" />
                 <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk mülakat deneyimini sen paylaş</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -233,7 +233,7 @@ const CompanyDetail = () => {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="card-elevated p-6">
               <h3 className="font-display text-base font-semibold text-foreground mb-4">Hızlı Bilgiler</h3>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
