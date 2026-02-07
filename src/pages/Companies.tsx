@@ -1,75 +1,134 @@
 import Layout from "@/components/Layout";
-import { Search, Building2, Star, MessageSquare, Filter } from "lucide-react";
+import { Search, MapPin, Building2, Heart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const mockCompanies = [
-  { slug: "teknoloji-as", name: "Teknoloji A.Ş.", sector: "Teknoloji", city: "İstanbul", rating: 4.2, reviewCount: 128, size: "201-1000" },
-  { slug: "finans-holding", name: "Finans Holding", sector: "Finans", city: "İstanbul", rating: 3.8, reviewCount: 95, size: "1000+" },
-  { slug: "saglik-grubu", name: "Sağlık Grubu", sector: "Sağlık", city: "Ankara", rating: 4.0, reviewCount: 67, size: "51-200" },
-  { slug: "enerji-sanayi", name: "Enerji Sanayi", sector: "Enerji", city: "İzmir", rating: 3.5, reviewCount: 42, size: "201-1000" },
-  { slug: "perakende-market", name: "Perakende Market", sector: "Perakende", city: "İstanbul", rating: 3.2, reviewCount: 156, size: "1000+" },
-  { slug: "yazilim-startup", name: "Yazılım Startup", sector: "Teknoloji", city: "Ankara", rating: 4.5, reviewCount: 34, size: "11-50" },
-  { slug: "medya-grubu", name: "Medya Grubu", sector: "Medya", city: "İstanbul", rating: 3.9, reviewCount: 78, size: "51-200" },
-  { slug: "insaat-holding", name: "İnşaat Holding", sector: "İnşaat", city: "İstanbul", rating: 3.1, reviewCount: 45, size: "1000+" },
+  { slug: "edutech-academy", name: "EduTech Academy", city: "Ankara", sector: "Eğitim", size: "51-200 çalışan", verified: false },
+  { slug: "finanspro-as", name: "FinansPro A.Ş.", city: "İstanbul", sector: "Finans", size: "1000+ çalışan", verified: true },
+  { slug: "insaat-plus", name: "İnşaat Plus", city: "İstanbul", sector: "İnşaat", size: "1000+ çalışan", verified: false },
+  { slug: "logitrans", name: "LogiTrans", city: "İstanbul", sector: "Lojistik", size: "1000+ çalışan", verified: false },
+  { slug: "mediabox", name: "MediaBox", city: "İstanbul", sector: "Medya", size: "11-50 çalışan", verified: false },
+  { slug: "mercedes-benz-turk", name: "Mercedes Benz Türk A.Ş.", city: "İstanbul", sector: "Otomotiv", size: "1000+ çalışan", verified: false },
+  { slug: "sagliknet", name: "SağlıkNet", city: "İzmir", sector: "Sağlık", size: "201-1000 çalışan", verified: true },
+  { slug: "technova-yazilim", name: "TechNova Yazılım", city: "İstanbul", sector: "Teknoloji", size: "201-1000 çalışan", verified: false },
+  { slug: "yesilenerji", name: "YeşilEnerji", city: "Ankara", sector: "Enerji", size: "51-200 çalışan", verified: false },
 ];
+
+const cities = ["Tüm Şehirler", "İstanbul", "Ankara", "İzmir"];
+const sectors = ["Tüm Sektörler", "Teknoloji", "Finans", "Sağlık", "Enerji", "Lojistik", "Otomotiv", "Medya", "İnşaat", "Eğitim"];
+
+const getInitials = (name: string) => {
+  return name
+    .split(" ")
+    .filter((w) => w.length > 0)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
+};
 
 const Companies = () => {
   const [search, setSearch] = useState("");
+  const [city, setCity] = useState("Tüm Şehirler");
+  const [sector, setSector] = useState("Tüm Sektörler");
 
-  const filtered = mockCompanies.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = mockCompanies.filter((c) => {
+    const matchSearch = c.name.toLowerCase().includes(search.toLowerCase());
+    const matchCity = city === "Tüm Şehirler" || c.city === city;
+    const matchSector = sector === "Tüm Sektörler" || c.sector === sector;
+    return matchSearch && matchCity && matchSector;
+  });
 
   return (
     <Layout>
-      {/* Header */}
-      <section className="border-b border-border bg-muted/30 py-10">
-        <div className="container mx-auto px-4">
-          <h1 className="font-display text-3xl font-bold text-foreground">Şirketler</h1>
-          <p className="mt-2 text-muted-foreground">Türkiye'deki şirketleri keşfet ve değerlendir</p>
-          <div className="relative mt-6 max-w-lg">
-            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Şirket ara..."
-              className="h-11 w-full rounded-xl border border-border bg-card pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* List */}
       <section className="py-10">
         <div className="container mx-auto px-4">
+          <h1 className="font-display text-3xl font-bold text-foreground mb-6">Şirketler</h1>
+
+          {/* Search + Filters */}
+          <div className="flex flex-col gap-3 md:flex-row md:items-center mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Şirket ara..."
+                className="h-11 w-full rounded-xl border border-border bg-card pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+            <select
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="h-11 rounded-xl border border-border bg-card px-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            >
+              {cities.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <select
+              value={sector}
+              onChange={(e) => setSector(e.target.value)}
+              className="h-11 rounded-xl border border-border bg-card px-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            >
+              {sectors.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+
           <p className="mb-6 text-sm text-muted-foreground">{filtered.length} şirket bulundu</p>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+          {/* Company Grid */}
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((company) => (
               <Link
                 key={company.slug}
                 to={`/sirket/${company.slug}`}
-                className="group rounded-xl border border-border bg-card p-6 transition-all hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5"
+                className="group relative rounded-2xl border border-border bg-card overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/5"
               >
-                <div className="mb-3 flex items-start justify-between">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-muted font-display text-base font-bold text-muted-foreground">
-                    {company.name.charAt(0)}
+                {/* Gradient top */}
+                <div className="card-gradient-top h-16" />
+
+                {/* Favorite */}
+                <button
+                  className="absolute right-3 top-3 text-muted-foreground/40 hover:text-destructive transition-colors"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  aria-label="Favorilere ekle"
+                >
+                  <Heart className="h-5 w-5" />
+                </button>
+
+                {/* Content */}
+                <div className="px-5 pb-5 -mt-6">
+                  {/* Avatar */}
+                  <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-amber font-display text-base font-bold text-amber-foreground shadow-md">
+                    {getInitials(company.name)}
                   </div>
-                  <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">{company.sector}</span>
-                </div>
-                <h3 className="font-display text-base font-semibold text-foreground group-hover:text-accent transition-colors">{company.name}</h3>
-                <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                  <Building2 className="h-3 w-3" /> {company.city} · {company.size} çalışan
-                </p>
-                <div className="mt-3 flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-warning text-warning" />
-                    <span className="text-sm font-semibold">{company.rating.toFixed(1)}</span>
+
+                  <h3 className="font-display text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5">
+                    {company.name}
+                    {company.verified && (
+                      <svg className="h-4 w-4 text-primary flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </h3>
+
+                  <div className="mt-2 space-y-1">
+                    <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <MapPin className="h-3 w-3" /> {company.city}
+                    </p>
+                    <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Building2 className="h-3 w-3" /> {company.sector}
+                    </p>
                   </div>
-                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <MessageSquare className="h-3 w-3" /> {company.reviewCount}
-                  </span>
+
+                  <div className="mt-3">
+                    <span className="inline-block rounded-lg border border-border px-2.5 py-1 text-xs text-muted-foreground">
+                      {company.size}
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))}

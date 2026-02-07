@@ -1,5 +1,4 @@
 import Layout from "@/components/Layout";
-import { Shield, Eye, Lock, Users } from "lucide-react";
 
 const About = () => {
   return (
@@ -13,13 +12,12 @@ const About = () => {
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2">
             {[
-              { icon: Eye, title: "Şeffaflık", desc: "Şirket kültürü, çalışma koşulları ve maaş gerçekliğini çalışan perspektifinden görünür kılıyoruz." },
-              { icon: Lock, title: "Anonimlik", desc: "Gerçek ismini kimse görmez. Takma adınla katkıda bulun, kimliğin her zaman korunur." },
-              { icon: Shield, title: "Güvenlik", desc: "Minimum veri toplama, KVKK uyumu ve güçlü moderasyon ile güvenliğini sağlıyoruz." },
-              { icon: Users, title: "Topluluk", desc: "Binlerce çalışan deneyimlerini paylaşarak birbirine yol gösteriyor." },
+              { title: "Şeffaflık", desc: "Şirket kültürü, çalışma koşulları ve maaş gerçekliğini çalışan perspektifinden görünür kılıyoruz." },
+              { title: "Anonimlik", desc: "Gerçek ismini kimse görmez. Takma adınla katkıda bulun, kimliğin her zaman korunur." },
+              { title: "Güvenlik", desc: "Minimum veri toplama, KVKK uyumu ve güçlü moderasyon ile güvenliğini sağlıyoruz." },
+              { title: "Topluluk", desc: "Binlerce çalışan deneyimlerini paylaşarak birbirine yol gösteriyor." },
             ].map((item, i) => (
-              <div key={i} className="rounded-xl border border-border bg-card p-6">
-                <item.icon className="mb-3 h-8 w-8 text-accent" />
+              <div key={i} className="rounded-2xl border border-border bg-card p-6">
                 <h3 className="font-display text-lg font-semibold text-foreground">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
               </div>
