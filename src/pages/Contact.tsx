@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { Mail, MessageCircle } from "lucide-react";
 
 const Contact = () => {
   return (
@@ -12,11 +11,11 @@ const Contact = () => {
             Soru, öneri veya geri bildirimleriniz için bize ulaşın.
           </p>
 
-          <div className="mt-10 rounded-xl border border-border bg-card p-8">
+          <div className="mt-10 rounded-2xl border border-border bg-card p-8">
             <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-foreground">Konu</label>
-                <select className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20">
+                <select className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
                   <option>Genel Soru</option>
                   <option>Şirket Profili Talebi</option>
                   <option>İçerik Şikayeti</option>
@@ -29,7 +28,7 @@ const Contact = () => {
                 <input
                   type="email"
                   placeholder="ornek@email.com"
-                  className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div>
@@ -37,20 +36,18 @@ const Contact = () => {
                 <textarea
                   rows={5}
                   placeholder="Mesajınızı buraya yazın..."
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 resize-none"
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
                 />
               </div>
-              <Button variant="hero" className="w-full">
+              <Button className="w-full rounded-full font-semibold">
                 Gönder
               </Button>
             </form>
           </div>
 
-          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-accent" /> destek@firmascope.com
-            </span>
-          </div>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            destek@firmascope.com
+          </p>
         </div>
       </section>
     </Layout>

@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import { useParams, Link } from "react-router-dom";
-import { Star, Building2, MapPin, Users, MessageSquare, DollarSign, Briefcase } from "lucide-react";
+import { Star, MapPin, Users, MessageSquare, DollarSign, Briefcase, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const mockReviews = [
@@ -22,31 +22,31 @@ const CompanyDetail = () => {
   return (
     <Layout>
       {/* Hero */}
-      <section className="hero-gradient py-12">
+      <section className="py-10 border-b border-border">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-5">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-foreground/10 font-display text-2xl font-bold" style={{ color: 'hsl(210 30% 95%)' }}>
-                T
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber font-display text-xl font-bold text-amber-foreground shadow-md">
+                TE
               </div>
               <div>
-                <h1 className="font-display text-2xl font-bold md:text-3xl" style={{ color: 'hsl(210 30% 95%)' }}>Teknoloji A.Ş.</h1>
-                <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm" style={{ color: 'hsl(210 20% 75%)' }}>
+                <h1 className="font-display text-2xl font-bold text-foreground md:text-3xl">Teknoloji A.Ş.</h1>
+                <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> İstanbul</span>
                   <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> 201-1000 çalışan</span>
-                  <span className="rounded-full bg-primary-foreground/10 px-3 py-0.5 text-xs">Teknoloji</span>
+                  <span className="rounded-lg border border-border px-2.5 py-0.5 text-xs">Teknoloji</span>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-6">
               <div className="text-center">
                 <div className="flex items-center gap-1">
-                  <Star className="h-6 w-6 fill-warning text-warning" />
-                  <span className="font-display text-3xl font-bold" style={{ color: 'hsl(210 30% 95%)' }}>4.2</span>
+                  <Star className="h-6 w-6 fill-amber text-amber" />
+                  <span className="font-display text-3xl font-bold text-foreground">4.2</span>
                 </div>
-                <p className="mt-0.5 text-xs" style={{ color: 'hsl(210 20% 75%)' }}>128 değerlendirme</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">128 değerlendirme</p>
               </div>
-              <Button variant="hero" asChild>
+              <Button asChild className="rounded-full px-6 font-semibold">
                 <Link to="/yorum-yaz">Yorum Yaz</Link>
               </Button>
             </div>
@@ -62,7 +62,7 @@ const CompanyDetail = () => {
               key={tab.id}
               className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                 tab.id === "reviews"
-                  ? "border-accent text-accent"
+                  ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -78,11 +78,11 @@ const CompanyDetail = () => {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl space-y-4">
             {mockReviews.map((review) => (
-              <div key={review.id} className="rounded-xl border border-border bg-card p-6">
+              <div key={review.id} className="rounded-2xl border border-border bg-card p-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((s) => (
-                      <Star key={s} className={`h-4 w-4 ${s <= review.rating ? "fill-warning text-warning" : "text-muted-foreground/30"}`} />
+                      <Star key={s} className={`h-4 w-4 ${s <= review.rating ? "fill-amber text-amber" : "text-muted-foreground/30"}`} />
                     ))}
                   </div>
                   <span className="text-xs text-muted-foreground">{review.date}</span>
