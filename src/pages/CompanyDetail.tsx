@@ -1,13 +1,38 @@
 import Layout from "@/components/Layout";
 import { useParams } from "react-router-dom";
-import { MapPin, Building2, Users, Globe, Briefcase, MessageSquare } from "lucide-react";
+import { MapPin, Building2, Users, Globe, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+
+const sectorBanners: Record<string, string> = {
+  "Eğitim": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&h=300&fit=crop",
+  "Finans": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=300&fit=crop",
+  "İnşaat": "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&h=300&fit=crop",
+  "Lojistik": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&h=300&fit=crop",
+  "Medya": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1200&h=300&fit=crop",
+  "Otomotiv": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=300&fit=crop",
+  "Sağlık": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200&h=300&fit=crop",
+  "Teknoloji": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=300&fit=crop",
+  "Enerji": "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&h=300&fit=crop",
+};
+
+const defaultBanner = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=300&fit=crop";
+
+const initialsColors = [
+  { bg: "bg-amber", fg: "text-amber-foreground" },
+  { bg: "bg-primary", fg: "text-primary-foreground" },
+  { bg: "bg-destructive", fg: "text-destructive-foreground" },
+];
+
+function getInitialsColor(name: string) {
+  const index = name.charCodeAt(0) % initialsColors.length;
+  return initialsColors[index];
+}
 
 const mockCompanyData: Record<string, {
   name: string; initials: string; desc: string; city: string; sector: string;
   size: string; reviews: number; salaries: number; interviews: number;
-  type: string; status: string;
+  type: string; status: string; logo?: string; banner?: string;
 }> = {
   "edutech-academy": { name: "EduTech Academy", initials: "EA", desc: "Online eğitim platformu ve içerik üretimi", city: "Ankara", sector: "Eğitim", size: "51-200", type: "A.Ş.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
   "finanspro-as": { name: "FinansPro A.Ş.", initials: "FA", desc: "Finans ve yatırım hizmetleri", city: "İstanbul", sector: "Finans", size: "1000+", type: "A.Ş.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
@@ -30,6 +55,9 @@ const CompanyDetail = () => {
     reviews: 0, salaries: 0, interviews: 0,
   };
 
+  const bannerUrl = company.banner || sectorBanners[company.sector] || defaultBanner;
+  const colors = getInitialsColor(company.name);
+
   const tabLabels = [
     "Genel Bakış",
     `Yorumlar (${company.reviews})`,
@@ -47,24 +75,44 @@ const CompanyDetail = () => {
 
   return (
     <Layout>
-      {/* Gray gradient hero */}
-      <div className="h-32 bg-gradient-to-b from-muted-foreground/40 to-muted/60" />
+      {/* Banner */}
+      <div className="relative h-36 md:h-44 overflow-hidden">
+        <img
+          src={bannerUrl}
+          alt={`${company.name} banner`}
+          className="h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
+      </div>
 
       <div className="container mx-auto px-4">
         {/* Company header */}
-        <div className="-mt-16 flex items-end gap-4">
-          <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl bg-amber font-display text-3xl font-bold text-amber-foreground shadow-lg">
-            {company.initials}
-          </div>
-          <div className="mb-1 rounded-lg bg-primary px-4 py-2">
-            <h1 className="font-display text-xl font-bold text-primary-foreground md:text-2xl">
+        <div className="-mt-12 flex items-end gap-3">
+          {/* Logo / Initials */}
+          {company.logo ? (
+            <img
+              src={company.logo}
+              alt={company.name}
+              className="h-20 w-20 flex-shrink-0 rounded-2xl border-4 border-background object-cover shadow-lg"
+            />
+          ) : (
+            <div className={`flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl border-4 border-background ${colors.bg} font-display text-2xl font-bold ${colors.fg} shadow-lg`}>
+              {company.initials}
+            </div>
+          )}
+          {/* Name badge */}
+          <div className="mb-1.5 rounded-lg bg-destructive px-4 py-1.5 shadow-md">
+            <h1 className="font-display text-base font-bold text-destructive-foreground md:text-lg">
               {company.name}
             </h1>
           </div>
         </div>
 
+        {/* Description */}
+        <p className="mt-3 text-sm text-muted-foreground">{company.desc}</p>
+
         {/* Meta cards row */}
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
           {metaItems.map((item) => (
             <div
               key={item.label}
@@ -104,7 +152,6 @@ const CompanyDetail = () => {
           <div className="space-y-6">
             {activeTab === 0 && (
               <>
-                {/* Şirket Bilgileri */}
                 <div className="rounded-2xl border border-border bg-card p-6">
                   <h3 className="font-display text-lg font-bold text-foreground">Şirket Bilgileri</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{company.desc}</p>
@@ -131,8 +178,6 @@ const CompanyDetail = () => {
                     </li>
                   </ul>
                 </div>
-
-                {/* Çalışan Memnuniyeti */}
                 <div className="rounded-2xl border border-border bg-card p-6">
                   <h3 className="font-display text-lg font-bold text-foreground">Çalışan Memnuniyeti</h3>
                   <p className="mt-3 text-sm text-muted-foreground">Henüz yeterli veri yok.</p>
@@ -158,7 +203,6 @@ const CompanyDetail = () => {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            {/* Quick stats */}
             <div className="rounded-2xl border border-border bg-card p-6">
               <h3 className="font-display text-base font-semibold text-foreground mb-4">Hızlı Bilgiler</h3>
               <div className="grid grid-cols-3 gap-4 text-center">
@@ -176,8 +220,6 @@ const CompanyDetail = () => {
                 </div>
               </div>
             </div>
-
-            {/* CTA buttons */}
             <Button className="w-full rounded-xl font-semibold text-sm h-12">
               Değerlendirme Yaz
             </Button>
