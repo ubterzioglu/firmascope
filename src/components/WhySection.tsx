@@ -43,7 +43,7 @@ const WhySection = () => {
 
   useEffect(() => {
     if (paused) return;
-    const timer = setInterval(next, 3500);
+    const timer = setInterval(next, 1000);
     return () => clearInterval(timer);
   }, [paused, next]);
 
