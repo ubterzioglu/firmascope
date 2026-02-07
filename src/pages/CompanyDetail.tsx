@@ -87,22 +87,22 @@ const CompanyDetail = () => {
 
       <div className="container mx-auto px-4">
         {/* Company header */}
-        <div className="-mt-12 flex items-end gap-3">
+        <div className="-mt-10 flex items-end gap-3">
           {/* Logo / Initials */}
           {company.logo ? (
             <img
               src={company.logo}
               alt={company.name}
-              className="h-20 w-20 flex-shrink-0 rounded-2xl border-4 border-background object-cover shadow-lg"
+              className="h-16 w-16 flex-shrink-0 rounded-xl border-4 border-background object-cover shadow-lg"
             />
           ) : (
-            <div className={`flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl border-4 border-background ${colors.bg} font-display text-2xl font-bold ${colors.fg} shadow-lg`}>
+            <div className={`flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-xl border-4 border-background ${colors.bg} font-display text-xl font-bold ${colors.fg} shadow-lg`}>
               {company.initials}
             </div>
           )}
           {/* Name badge */}
-          <div className="mb-1.5 rounded-lg bg-destructive px-4 py-1.5 shadow-md">
-            <h1 className="font-display text-base font-bold text-destructive-foreground md:text-lg">
+          <div className="mb-1 rounded-lg bg-alm-orange px-3 py-1 shadow-md">
+            <h1 className="font-display text-sm font-bold text-primary-foreground md:text-base">
               {company.name}
             </h1>
           </div>
@@ -112,16 +112,16 @@ const CompanyDetail = () => {
         <p className="mt-3 text-sm text-muted-foreground">{company.desc}</p>
 
         {/* Meta cards row */}
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+        <div className="mt-4 grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-5">
           {metaItems.map((item) => (
             <div
               key={item.label}
-              className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3"
+              className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5"
             >
-              <item.icon className="h-5 w-5 flex-shrink-0 text-primary" />
+              <item.icon className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
               <div className="min-w-0">
-                <div className="text-[11px] text-muted-foreground">{item.label}</div>
-                <div className="truncate text-sm font-semibold text-foreground">{item.value}</div>
+                <div className="text-[9px] leading-tight text-muted-foreground">{item.label}</div>
+                <div className="truncate text-xs font-semibold text-foreground">{item.value}</div>
               </div>
             </div>
           ))}
@@ -223,7 +223,7 @@ const CompanyDetail = () => {
             <Button className="w-full rounded-xl font-semibold text-sm h-12">
               Değerlendirme Yaz
             </Button>
-            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90">
               Maaş Bilgisi Ekle
             </Button>
             <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-amber text-amber-foreground hover:bg-amber/90">
