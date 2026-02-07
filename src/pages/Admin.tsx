@@ -15,7 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Check, X, Shield, Building2, Users, Lightbulb, FileCheck } from "lucide-react";
+import { Check, X, Shield, Building2, Users, Lightbulb, FileCheck, Megaphone } from "lucide-react";
+import AdminAnnouncements from "@/components/AdminAnnouncements";
 
 const statusColors: Record<string, string> = {
   pending: "bg-amber/20 text-amber-foreground border-amber/30",
@@ -150,13 +151,19 @@ const Admin = () => {
             </div>
           </div>
 
-          <Tabs defaultValue="suggestions" className="w-full">
+          <Tabs defaultValue="announcements" className="w-full">
             <TabsList className="mb-4">
+              <TabsTrigger value="announcements">Duyurular</TabsTrigger>
               <TabsTrigger value="suggestions">Şirket Önerileri</TabsTrigger>
               <TabsTrigger value="claims">Şirket Talepleri</TabsTrigger>
               <TabsTrigger value="companies">Şirketler</TabsTrigger>
               <TabsTrigger value="users">Kullanıcılar</TabsTrigger>
             </TabsList>
+
+            {/* Announcements Tab */}
+            <TabsContent value="announcements">
+              <AdminAnnouncements />
+            </TabsContent>
 
             {/* Suggestions Tab */}
             <TabsContent value="suggestions">
