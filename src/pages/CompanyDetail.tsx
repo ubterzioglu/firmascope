@@ -180,10 +180,12 @@ const CompanyDetail = () => {
                     </li>
                   </ul>
                 </div>
-                <div className="rounded-2xl border border-border bg-card p-6">
-                  <h3 className="font-display text-lg font-bold text-foreground">Çalışan Memnuniyeti</h3>
-                  <p className="mt-3 text-sm text-muted-foreground">Henüz yeterli veri yok.</p>
-                </div>
+                {company.reviews > 0 && (
+                  <div className="rounded-2xl border border-border bg-card p-6">
+                    <h3 className="font-display text-lg font-bold text-foreground">Çalışan Memnuniyeti</h3>
+                    <p className="mt-3 text-sm text-muted-foreground">Veriler yükleniyor...</p>
+                  </div>
+                )}
               </>
             )}
             {activeTab === 1 && (
