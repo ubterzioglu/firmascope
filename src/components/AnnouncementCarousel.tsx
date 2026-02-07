@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const announcements = [
   {
     id: "1",
-    title: "FirmaScope Yayında!",
+    title: "firmascope Yayında!",
     desc: "Türkiye'nin en şeffaf şirket değerlendirme platformu artık aktif.",
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=340&fit=crop",
   },
@@ -40,7 +40,7 @@ const announcements = [
   {
     id: "7",
     title: "Mobil Deneyim",
-    desc: "FirmaScope artık mobilde de kusursuz çalışıyor. Her yerden erişin.",
+    desc: "firmascope artık mobilde de kusursuz çalışıyor. Her yerden erişin.",
     image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=340&fit=crop",
   },
   {
