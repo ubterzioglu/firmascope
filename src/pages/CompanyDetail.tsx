@@ -1,107 +1,165 @@
 import Layout from "@/components/Layout";
-import { useParams, Link } from "react-router-dom";
-import { Star, MapPin, Users, MessageSquare, DollarSign, Briefcase, Building2 } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { MapPin, Building2, Users, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
-const mockReviews = [
-  { id: "1", rating: 4, title: "İyi bir çalışma ortamı", text: "Genel olarak memnunum. Yönetim ekibi destekleyici ve açık iletişim kuruluyor. Work-life balance konusunda iyileştirmeler yapılabilir.", date: "2 gün önce", upvotes: 12, downvotes: 2 },
-  { id: "2", rating: 3, title: "Ortalama bir deneyim", text: "Maaşlar piyasa ortalamasının altında kalıyor ama ekip çalışması güçlü. Kariyer gelişimi için fırsatlar sınırlı olabiliyor.", date: "1 hafta önce", upvotes: 8, downvotes: 1 },
-  { id: "3", rating: 5, title: "Harika bir şirket kültürü", text: "Remote çalışma imkanı, esnek çalışma saatleri ve sürekli eğitim fırsatları sunuluyor. Kesinlikle tavsiye ederim.", date: "2 hafta önce", upvotes: 24, downvotes: 0 },
-];
+const mockCompanyData: Record<string, { name: string; initials: string; desc: string; city: string; sector: string; size: string; reviews: number; salaries: number; interviews: number }> = {
+  "edutech-academy": { name: "EduTech Academy", initials: "EA", desc: "Online eğitim platformu ve içerik üretimi", city: "Ankara", sector: "Eğitim", size: "51-200 çalışan", reviews: 0, salaries: 0, interviews: 0 },
+  "finanspro-as": { name: "FinansPro A.Ş.", initials: "FA", desc: "Finans ve yatırım hizmetleri", city: "İstanbul", sector: "Finans", size: "1000+ çalışan", reviews: 0, salaries: 0, interviews: 0 },
+  "insaat-plus": { name: "İnşaat Plus", initials: "İP", desc: "Büyük ölçekli inşaat projeleri", city: "İstanbul", sector: "İnşaat", size: "1000+ çalışan", reviews: 0, salaries: 0, interviews: 0 },
+  "logitrans": { name: "LogiTrans", initials: "LO", desc: "Lojistik ve taşımacılık çözümleri", city: "İstanbul", sector: "Lojistik", size: "1000+ çalışan", reviews: 0, salaries: 0, interviews: 0 },
+  "mediabox": { name: "MediaBox", initials: "ME", desc: "Dijital medya ve içerik üretimi", city: "İstanbul", sector: "Medya", size: "11-50 çalışan", reviews: 0, salaries: 0, interviews: 0 },
+  "mercedes-benz-turk": { name: "Mercedes Benz Türk A.Ş.", initials: "MB", desc: "Otomotiv üretimi ve satışı", city: "İstanbul", sector: "Otomotiv", size: "1000+ çalışan", reviews: 0, salaries: 0, interviews: 0 },
+  "sagliknet": { name: "SağlıkNet", initials: "SA", desc: "Dijital sağlık hizmetleri", city: "İzmir", sector: "Sağlık", size: "201-1000 çalışan", reviews: 0, salaries: 0, interviews: 0 },
+  "technova-yazilim": { name: "TechNova Yazılım", initials: "TY", desc: "Yazılım geliştirme ve danışmanlık", city: "İstanbul", sector: "Teknoloji", size: "201-1000 çalışan", reviews: 0, salaries: 0, interviews: 0 },
+  "yesilenerji": { name: "YeşilEnerji", initials: "YE", desc: "Yenilenebilir enerji çözümleri", city: "Ankara", sector: "Enerji", size: "51-200 çalışan", reviews: 0, salaries: 0, interviews: 0 },
+};
 
-const tabs = [
-  { id: "overview", label: "Genel Bakış", icon: Building2 },
-  { id: "reviews", label: "Yorumlar", icon: MessageSquare },
-  { id: "salaries", label: "Maaşlar", icon: DollarSign },
-  { id: "interviews", label: "Mülakatlar", icon: Briefcase },
-];
+const tabs = ["Genel Bakış", "Yorumlar", "Maaşlar", "Mülakatlar"];
 
 const CompanyDetail = () => {
   const { slug } = useParams();
+  const [activeTab, setActiveTab] = useState(0);
+
+  const company = mockCompanyData[slug || ""] || {
+    name: "Bilinmeyen Şirket",
+    initials: "??",
+    desc: "",
+    city: "—",
+    sector: "—",
+    size: "—",
+    reviews: 0,
+    salaries: 0,
+    interviews: 0,
+  };
+
+  const tabLabels = [
+    "Genel Bakış",
+    `Yorumlar (${company.reviews})`,
+    `Maaşlar (${company.salaries})`,
+    `Mülakatlar (${company.interviews})`,
+  ];
 
   return (
     <Layout>
-      {/* Hero */}
-      <section className="py-10 border-b border-border">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-5">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber font-display text-xl font-bold text-amber-foreground shadow-md">
-                TE
-              </div>
-              <div>
-                <h1 className="font-display text-2xl font-bold text-foreground md:text-3xl">Teknoloji A.Ş.</h1>
-                <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> İstanbul</span>
-                  <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> 201-1000 çalışan</span>
-                  <span className="rounded-lg border border-border px-2.5 py-0.5 text-xs">Teknoloji</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-6">
-              <div className="text-center">
-                <div className="flex items-center gap-1">
-                  <Star className="h-6 w-6 fill-amber text-amber" />
-                  <span className="font-display text-3xl font-bold text-foreground">4.2</span>
-                </div>
-                <p className="mt-0.5 text-xs text-muted-foreground">128 değerlendirme</p>
-              </div>
-              <Button asChild className="rounded-full px-6 font-semibold">
-                <Link to="/yorum-yaz">Yorum Yaz</Link>
-              </Button>
-            </div>
+      {/* Gray gradient hero */}
+      <div className="h-28 bg-gradient-to-b from-muted-foreground/30 to-muted/50" />
+
+      {/* Company header */}
+      <div className="container mx-auto px-4">
+        <div className="-mt-12 flex items-end gap-5">
+          {/* Avatar */}
+          <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl bg-amber font-display text-2xl font-bold text-amber-foreground shadow-lg">
+            {company.initials}
+          </div>
+          <div className="pb-1">
+            <h1 className="font-display text-2xl font-bold text-foreground md:text-3xl">{company.name}</h1>
+          </div>
+          {/* Rating area */}
+          <div className="ml-auto hidden items-center gap-2 pb-1 md:flex">
+            <span className="text-2xl font-bold text-muted-foreground">—</span>
+            <span className="text-sm text-muted-foreground">{company.reviews} değerlendirme</span>
           </div>
         </div>
-      </section>
 
-      {/* Tabs */}
-      <div className="border-b border-border bg-card">
-        <div className="container mx-auto flex gap-1 overflow-x-auto px-4">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
-                tab.id === "reviews"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <tab.icon className="h-4 w-4" />
-              {tab.label}
-            </button>
-          ))}
+        {/* Description */}
+        <p className="mt-4 text-sm text-muted-foreground">{company.desc}</p>
+
+        {/* Meta */}
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <MapPin className="h-3.5 w-3.5" /> {company.city}
+          </span>
+          <span className="text-border">|</span>
+          <span className="flex items-center gap-1.5">
+            <Building2 className="h-3.5 w-3.5" /> {company.sector}
+          </span>
+          <span className="text-border">|</span>
+          <span className="flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5" /> {company.size}
+          </span>
+          <span className="text-border">|</span>
+          <span>{company.reviews} değerlendirme</span>
         </div>
-      </div>
 
-      {/* Reviews */}
-      <section className="py-10">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl space-y-4">
-            {mockReviews.map((review) => (
-              <div key={review.id} className="rounded-2xl border border-border bg-card p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <Star key={s} className={`h-4 w-4 ${s <= review.rating ? "fill-amber text-amber" : "text-muted-foreground/30"}`} />
-                    ))}
-                  </div>
-                  <span className="text-xs text-muted-foreground">{review.date}</span>
-                </div>
-                <h3 className="mt-3 font-display text-base font-semibold text-foreground">{review.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{review.text}</p>
-                <div className="mt-4 flex items-center gap-4">
-                  <button className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted">
-                    👍 {review.upvotes}
-                  </button>
-                  <button className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted">
-                    👎 {review.downvotes}
-                  </button>
-                </div>
-              </div>
+        {/* Tabs */}
+        <div className="mt-6 border-b border-border">
+          <div className="flex gap-0 overflow-x-auto">
+            {tabLabels.map((label, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveTab(i)}
+                className={`whitespace-nowrap border-b-2 px-5 py-3 text-sm font-medium transition-colors ${
+                  activeTab === i
+                    ? "border-foreground text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {label}
+              </button>
             ))}
           </div>
         </div>
-      </section>
+
+        {/* Content */}
+        <div className="mt-8 grid gap-6 pb-16 lg:grid-cols-[1fr_320px]">
+          {/* Main content */}
+          <div>
+            {activeTab === 0 && (
+              <div className="rounded-2xl border border-border bg-card p-6">
+                <h3 className="font-display text-lg font-semibold text-foreground">Çalışan Memnuniyeti</h3>
+                <p className="mt-3 text-sm text-muted-foreground">Henüz yeterli veri yok.</p>
+              </div>
+            )}
+            {activeTab === 1 && (
+              <div className="rounded-2xl border border-border bg-card p-6 text-center">
+                <p className="text-sm text-muted-foreground">Henüz yorum yapılmamış.</p>
+              </div>
+            )}
+            {activeTab === 2 && (
+              <div className="rounded-2xl border border-border bg-card p-6 text-center">
+                <p className="text-sm text-muted-foreground">Henüz maaş bilgisi eklenmemiş.</p>
+              </div>
+            )}
+            {activeTab === 3 && (
+              <div className="rounded-2xl border border-border bg-card p-6 text-center">
+                <p className="text-sm text-muted-foreground">Henüz mülakat deneyimi paylaşılmamış.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-4">
+            {/* Quick stats */}
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <h3 className="font-display text-base font-semibold text-foreground mb-4">Hızlı Bilgiler</h3>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="font-display text-2xl font-bold text-foreground">{company.reviews}</div>
+                  <div className="text-xs text-muted-foreground">Yorum</div>
+                </div>
+                <div>
+                  <div className="font-display text-2xl font-bold text-foreground">{company.salaries}</div>
+                  <div className="text-xs text-muted-foreground">Maaş</div>
+                </div>
+                <div>
+                  <div className="font-display text-2xl font-bold text-foreground">{company.interviews}</div>
+                  <div className="text-xs text-muted-foreground">Mülakat</div>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA buttons */}
+            <Button className="w-full rounded-xl font-semibold text-sm h-12">
+              Değerlendirme Yaz
+            </Button>
+            <Button variant="outline" className="w-full rounded-xl font-semibold text-sm h-12">
+              Maaş Bilgisi Ekle
+            </Button>
+          </div>
+        </div>
+      </div>
     </Layout>
   );
 };
