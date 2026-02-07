@@ -75,40 +75,45 @@ const CompanyDetail = () => {
 
   return (
     <Layout>
-      {/* Banner */}
-      <div className="relative h-36 md:h-44 overflow-hidden">
-        <img
-          src={bannerUrl}
-          alt={`${company.name} banner`}
-          className="h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
-      </div>
+      {/* Banner + overlapping header */}
+      <div className="relative">
+        <div className="h-36 md:h-44 overflow-hidden">
+          <img
+            src={bannerUrl}
+            alt={`${company.name} banner`}
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
+        </div>
 
-      <div className="container mx-auto px-4">
-        {/* Company header - centered on banner/content boundary */}
-        <div className="-mt-12 flex items-center">
-          {/* Logo / Initials */}
-          <div className="z-10">
-            {company.logo ? (
-              <img
-                src={company.logo}
-                alt={company.name}
-                className="h-24 w-24 flex-shrink-0 rounded-2xl border-4 border-background object-cover shadow-lg"
-              />
-            ) : (
-              <div className={`flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl border-4 border-background ${colors.bg} font-display text-2xl font-bold ${colors.fg} shadow-lg`}>
-                {company.initials}
-              </div>
-            )}
-          </div>
-          {/* Name badge - tucked behind logo */}
-          <div className="-ml-3 rounded-r-lg bg-alm-orange px-4 pl-6 py-2 shadow-md">
-            <h1 className="font-display text-sm font-bold text-primary-foreground md:text-base">
-              {company.name}
-            </h1>
+        {/* Company header - positioned to straddle the banner bottom */}
+        <div className="container mx-auto px-4">
+          <div className="absolute bottom-0 translate-y-1/2 flex items-center">
+            {/* Logo / Initials */}
+            <div className="z-20 relative">
+              {company.logo ? (
+                <img
+                  src={company.logo}
+                  alt={company.name}
+                  className="h-24 w-24 flex-shrink-0 rounded-2xl border-4 border-background object-cover shadow-lg"
+                />
+              ) : (
+                <div className={`flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl border-4 border-background ${colors.bg} font-display text-2xl font-bold ${colors.fg} shadow-lg`}>
+                  {company.initials}
+                </div>
+              )}
+            </div>
+            {/* Name badge - tucked behind logo */}
+            <div className="z-10 -ml-3 rounded-r-lg bg-alm-orange px-4 pl-6 py-2 shadow-md">
+              <h1 className="font-display text-sm font-bold text-primary-foreground md:text-base">
+                {company.name}
+              </h1>
+            </div>
           </div>
         </div>
+      </div>
+
+      <div className="container mx-auto px-4 pt-16">
 
         {/* Description */}
         <p className="mt-3 text-sm text-muted-foreground">{company.desc}</p>
