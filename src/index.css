@@ -36,13 +36,19 @@
 
     --radius: 0.75rem;
 
+    /* Brand palette */
+    --alm-blue: 199 99% 47%;
+    --alm-green: 79 100% 37%;
+    --alm-orange: 12 92% 52%;
+    --alm-yellow: 44 100% 50%;
+
     /* Custom tokens */
-    --amber: 40 96% 53%;
+    --amber: 44 100% 50%;
     --amber-foreground: 0 0% 100%;
     --card-gradient-start: 45 100% 92%;
     --card-gradient-mid: 150 60% 92%;
     --card-gradient-end: 200 80% 92%;
-    --dot-color: 195 60% 82%;
+    --dot-color: 199 40% 82%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;

@@ -55,6 +55,10 @@ export default {
           DEFAULT: "hsl(var(--amber))",
           foreground: "hsl(var(--amber-foreground))",
         },
+        "alm-blue": "hsl(var(--alm-blue))",
+        "alm-green": "hsl(var(--alm-green))",
+        "alm-orange": "hsl(var(--alm-orange))",
+        "alm-yellow": "hsl(var(--alm-yellow))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
