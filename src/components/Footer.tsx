@@ -8,7 +8,7 @@ const Footer = () => {
           firmascope
         </Link>
         <Link to="/yasal" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-          Yasal Bilgiler
+          Yasal
         </Link>
       </div>
     </footer>
