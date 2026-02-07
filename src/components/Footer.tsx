@@ -8,12 +8,14 @@ const Footer = () => {
           <Link to="/" className="font-display text-sm font-bold text-foreground">
             firmascope
           </Link>
-          <Link to="/yasal" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Yasal Bilgiler
+          <Link to="/yasal" className="font-display text-sm font-bold text-muted-foreground hover:text-foreground transition-colors">
+            yasal bilgiler
           </Link>
         </div>
-        <div className="mt-4 border-t border-border pt-4 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} firmascope. Tüm hakları saklıdır.
+        <div className="mt-4 border-t border-border pt-4 text-center">
+          <span className="font-display text-sm font-bold text-muted-foreground">
+            © {new Date().getFullYear()} firmascope. tüm hakları saklıdır.
+          </span>
         </div>
       </div>
     </footer>
