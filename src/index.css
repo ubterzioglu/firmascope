@@ -119,3 +119,9 @@
     color: hsl(var(--primary));
   }
 }
+
+@layer components {
+  .card-elevated {
+    @apply rounded-2xl border-2 border-border/80 bg-card shadow-md;
+  }
+}
