@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import { useParams } from "react-router-dom";
-import { MapPin, Building2, Users, Globe, Briefcase } from "lucide-react";
+import { MapPin, Building2, Users, Globe, Briefcase, MessageSquare, Banknote, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -187,18 +187,39 @@ const CompanyDetail = () => {
               </>
             )}
             {activeTab === 1 && (
-              <div className="rounded-2xl border border-border bg-card p-6 text-center">
-                <p className="text-sm text-muted-foreground">Henüz yorum yapılmamış.</p>
+              <div className="rounded-2xl border border-border bg-card p-10 text-center">
+                <MessageSquare className="mx-auto h-10 w-10 text-muted-foreground/40" />
+                <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk değerlendirmeyi sen yaz</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Bu şirket hakkında henüz yorum yapılmamış. Deneyimini paylaş!
+                </p>
+                <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11">
+                  Değerlendirme Yaz
+                </Button>
               </div>
             )}
             {activeTab === 2 && (
-              <div className="rounded-2xl border border-border bg-card p-6 text-center">
-                <p className="text-sm text-muted-foreground">Henüz maaş bilgisi eklenmemiş.</p>
+              <div className="rounded-2xl border border-border bg-card p-10 text-center">
+                <Banknote className="mx-auto h-10 w-10 text-muted-foreground/40" />
+                <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk maaş bilgisini sen ekle</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Bu şirket hakkında henüz maaş bilgisi eklenmemiş. Bilgini paylaş!
+                </p>
+                <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90">
+                  Maaş Bilgisi Ekle
+                </Button>
               </div>
             )}
             {activeTab === 3 && (
-              <div className="rounded-2xl border border-border bg-card p-6 text-center">
-                <p className="text-sm text-muted-foreground">Henüz mülakat deneyimi paylaşılmamış.</p>
+              <div className="rounded-2xl border border-border bg-card p-10 text-center">
+                <UserCheck className="mx-auto h-10 w-10 text-muted-foreground/40" />
+                <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk mülakat deneyimini sen paylaş</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Bu şirket hakkında henüz mülakat deneyimi paylaşılmamış. Deneyimini ekle!
+                </p>
+                <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-amber text-amber-foreground hover:bg-amber/90">
+                  Mülakat Bilgisi Ekle
+                </Button>
               </div>
             )}
           </div>
