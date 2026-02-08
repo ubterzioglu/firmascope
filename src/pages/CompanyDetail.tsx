@@ -98,7 +98,7 @@ const CompanyDetail = () => {
                   className="h-48 w-48 flex-shrink-0 rounded-3xl border-4 border-background object-cover shadow-lg"
                 />
               ) : (
-                <div className={`flex h-48 w-48 flex-shrink-0 items-center justify-center rounded-3xl border-4 border-background ${colors.bg} font-display text-5xl font-bold ${colors.fg} shadow-lg`}>
+                <div className="flex h-36 w-36 flex-shrink-0 items-center justify-center rounded-3xl border-4 border-background bg-alm-yellow font-display text-4xl font-bold text-primary-foreground shadow-lg">
                   {company.initials}
                 </div>
               )}
