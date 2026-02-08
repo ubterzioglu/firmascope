@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { MapPin, Building2, Users, Globe, Briefcase, MessageSquare, Banknote, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -12,6 +12,7 @@ import InterviewForm from "@/components/InterviewForm";
 import VoteButtons from "@/components/VoteButtons";
 import ReportButton from "@/components/ReportButton";
 import SalaryGateOverlay from "@/components/SalaryGateOverlay";
+import { useToast } from "@/hooks/use-toast";
 
 interface Company {
   id: string;
@@ -75,7 +76,9 @@ const defaultBanner = "https://images.unsplash.com/photo-1497366216548-375260702
 
 const CompanyDetail = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const { isGated: isSalaryGated } = useSalaryGate();
   const [activeTab, setActiveTab] = useState(0);
   const [company, setCompany] = useState<Company | null>(null);
@@ -86,6 +89,19 @@ const CompanyDetail = () => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showSalaryForm, setShowSalaryForm] = useState(false);
   const [showInterviewForm, setShowInterviewForm] = useState(false);
+
+  const requireAuth = (action: () => void) => {
+    if (!user) {
+      toast({
+        title: "Giriş gerekli",
+        description: "Bu işlem için giriş yapmanız gerekiyor.",
+        variant: "destructive",
+      });
+      navigate("/giris");
+      return;
+    }
+    action();
+  };
 
   const fetchCompanyData = async () => {
     if (!slug) return;
@@ -303,13 +319,13 @@ const CompanyDetail = () => {
                     <MessageSquare className="mx-auto h-10 w-10 text-muted-foreground/40" />
                     <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk değerlendirmeyi sen yaz</h3>
                     <p className="mt-2 text-sm text-muted-foreground">Bu şirket hakkında henüz yorum yapılmamış.</p>
-                    <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11" onClick={() => setShowReviewForm(true)}>
+                    <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11" onClick={() => requireAuth(() => setShowReviewForm(true))}>
                       Değerlendirme Yaz
                     </Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11" onClick={() => setShowReviewForm(true)}>
+                    <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11" onClick={() => requireAuth(() => setShowReviewForm(true))}>
                       Değerlendirme Yaz
                     </Button>
                     {reviews.map((r) => (
@@ -347,19 +363,19 @@ const CompanyDetail = () => {
                 {showSalaryForm && user ? (
                   <SalaryForm companyId={company.id} userId={user.id} onSuccess={handleFormSuccess} onCancel={() => setShowSalaryForm(false)} />
                 ) : isSalaryGated && salaries.length > 0 ? (
-                  <SalaryGateOverlay onSubmitSalary={() => setShowSalaryForm(true)} />
+                  <SalaryGateOverlay onSubmitSalary={() => requireAuth(() => setShowSalaryForm(true))} />
                 ) : salaries.length === 0 ? (
                   <div className="card-elevated p-10 text-center">
                     <Banknote className="mx-auto h-10 w-10 text-muted-foreground/40" />
                     <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk maaş bilgisini sen ekle</h3>
                     <p className="mt-2 text-sm text-muted-foreground">Bu şirket hakkında henüz maaş bilgisi eklenmemiş.</p>
-                    <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => setShowSalaryForm(true)}>
+                    <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => requireAuth(() => setShowSalaryForm(true))}>
                       Maaş Bilgisi Ekle
                     </Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => setShowSalaryForm(true)}>
+                    <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => requireAuth(() => setShowSalaryForm(true))}>
                       Maaş Bilgisi Ekle
                     </Button>
                     {salaries.map((s) => (
@@ -397,13 +413,13 @@ const CompanyDetail = () => {
                     <UserCheck className="mx-auto h-10 w-10 text-muted-foreground/40" />
                     <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk mülakat deneyimini sen paylaş</h3>
                     <p className="mt-2 text-sm text-muted-foreground">Bu şirket hakkında henüz mülakat deneyimi paylaşılmamış.</p>
-                    <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => setShowInterviewForm(true)}>
+                    <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => requireAuth(() => setShowInterviewForm(true))}>
                       Mülakat Bilgisi Ekle
                     </Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => setShowInterviewForm(true)}>
+                    <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => requireAuth(() => setShowInterviewForm(true))}>
                       Mülakat Bilgisi Ekle
                     </Button>
                     {interviews.map((i) => (
