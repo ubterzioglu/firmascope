@@ -10,13 +10,18 @@ interface Announcement {
   sort_order: number;
 }
 
-const placeholderAnnouncements: Announcement[] = Array.from({ length: 10 }, (_, i) => ({
-  id: `placeholder-${i + 1}`,
-  title: `Duyuru ${i + 1}`,
-  description: `Bu bir örnek duyuru içeriğidir. Gerçek duyurular admin panelinden eklenebilir.`,
-  link_url: null,
-  sort_order: i,
-}));
+const placeholderAnnouncements: Announcement[] = [
+  { id: "p1", title: "Teknoloji sektöründe maaşlar %18 arttı", description: "2026 ilk çeyrek verilerine göre yazılım mühendisleri en çok artışı gördü.", link_url: null, sort_order: 0 },
+  { id: "p2", title: "En çok değerlendirilen şirket: FinansPro", description: "Bu ay 47 yeni değerlendirme ile FinansPro A.Ş. zirveye oturdu.", link_url: null, sort_order: 1 },
+  { id: "p3", title: "Mülakat deneyimi paylaşımları 2 katına çıktı", description: "Kullanıcılar artık daha detaylı mülakat süreçlerini aktarıyor.", link_url: null, sort_order: 2 },
+  { id: "p4", title: "Uzaktan çalışma oranı %62'ye ulaştı", description: "Teknoloji şirketlerinde hibrit ve uzaktan modeller hâlâ baskın.", link_url: null, sort_order: 3 },
+  { id: "p5", title: "Yeni özellik: Şirket karşılaştırma", description: "İki şirketi yan yana kıyaslayarak maaş, kültür ve mülakat verilerini karşılaştır.", link_url: null, sort_order: 4 },
+  { id: "p6", title: "Sağlık sektöründe çalışan memnuniyeti düştü", description: "Son 3 ayda sağlık sektörü değerlendirmeleri ortalama 3.1'e geriledi.", link_url: null, sort_order: 5 },
+  { id: "p7", title: "En yüksek tavsiye oranı: EduTech Academy", description: "Çalışanların %91'i EduTech Academy'yi tavsiye ediyor.", link_url: null, sort_order: 6 },
+  { id: "p8", title: "Stajyer maaşları ilk kez açıklandı", description: "Stajyer pozisyonları için sektörel maaş verileri artık platformda.", link_url: null, sort_order: 7 },
+  { id: "p9", title: "İstanbul dışı şirketlere ilgi arttı", description: "Ankara ve İzmir merkezli şirketlere yapılan aramalar %35 yükseldi.", link_url: null, sort_order: 8 },
+  { id: "p10", title: "Anonim paylaşım güvencesi güçlendirildi", description: "Gelişmiş şifreleme ile kimlik bilgilerin artık daha güvende.", link_url: null, sort_order: 9 },
+];
 
 const AnnouncementCarousel = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
