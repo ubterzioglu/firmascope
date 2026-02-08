@@ -115,7 +115,7 @@ export default {
         "float": "float 5s ease-in-out infinite",
         "float-slow": "float-slow 7s ease-in-out infinite",
         "drift": "drift 9s ease-in-out infinite",
-        "scroll-left": "scroll-left 90s linear infinite",
+        "scroll-left": "scroll-left 180s linear infinite",
       },
     },
   },
