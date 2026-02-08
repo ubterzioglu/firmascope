@@ -19,6 +19,18 @@ import { Check, X, Shield, Building2, Users, Lightbulb, FileCheck, Megaphone, Pl
 import AdminAnnouncements from "@/components/AdminAnnouncements";
 import AdminReports from "@/components/AdminReports";
 
+const slugify = (input: string) => {
+  // ASCII-only slug for stable URLs.
+  return input
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ı/g, "i")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
+
 const statusColors: Record<string, string> = {
   pending: "bg-amber/20 text-amber-foreground border-amber/30",
   approved: "bg-alm-green/20 text-foreground border-alm-green/30",
@@ -50,7 +62,11 @@ const Admin = () => {
   const [editingCompany, setEditingCompany] = useState<any>(null);
   const [companyForm, setCompanyForm] = useState({
     name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.Ş.", description: "",
+    logo_url: "", banner_url: "",
   });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [uploadingAssets, setUploadingAssets] = useState(false);
 
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
@@ -95,7 +111,7 @@ const Admin = () => {
 
   // Create company from suggestion
   const handleCreateFromSuggestion = async (suggestion: any) => {
-    const slug = suggestion.company_name.toLowerCase().replace(/[^a-z0-9ğüşöçıİ]+/g, "-").replace(/^-|-$/g, "");
+    const slug = slugify(String(suggestion.company_name || ""));
     const initials = suggestion.company_name.split(" ").filter((w: string) => w.length > 0).slice(0, 2).map((w: string) => w[0].toUpperCase()).join("");
 
     const { error } = await supabase.from("companies").insert({
@@ -133,7 +149,9 @@ const Admin = () => {
   // Company CRUD
   const openCompanyCreate = () => {
     setEditingCompany(null);
-    setCompanyForm({ name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.Ş.", description: "" });
+    setCompanyForm({ name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.Ş.", description: "", logo_url: "", banner_url: "" });
+    setLogoFile(null);
+    setBannerFile(null);
     setCompanyDialogOpen(true);
   };
 
@@ -143,8 +161,23 @@ const Admin = () => {
       name: c.name, slug: c.slug, initials: c.initials || "",
       sector: c.sector || "", city: c.city || "", size: c.size || "",
       company_type: c.company_type || "A.Ş.", description: c.description || "",
+      logo_url: c.logo_url || "", banner_url: c.banner_url || "",
     });
+    setLogoFile(null);
+    setBannerFile(null);
     setCompanyDialogOpen(true);
+  };
+
+  const uploadCompanyAsset = async (companyId: string, kind: "logo" | "banner", file: File) => {
+    const ext = (file.name.split(".").pop() || "png").toLowerCase();
+    const path = `companies/${companyId}/${kind}.${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from("company-assets")
+      .upload(path, file, { upsert: true, contentType: file.type || "application/octet-stream" });
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage.from("company-assets").getPublicUrl(path);
+    return data.publicUrl;
   };
 
   const handleCompanySave = async () => {
@@ -153,22 +186,52 @@ const Admin = () => {
       return;
     }
     const initials = companyForm.initials || companyForm.name.split(" ").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
-    const payload = { ...companyForm, initials };
+    const payload = {
+      ...companyForm,
+      initials,
+      description: companyForm.description?.trim() || null,
+      sector: companyForm.sector?.trim() || null,
+      city: companyForm.city?.trim() || null,
+      size: companyForm.size?.trim() || null,
+      company_type: companyForm.company_type?.trim() || null,
+      logo_url: companyForm.logo_url?.trim() || null,
+      banner_url: companyForm.banner_url?.trim() || null,
+    };
 
-    let error;
+    let saved: any = null;
+    let error: any = null;
     if (editingCompany) {
-      ({ error } = await supabase.from("companies").update(payload).eq("id", editingCompany.id));
+      ({ data: saved, error } = await supabase.from("companies").update(payload).eq("id", editingCompany.id).select("*").single());
     } else {
-      ({ error } = await supabase.from("companies").insert(payload));
+      ({ data: saved, error } = await supabase.from("companies").insert(payload).select("*").single());
     }
 
     if (error) {
       toast({ title: "Hata", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Başarılı", description: editingCompany ? "Şirket güncellendi." : "Şirket oluşturuldu." });
-      setCompanyDialogOpen(false);
-      fetchAll();
+      return;
     }
+
+    const companyId = saved?.id || editingCompany?.id;
+    if (companyId && (logoFile || bannerFile)) {
+      setUploadingAssets(true);
+      try {
+        const updates: any = {};
+        if (logoFile) updates.logo_url = await uploadCompanyAsset(companyId, "logo", logoFile);
+        if (bannerFile) updates.banner_url = await uploadCompanyAsset(companyId, "banner", bannerFile);
+        const { error: assetErr } = await supabase.from("companies").update(updates).eq("id", companyId);
+        if (assetErr) throw assetErr;
+        setLogoFile(null);
+        setBannerFile(null);
+      } catch (e: any) {
+        toast({ title: "Görsel yükleme hatası", description: e?.message || "Bilinmeyen hata", variant: "destructive" });
+      } finally {
+        setUploadingAssets(false);
+      }
+    }
+
+    toast({ title: "Başarılı", description: editingCompany ? "Şirket güncellendi." : "Şirket oluşturuldu." });
+    setCompanyDialogOpen(false);
+    fetchAll();
   };
 
   const handleDeleteReview = async (id: string) => {
@@ -373,7 +436,7 @@ const Admin = () => {
                     <DialogTitle>{editingCompany ? "Şirket Düzenle" : "Yeni Şirket"}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-3 mt-2">
-                    <div><Label>Ad *</Label><Input value={companyForm.name} onChange={(e) => setCompanyForm({ ...companyForm, name: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9ğüşöçıİ]+/g, "-").replace(/^-|-$/g, "") })} /></div>
+                    <div><Label>Ad *</Label><Input value={companyForm.name} onChange={(e) => setCompanyForm({ ...companyForm, name: e.target.value, slug: slugify(e.target.value) })} /></div>
                     <div><Label>Slug *</Label><Input value={companyForm.slug} onChange={(e) => setCompanyForm({ ...companyForm, slug: e.target.value })} /></div>
                     <div className="grid grid-cols-2 gap-3">
                       <div><Label>Sektör</Label><Input value={companyForm.sector} onChange={(e) => setCompanyForm({ ...companyForm, sector: e.target.value })} /></div>
@@ -384,7 +447,19 @@ const Admin = () => {
                       <div><Label>Tür</Label><Input value={companyForm.company_type} onChange={(e) => setCompanyForm({ ...companyForm, company_type: e.target.value })} /></div>
                     </div>
                     <div><Label>Açıklama</Label><Input value={companyForm.description} onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })} /></div>
-                    <Button onClick={handleCompanySave} className="w-full">{editingCompany ? "Güncelle" : "Oluştur"}</Button>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label>Logo (opsiyonel)</Label>
+                        <Input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} />
+                      </div>
+                      <div>
+                        <Label>Banner (opsiyonel)</Label>
+                        <Input type="file" accept="image/*" onChange={(e) => setBannerFile(e.target.files?.[0] || null)} />
+                      </div>
+                    </div>
+                    <Button onClick={handleCompanySave} className="w-full" disabled={uploadingAssets}>
+                      {uploadingAssets ? "Yükleniyor..." : (editingCompany ? "Güncelle" : "Oluştur")}
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
