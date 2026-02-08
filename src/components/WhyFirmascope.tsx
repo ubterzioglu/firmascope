@@ -53,10 +53,9 @@ const WhyFirmascope = () => {
     <section className="relative z-10 py-16">
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-6 md:p-10 shadow-lg">
-          <h2 className="font-display text-2xl font-bold text-foreground text-center mb-2 md:text-3xl">
-            Neden <span className="text-highlight">firmascope</span>?
+          <h2 className="font-display text-2xl font-bold text-foreground text-center mb-8 md:text-3xl">
+            Sık Sorulan Sorular
           </h2>
-          <p className="text-center text-muted-foreground mb-8 text-sm md:text-base">Sık Sorulan Sorular</p>
 
           <Accordion type="single" collapsible className="w-full">
             {faqItems.map((item, index) => (
