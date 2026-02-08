@@ -90,11 +90,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Why firmascope - FAQ */}
-      <WhyFirmascope />
-
       {/* Announcement Carousel */}
       <AnnouncementCarousel />
+
+      {/* Why firmascope - FAQ */}
+      <WhyFirmascope />
 
       {/* Why Section */}
       <WhySection />
