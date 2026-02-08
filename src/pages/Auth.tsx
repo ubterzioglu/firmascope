@@ -9,17 +9,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, RefreshCw } from "lucide-react";
 
 const emailSchema = z.string().email("Geçerli bir e-posta adresi girin");
 const passwordSchema = z.string().min(6, "Şifre en az 6 karakter olmalıdır");
 
 const Auth = () => {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "resend">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -52,7 +53,12 @@ const Auth = () => {
           if (error.message.includes("Invalid login")) {
             toast({ title: "Giriş başarısız", description: "E-posta veya şifre hatalı.", variant: "destructive" });
           } else if (error.message.includes("Email not confirmed")) {
-            toast({ title: "E-posta onaylanmadı", description: "Lütfen e-postanızı kontrol edin ve onaylayın.", variant: "destructive" });
+            toast({ 
+              title: "E-posta onaylanmadı", 
+              description: "Lütfen e-postanızı kontrol edin ve onaylayın. Onay e-postasını tekrar göndermek için aşağıdaki linke tıklayın.", 
+              variant: "destructive" 
+            });
+            setMode("resend");
           } else {
             toast({ title: "Hata", description: error.message, variant: "destructive" });
           }
@@ -80,6 +86,32 @@ const Auth = () => {
     }
   };
 
+  const handleResendVerification = async () => {
+    const emailResult = emailSchema.safeParse(email);
+    if (!emailResult.success) {
+      toast({ title: "Hata", description: emailResult.error.errors[0].message, variant: "destructive" });
+      return;
+    }
+
+    setResendLoading(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/` },
+      });
+
+      if (error) {
+        toast({ title: "Hata", description: error.message, variant: "destructive" });
+      } else {
+        toast({ title: "E-posta gönderildi!", description: "Onay e-postası tekrar gönderildi. Lütfen gelen kutunuzu kontrol edin." });
+        setMode("login");
+      }
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
@@ -100,13 +132,54 @@ const Auth = () => {
         <div className="w-full max-w-md mx-auto px-4">
           <div className="card-elevated p-8">
             <h1 className="font-display text-2xl font-bold text-foreground text-center mb-2">
-              {mode === "login" ? "Giriş Yap" : "Kayıt Ol"}
+              {mode === "login" ? "Giriş Yap" : mode === "signup" ? "Kayıt Ol" : "E-posta Onayı"}
             </h1>
             <p className="text-sm text-muted-foreground text-center mb-6">
               {mode === "login"
                 ? "Hesabınıza giriş yapın"
-                : "Yeni bir hesap oluşturun"}
+                : mode === "signup"
+                ? "Yeni bir hesap oluşturun"
+                : "Onay e-postasını tekrar gönderin"}
             </p>
+
+            {/* Resend verification mode */}
+            {mode === "resend" ? (
+              <div className="space-y-4">
+                <div className="p-4 rounded-lg bg-amber/10 border border-amber/30 text-sm text-foreground">
+                  <p className="font-medium mb-1">E-postanız onaylanmadı</p>
+                  <p className="text-muted-foreground">Onay e-postasını tekrar almak için aşağıdaki butona tıklayın.</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="resend-email">E-posta</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="resend-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="ornek@email.com"
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+                <Button 
+                  onClick={handleResendVerification} 
+                  className="w-full h-11" 
+                  disabled={resendLoading}
+                >
+                  <RefreshCw className={`h-4 w-4 mr-2 ${resendLoading ? "animate-spin" : ""}`} />
+                  {resendLoading ? "Gönderiliyor..." : "Onay E-postasını Tekrar Gönder"}
+                </Button>
+                <p className="text-center text-sm text-muted-foreground">
+                  <button onClick={() => setMode("login")} className="text-primary hover:underline font-medium">
+                    Giriş sayfasına dön
+                  </button>
+                </p>
+              </div>
+            ) : (
+              <>
 
             {/* Google button */}
             <Button
@@ -194,6 +267,8 @@ const Auth = () => {
                 </>
               )}
             </p>
+            </>
+            )}
           </div>
         </div>
       </section>
