@@ -133,6 +133,15 @@
   }
 }
 
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 @layer components {
   .card-elevated {
     @apply rounded-2xl border-2 border-border/80 bg-card shadow-md;

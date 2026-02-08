@@ -50,8 +50,11 @@ const AnnouncementCarousel = () => {
     <section className="py-12 overflow-hidden">
       <div className="relative">
         <div
-          className="flex gap-5 animate-scroll-left"
-          style={{ width: `${doubled.length * 260}px` }}
+          className="flex gap-5"
+          style={{
+            width: `${doubled.length * 260}px`,
+            animation: "scroll-left 180s linear infinite",
+          }}
         >
           {doubled.map((item, i) => {
             const ann = item as Announcement;
