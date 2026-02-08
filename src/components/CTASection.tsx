@@ -11,9 +11,6 @@ const CTASection = () => {
         <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
           Deneyimini paylaş, başkalarına yol göster
         </h2>
-        <p className="mt-4 text-muted-foreground max-w-lg mx-auto">
-          Kimliğin tamamen gizli kalır. Şirket kültürü, maaş ve mülakat deneyimlerini anonim olarak paylaş.
-        </p>
         <div className="mt-8">
           <Button size="lg" className="rounded-full px-10 font-semibold text-base" onClick={scrollToTop}>
             Başla!
