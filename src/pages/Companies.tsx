@@ -1,7 +1,14 @@
 import Layout from "@/components/Layout";
-import { Search, MapPin, Building2, Heart, Star } from "lucide-react";
+import { Search, MapPin, Building2, Heart, Star, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const sectorBanners: Record<string, string> = {
   "Eğitim": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=200&fit=crop&q=70",
@@ -102,24 +109,30 @@ const Companies = () => {
 
           {/* Filters */}
           <div className="flex justify-center gap-3 mb-4">
-            <select
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="h-11 rounded-xl border border-border bg-card px-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-            >
-              {cities.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-            <select
-              value={sector}
-              onChange={(e) => setSector(e.target.value)}
-              className="h-11 rounded-xl border border-border bg-card px-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-            >
-              {sectors.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
+            <Select value={city} onValueChange={setCity}>
+              <SelectTrigger className="h-11 w-[180px] rounded-xl border-border bg-card text-sm">
+                <SelectValue placeholder="Tüm Şehirler" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                {cities.map((c) => (
+                  <SelectItem key={c} value={c} className="rounded-lg">
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={sector} onValueChange={setSector}>
+              <SelectTrigger className="h-11 w-[180px] rounded-xl border-border bg-card text-sm">
+                <SelectValue placeholder="Tüm Sektörler" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                {sectors.map((s) => (
+                  <SelectItem key={s} value={s} className="rounded-lg">
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <p className="mb-6 text-sm text-muted-foreground text-center">{filtered.length} şirket bulundu</p>
