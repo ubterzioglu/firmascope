@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Search, Lightbulb, Star, Users, DollarSign, UserPlus, LogOut, Shield, Home } from "lucide-react";
+import { Search, Lightbulb, Star, Users, DollarSign, UserPlus, LogOut, Shield, Home, Scale } from "lucide-react";
 
 const menuItems = [
   { label: "Ana Sayfa", icon: Home, color: "bg-alm-blue", href: "/" },
@@ -10,6 +10,7 @@ const menuItems = [
   { label: "Değerlendirme Ekle", icon: Star, color: "bg-alm-yellow", href: "/sirketler" },
   { label: "Mülakat Bilgisi", icon: Users, color: "bg-alm-blue", href: "/sirketler" },
   { label: "Maaş Bilgisi", icon: DollarSign, color: "bg-alm-green", href: "/sirketler" },
+  { label: "Yasal Bilgiler", icon: Scale, color: "bg-alm-red", href: "/yasal" },
 ];
 
 const FirmaPill = () => {
