@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Search, Lightbulb, Star, Users, DollarSign, UserPlus } from "lucide-react";
-import heroKeyhole from "@/assets/hero.png";
 
 const actionItems = [
   { label: "Şirket Ara", icon: Search, color: "bg-alm-blue", href: "/sirketler" },
@@ -43,15 +42,7 @@ const Index = () => {
       {/* Hero */}
       <section className="relative z-10 py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
-          {/* Hero Image */}
           <div className="mx-auto max-w-2xl">
-            <div className="mb-10 overflow-hidden rounded-3xl shadow-xl">
-              <img
-                src={heroKeyhole}
-                alt="Şirketlerin bilinmeyen detayları"
-                className="w-full h-auto object-cover"
-              />
-            </div>
 
             {/* Title */}
             <h1 className="font-display text-2xl font-bold text-foreground sm:text-3xl md:text-4xl">
