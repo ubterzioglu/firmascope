@@ -386,7 +386,126 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      interviews_public: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          difficulty: string | null
+          experience: string | null
+          id: string | null
+          position: string | null
+          result: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          experience?: string | null
+          id?: string | null
+          position?: string | null
+          result?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          experience?: string | null
+          id?: string | null
+          position?: string | null
+          result?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interviews_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews_public: {
+        Row: {
+          company_id: string | null
+          cons: string | null
+          created_at: string | null
+          id: string | null
+          pros: string | null
+          rating: number | null
+          recommends: boolean | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          cons?: string | null
+          created_at?: string | null
+          id?: string | null
+          pros?: string | null
+          rating?: number | null
+          recommends?: boolean | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          cons?: string | null
+          created_at?: string | null
+          id?: string | null
+          pros?: string | null
+          rating?: number | null
+          recommends?: boolean | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      salaries_public: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          currency: string | null
+          experience_years: number | null
+          id: string | null
+          job_title: string | null
+          salary_amount: number | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          experience_years?: number | null
+          id?: string | null
+          job_title?: string | null
+          salary_amount?: number | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          experience_years?: number | null
+          id?: string | null
+          job_title?: string | null
+          salary_amount?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salaries_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
