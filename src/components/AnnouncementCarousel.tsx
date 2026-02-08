@@ -53,7 +53,7 @@ const AnnouncementCarousel = () => {
           className="flex gap-5"
           style={{
             width: `${doubled.length * 260}px`,
-            animation: "scroll-left 180s linear infinite",
+            animation: "scroll-left 60s linear infinite",
           }}
         >
           {doubled.map((item, i) => {
