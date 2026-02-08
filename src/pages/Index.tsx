@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import FloatingDot from "@/components/FloatingDot";
 import AnnouncementCarousel from "@/components/AnnouncementCarousel";
 import WhySection from "@/components/WhySection";
+import WhyFirmascope from "@/components/WhyFirmascope";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -88,6 +89,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Why firmascope - FAQ */}
+      <WhyFirmascope />
 
       {/* Announcement Carousel */}
       <AnnouncementCarousel />
