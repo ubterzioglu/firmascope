@@ -13,7 +13,7 @@ const Footer = () => {
           </Link>
         </div>
         <div className="mt-4 border-t border-border pt-4 text-center">
-          <span className="font-display text-sm font-bold text-foreground">
+          <span className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} firmascope. tüm hakları saklıdır.
           </span>
         </div>
