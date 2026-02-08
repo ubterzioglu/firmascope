@@ -5,9 +5,20 @@ import WhySection from "@/components/WhySection";
 import CTASection from "@/components/CTASection";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Search, Lightbulb, Star, Users, DollarSign } from "lucide-react";
 import heroKeyhole from "@/assets/hero.png";
 
+const actionItems = [
+  { label: "Şirket Ara", icon: Search, color: "bg-alm-blue", href: "/sirketler" },
+  { label: "Şirket Öner", icon: Lightbulb, color: "bg-alm-green", href: "/sirket-oner" },
+  { label: "Şirket Değerlendirmesi Ekle", icon: Star, color: "bg-alm-orange", href: "/sirketler" },
+  { label: "Mülakat Bilgisi Ekle", icon: Users, color: "bg-alm-yellow", href: "/sirketler" },
+  { label: "Maaş Bilgisi Ekle", icon: DollarSign, color: "bg-alm-blue", href: "/sirketler" },
+];
+
 const Index = () => {
+  const [expanded, setExpanded] = useState(false);
   return (
     <Layout>
       {/* Global floating dots background */}
@@ -51,11 +62,30 @@ const Index = () => {
               Kimliğin tamamen gizli kalır. Şirket kültürü, maaş ve mülakat deneyimlerini anonim olarak paylaş.
             </p>
 
-            {/* CTA Button */}
+            {/* CTA Button / Action Menu */}
             <div className="mt-8">
-              <Button size="lg" asChild className="rounded-full px-10 font-semibold text-base">
-                <Link to="/sirketler">Başla!</Link>
-              </Button>
+              {!expanded ? (
+                <Button
+                  size="lg"
+                  className="rounded-full px-10 font-semibold text-base animate-fade-in"
+                  onClick={() => setExpanded(true)}
+                >
+                  Başla!
+                </Button>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 animate-scale-in">
+                  {actionItems.map((item) => (
+                    <Link
+                      key={item.label}
+                      to={item.href}
+                      className={`${item.color} flex items-center gap-3 rounded-xl px-5 py-4 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg`}
+                    >
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
