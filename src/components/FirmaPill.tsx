@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Search, Lightbulb, Star, Users, DollarSign, UserPlus, LogOut, Shield, Home, Scale } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Search, Lightbulb, Star, Users, DollarSign, UserPlus, LogOut, Shield, Home, Scale, Building2 } from "lucide-react";
 
 const menuItems = [
   { label: "Ana Sayfa", icon: Home, color: "bg-alm-blue", href: "/" },
@@ -18,6 +19,14 @@ const FirmaPill = () => {
   const ref = useRef<HTMLDivElement>(null);
   const { user, isAdmin, signOut } = useAuth();
   const location = useLocation();
+  const [isCompanyAdmin, setIsCompanyAdmin] = useState(false);
+
+  // Check if user is a company admin
+  useEffect(() => {
+    if (!user) { setIsCompanyAdmin(false); return; }
+    supabase.from("company_admins").select("id").eq("user_id", user.id).limit(1)
+      .then(({ data }) => setIsCompanyAdmin((data?.length || 0) > 0));
+  }, [user]);
 
   // Close on outside click
   useEffect(() => {
@@ -81,6 +90,21 @@ const FirmaPill = () => {
                   <Shield className="h-4 w-4" />
                 </span>
                 Admin
+              </Link>
+            )}
+
+            {isCompanyAdmin && !isAdmin && (
+              <Link
+                to="/sirket-yonetimi"
+                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground transition-all hover:bg-muted group opacity-0"
+                style={{
+                  animation: `fadeSlideUp 0.3s ease-out ${(menuItems.length + 0.5) * 0.05}s forwards`,
+                }}
+              >
+                <span className="bg-alm-teal flex h-8 w-8 items-center justify-center rounded-lg text-white transition-transform group-hover:scale-110">
+                  <Building2 className="h-4 w-4" />
+                </span>
+                Şirket Yönetimi
               </Link>
             )}
 

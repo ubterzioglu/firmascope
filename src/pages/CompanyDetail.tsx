@@ -10,6 +10,7 @@ import ReviewForm from "@/components/ReviewForm";
 import SalaryForm from "@/components/SalaryForm";
 import InterviewForm from "@/components/InterviewForm";
 import VoteButtons from "@/components/VoteButtons";
+import ReportButton from "@/components/ReportButton";
 import SalaryGateOverlay from "@/components/SalaryGateOverlay";
 
 interface Company {
@@ -328,7 +329,10 @@ const CompanyDetail = () => {
                               </span>
                             )}
                           </div>
-                          <VoteButtons targetId={r.id} targetType="review" />
+                          <div className="flex items-center gap-1">
+                            <VoteButtons targetId={r.id} targetType="review" />
+                            <ReportButton targetId={r.id} targetType="review" />
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -371,7 +375,10 @@ const CompanyDetail = () => {
                             {s.experience_years !== null && <span>{s.experience_years} yıl deneyim</span>}
                             <span>{new Date(s.created_at).toLocaleDateString("tr-TR")}</span>
                           </div>
-                          <VoteButtons targetId={s.id} targetType="salary" />
+                          <div className="flex items-center gap-1">
+                            <VoteButtons targetId={s.id} targetType="salary" />
+                            <ReportButton targetId={s.id} targetType="salary" />
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -409,7 +416,10 @@ const CompanyDetail = () => {
                             {i.result && <span>Sonuç: {i.result}</span>}
                             <span>{new Date(i.created_at).toLocaleDateString("tr-TR")}</span>
                           </div>
-                          <VoteButtons targetId={i.id} targetType="interview" />
+                          <div className="flex items-center gap-1">
+                            <VoteButtons targetId={i.id} targetType="interview" />
+                            <ReportButton targetId={i.id} targetType="interview" />
+                          </div>
                         </div>
                       </div>
                     ))}

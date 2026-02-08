@@ -11,6 +11,7 @@ import CompanyDetail from "./pages/CompanyDetail";
 import Legal from "./pages/Legal";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import CompanyAdmin from "./pages/CompanyAdmin";
 import SuggestCompany from "./pages/SuggestCompany";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/yasal" element={<Legal />} />
             <Route path="/giris" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/sirket-yonetimi" element={<CompanyAdmin />} />
             <Route path="/sirket-oner" element={<SuggestCompany />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

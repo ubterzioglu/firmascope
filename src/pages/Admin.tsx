@@ -15,8 +15,9 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Check, X, Shield, Building2, Users, Lightbulb, FileCheck, Megaphone, Plus, Pencil, Trash2, Star, Banknote, UserCheck } from "lucide-react";
+import { Check, X, Shield, Building2, Users, Lightbulb, FileCheck, Megaphone, Plus, Pencil, Trash2, Star, Banknote, UserCheck, Flag } from "lucide-react";
 import AdminAnnouncements from "@/components/AdminAnnouncements";
+import AdminReports from "@/components/AdminReports";
 
 const statusColors: Record<string, string> = {
   pending: "bg-amber/20 text-amber-foreground border-amber/30",
@@ -241,6 +242,7 @@ const Admin = () => {
               <TabsTrigger value="salaries"><Banknote className="h-3.5 w-3.5 mr-1" />Maaşlar</TabsTrigger>
               <TabsTrigger value="interviews"><UserCheck className="h-3.5 w-3.5 mr-1" />Mülakatlar</TabsTrigger>
               <TabsTrigger value="users"><Users className="h-3.5 w-3.5 mr-1" />Kullanıcılar</TabsTrigger>
+              <TabsTrigger value="reports"><Flag className="h-3.5 w-3.5 mr-1" />Raporlar</TabsTrigger>
             </TabsList>
 
             {/* Announcements */}
@@ -513,6 +515,9 @@ const Admin = () => {
                 </Table>
               </div>
             </TabsContent>
+
+            {/* Reports */}
+            <TabsContent value="reports"><AdminReports /></TabsContent>
           </Tabs>
         </div>
       </section>
