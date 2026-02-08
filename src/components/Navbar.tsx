@@ -5,14 +5,17 @@ import { LogOut, Shield, User, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const Navbar = () => {
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, signOut, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const statusLabel = loading ? "..." : user ? "online" : "offline";
+  const statusClass = user ? "text-green-600" : "text-muted-foreground";
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
-        <Link to="/" className="font-display text-lg font-bold text-foreground">
-          firmascope
+        <Link to="/" className="flex flex-col leading-tight">
+          <span className="font-display text-lg font-bold text-foreground">firmascope</span>
+          <span className={`text-xs font-medium ${statusClass}`}>{statusLabel}</span>
         </Link>
 
         {/* Desktop nav */}
