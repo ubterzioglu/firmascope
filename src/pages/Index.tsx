@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import FloatingDot from "@/components/FloatingDot";
 import AnnouncementCarousel from "@/components/AnnouncementCarousel";
 import WhySection from "@/components/WhySection";
-import CTASection from "@/components/CTASection";
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -95,8 +95,6 @@ const Index = () => {
       {/* Why Section */}
       <WhySection />
 
-      {/* CTA Section */}
-      <CTASection />
     </Layout>
   );
 };
