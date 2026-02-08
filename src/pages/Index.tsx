@@ -52,7 +52,7 @@ const Index = () => {
 
             {/* Subtitle */}
             <p className="mt-5 text-base text-muted-foreground md:text-lg">
-              Şirket değerlendirmeleri, maaşlar ve mülakat deneyimleri.
+              Çalışandan çalışana destek!
             </p>
             <p className="text-base text-muted-foreground md:text-lg">
               Kimliğin tamamen gizli kalır.
