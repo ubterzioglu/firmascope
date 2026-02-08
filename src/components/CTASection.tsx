@@ -1,7 +1,10 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const CTASection = () => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <section className="py-20 bg-muted/50">
       <div className="container mx-auto px-4 text-center">
@@ -12,8 +15,8 @@ const CTASection = () => {
           Kimliğin tamamen gizli kalır. Şirket kültürü, maaş ve mülakat deneyimlerini anonim olarak paylaş.
         </p>
         <div className="mt-8">
-          <Button size="lg" asChild className="rounded-full px-10 font-semibold text-base">
-            <Link to="/kayit">Hemen Başla</Link>
+          <Button size="lg" className="rounded-full px-10 font-semibold text-base" onClick={scrollToTop}>
+            Başla!
           </Button>
         </div>
       </div>
