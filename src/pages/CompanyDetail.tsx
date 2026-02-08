@@ -115,20 +115,41 @@ const CompanyDetail = () => {
 
       <div className="container mx-auto px-4 pt-16">
 
-        {/* Meta cards row */}
-        <div className="mt-2 flex flex-wrap gap-1.5 md:flex-nowrap md:max-w-3xl">
-          {metaItems.map((item) => (
-            <div
-              key={item.label}
-              className="flex w-[calc(50%-0.375rem)] items-center gap-1.5 rounded-lg border-2 border-border/80 bg-card px-2 py-1 shadow-md md:w-auto md:min-w-[120px]"
-            >
-              <item.icon className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
+        {/* Meta cards + Quick Info row */}
+        <div className="mt-2 flex flex-col gap-3 lg:flex-row lg:items-start">
+          <div className="flex flex-wrap gap-1.5 md:flex-nowrap">
+            {metaItems.map((item) => (
+              <div
+                key={item.label}
+                className="flex w-[calc(50%-0.375rem)] items-center gap-1.5 rounded-lg border-2 border-border/80 bg-card px-2 py-1 shadow-md md:w-auto md:min-w-[120px]"
+              >
+                <item.icon className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
+                <div>
+                  <div className="text-[9px] leading-tight text-muted-foreground">{item.label}</div>
+                  <div className="text-xs font-semibold text-foreground">{item.value}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick Info - beside meta cards */}
+          <div className="card-elevated px-4 py-3 lg:ml-auto">
+            <h3 className="font-display text-xs font-semibold text-foreground mb-2">Hızlı Bilgiler</h3>
+            <div className="flex gap-5 text-center">
               <div>
-                <div className="text-[9px] leading-tight text-muted-foreground">{item.label}</div>
-                <div className="text-xs font-semibold text-foreground">{item.value}</div>
+                <div className="font-display text-xl font-bold text-foreground">{company.reviews}</div>
+                <div className="text-[10px] text-muted-foreground">Yorum</div>
+              </div>
+              <div>
+                <div className="font-display text-xl font-bold text-foreground">{company.salaries}</div>
+                <div className="text-[10px] text-muted-foreground">Maaş</div>
+              </div>
+              <div>
+                <div className="font-display text-xl font-bold text-foreground">{company.interviews}</div>
+                <div className="text-[10px] text-muted-foreground">Mülakat</div>
               </div>
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Tabs */}
@@ -230,23 +251,6 @@ const CompanyDetail = () => {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <div className="card-elevated p-6">
-              <h3 className="font-display text-base font-semibold text-foreground mb-4">Hızlı Bilgiler</h3>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="font-display text-2xl font-bold text-foreground">{company.reviews}</div>
-                  <div className="text-xs text-muted-foreground">Yorum</div>
-                </div>
-                <div>
-                  <div className="font-display text-2xl font-bold text-foreground">{company.salaries}</div>
-                  <div className="text-xs text-muted-foreground">Maaş</div>
-                </div>
-                <div>
-                  <div className="font-display text-2xl font-bold text-foreground">{company.interviews}</div>
-                  <div className="text-xs text-muted-foreground">Mülakat</div>
-                </div>
-              </div>
-            </div>
             <Button className="w-full rounded-xl font-semibold text-sm h-12">
               Değerlendirme Yaz
             </Button>
