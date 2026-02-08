@@ -1,4 +1,5 @@
 # firmascope — Proje Durum Raporu
+# firmascope — Proje Durum Raporu
 
 > Son güncelleme: 2026-02-08
 
