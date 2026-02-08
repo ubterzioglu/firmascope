@@ -43,7 +43,9 @@ CREATE INDEX idx_reports_target ON public.reports (target_type, target_id);
 CREATE INDEX idx_reports_status ON public.reports (status);
 
 -- 2. Storage bucket for company logos/banners
-INSERT INTO storage.buckets (id, name, public) VALUES ('company-assets', 'company-assets', true);
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('company-assets', 'company-assets', true)
+ON CONFLICT (id) DO NOTHING;
 
 CREATE POLICY "Company assets are publicly accessible"
   ON storage.objects FOR SELECT
