@@ -59,6 +59,8 @@ export default {
         "alm-green": "hsl(var(--alm-green))",
         "alm-orange": "hsl(var(--alm-orange))",
         "alm-yellow": "hsl(var(--alm-yellow))",
+        "alm-teal": "hsl(var(--alm-teal))",
+        "alm-red": "hsl(var(--alm-red))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
