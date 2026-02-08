@@ -36,7 +36,7 @@ const Index = () => {
             <div className="overflow-hidden rounded-3xl shadow-xl">
               <img
                 src={heroKeyhole}
-                alt="Şirketlerin gerçek yüzü"
+                alt="Şirketlerin bilinmeyen detayları"
                 className="w-full h-auto object-cover"
               />
             </div>
@@ -44,7 +44,7 @@ const Index = () => {
 
           {/* Title */}
           <h1 className="font-display text-4xl font-bold text-foreground md:text-5xl lg:text-6xl">
-            Şirketlerin <span className="text-highlight">gerçek yüzü</span>
+            Şirketlerin <span className="text-highlight">bilinmeyen detayları</span>
           </h1>
 
           {/* Subtitle */}
