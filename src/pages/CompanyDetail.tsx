@@ -95,17 +95,17 @@ const CompanyDetail = () => {
                 <img
                   src={company.logo}
                   alt={company.name}
-                  className="h-24 w-24 flex-shrink-0 rounded-2xl border-4 border-background object-cover shadow-lg"
+                  className="h-48 w-48 flex-shrink-0 rounded-3xl border-4 border-background object-cover shadow-lg"
                 />
               ) : (
-                <div className={`flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl border-4 border-background ${colors.bg} font-display text-2xl font-bold ${colors.fg} shadow-lg`}>
+                <div className={`flex h-48 w-48 flex-shrink-0 items-center justify-center rounded-3xl border-4 border-background ${colors.bg} font-display text-5xl font-bold ${colors.fg} shadow-lg`}>
                   {company.initials}
                 </div>
               )}
             </div>
             {/* Name badge - tucked behind logo */}
-            <div className="z-10 -ml-3 rounded-r-lg bg-alm-orange px-4 pl-6 py-2 shadow-md">
-              <h1 className="font-display text-sm font-bold text-primary-foreground md:text-base">
+            <div className="z-10 -ml-4 rounded-r-xl bg-alm-orange px-6 pl-8 py-3 shadow-md">
+              <h1 className="font-display text-lg font-bold text-primary-foreground md:text-2xl">
                 {company.name}
               </h1>
             </div>
@@ -113,7 +113,7 @@ const CompanyDetail = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 pt-16">
+      <div className="container mx-auto px-4 pt-28">
 
         {/* Meta cards + Quick Info row */}
         <div className="mt-2 flex flex-col gap-3 lg:flex-row lg:items-start">
