@@ -39,7 +39,7 @@ const FirmaPill = () => {
       {/* Pill button */}
       <button
         onClick={() => setOpen(!open)}
-        className="font-display text-sm font-bold text-white bg-foreground rounded-full px-4 py-2 shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
+        className="font-display text-sm font-bold text-alm-orange bg-white rounded-full px-4 py-2 shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95 border border-border"
       >
         firmascope
       </button>
