@@ -14,8 +14,8 @@ const actionItems = [
   { label: "Şirket Öner", icon: Lightbulb, color: "bg-alm-green", href: "/sirket-oner" },
   { label: "Şirket Değerlendirmesi Ekle", icon: Star, color: "bg-alm-orange", href: "/sirketler" },
   { label: "Mülakat Bilgisi Ekle", icon: Users, color: "bg-alm-yellow", href: "/sirketler" },
-  { label: "Maaş Bilgisi Ekle", icon: DollarSign, color: "bg-alm-blue", href: "/sirketler" },
-  { label: "Üye Ol", icon: UserPlus, color: "bg-alm-green", href: "/giris" },
+  { label: "Maaş Bilgisi Ekle", icon: DollarSign, color: "bg-alm-teal", href: "/sirketler" },
+  { label: "Üye Ol", icon: UserPlus, color: "bg-alm-red", href: "/giris" },
 ];
 
 const Index = () => {
