@@ -2,7 +2,58 @@ import Layout from "@/components/Layout";
 import { useParams } from "react-router-dom";
 import { MapPin, Building2, Users, Globe, Briefcase, MessageSquare, Banknote, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import ReviewForm from "@/components/ReviewForm";
+import SalaryForm from "@/components/SalaryForm";
+import InterviewForm from "@/components/InterviewForm";
+
+interface Company {
+  id: string;
+  name: string;
+  slug: string;
+  initials: string;
+  sector: string | null;
+  city: string | null;
+  size: string | null;
+  company_type: string | null;
+  status: string | null;
+  description: string | null;
+  logo_url: string | null;
+  banner_url: string | null;
+}
+
+interface ReviewPublic {
+  id: string;
+  company_id: string;
+  title: string;
+  pros: string | null;
+  cons: string | null;
+  rating: number;
+  recommends: boolean | null;
+  created_at: string;
+}
+
+interface SalaryPublic {
+  id: string;
+  company_id: string;
+  job_title: string;
+  salary_amount: number;
+  currency: string | null;
+  experience_years: number | null;
+  created_at: string;
+}
+
+interface InterviewPublic {
+  id: string;
+  company_id: string;
+  position: string;
+  experience: string | null;
+  difficulty: string | null;
+  result: string | null;
+  created_at: string;
+}
 
 const sectorBanners: Record<string, string> = {
   "Eğitim": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&h=300&fit=crop",
@@ -18,110 +69,137 @@ const sectorBanners: Record<string, string> = {
 
 const defaultBanner = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=300&fit=crop";
 
-const initialsColors = [
-  { bg: "bg-amber", fg: "text-amber-foreground" },
-  { bg: "bg-primary", fg: "text-primary-foreground" },
-  { bg: "bg-destructive", fg: "text-destructive-foreground" },
-];
-
-function getInitialsColor(name: string) {
-  const index = name.charCodeAt(0) % initialsColors.length;
-  return initialsColors[index];
-}
-
-const mockCompanyData: Record<string, {
-  name: string; initials: string; desc: string; city: string; sector: string;
-  size: string; reviews: number; salaries: number; interviews: number;
-  type: string; status: string; logo?: string; banner?: string;
-}> = {
-  "edutech-academy": { name: "EduTech Academy", initials: "EA", desc: "Online eğitim platformu ve içerik üretimi", city: "Ankara", sector: "Eğitim", size: "51-200", type: "A.Ş.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
-  "finanspro-as": { name: "FinansPro A.Ş.", initials: "FA", desc: "Finans ve yatırım hizmetleri", city: "İstanbul", sector: "Finans", size: "1000+", type: "A.Ş.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
-  "insaat-plus": { name: "İnşaat Plus", initials: "İP", desc: "Büyük ölçekli inşaat projeleri", city: "İstanbul", sector: "İnşaat", size: "1000+", type: "Ltd.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
-  "logitrans": { name: "LogiTrans", initials: "LO", desc: "Lojistik ve taşımacılık çözümleri", city: "İstanbul", sector: "Lojistik", size: "1000+", type: "A.Ş.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
-  "mediabox": { name: "MediaBox", initials: "ME", desc: "Dijital medya ve içerik üretimi", city: "İstanbul", sector: "Medya", size: "11-50", type: "Ltd.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
-  "mercedes-benz-turk": { name: "Mercedes Benz Türk A.Ş.", initials: "MB", desc: "Otomotiv üretimi ve satışı", city: "İstanbul", sector: "Otomotiv", size: "1000+", type: "A.Ş.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
-  "sagliknet": { name: "SağlıkNet", initials: "SA", desc: "Dijital sağlık hizmetleri", city: "İzmir", sector: "Sağlık", size: "201-1000", type: "A.Ş.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
-  "technova-yazilim": { name: "TechNova Yazılım", initials: "TY", desc: "Yazılım geliştirme ve danışmanlık", city: "İstanbul", sector: "Teknoloji", size: "201-1000", type: "A.Ş.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
-  "yesilenerji": { name: "YeşilEnerji", initials: "YE", desc: "Yenilenebilir enerji çözümleri", city: "Ankara", sector: "Enerji", size: "51-200", type: "Ltd.", status: "Aktif", reviews: 0, salaries: 0, interviews: 0 },
-};
-
 const CompanyDetail = () => {
   const { slug } = useParams();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState(0);
+  const [company, setCompany] = useState<Company | null>(null);
+  const [reviews, setReviews] = useState<ReviewPublic[]>([]);
+  const [salaries, setSalaries] = useState<SalaryPublic[]>([]);
+  const [interviews, setInterviews] = useState<InterviewPublic[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [showSalaryForm, setShowSalaryForm] = useState(false);
+  const [showInterviewForm, setShowInterviewForm] = useState(false);
 
-  const company = mockCompanyData[slug || ""] || {
-    name: "Bilinmeyen Şirket", initials: "??", desc: "", city: "—",
-    sector: "—", size: "—", type: "—", status: "—",
-    reviews: 0, salaries: 0, interviews: 0,
+  const fetchCompanyData = async () => {
+    if (!slug) return;
+    setLoading(true);
+
+    const { data: compData } = await supabase
+      .from("companies")
+      .select("*")
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (!compData) {
+      setLoading(false);
+      return;
+    }
+
+    setCompany(compData as Company);
+
+    const [revRes, salRes, intRes] = await Promise.all([
+      supabase.from("reviews_public" as any).select("*").eq("company_id", compData.id).order("created_at", { ascending: false }),
+      supabase.from("salaries_public" as any).select("*").eq("company_id", compData.id).order("created_at", { ascending: false }),
+      supabase.from("interviews_public" as any).select("*").eq("company_id", compData.id).order("created_at", { ascending: false }),
+    ]);
+
+    setReviews((revRes.data as unknown as ReviewPublic[]) || []);
+    setSalaries((salRes.data as unknown as SalaryPublic[]) || []);
+    setInterviews((intRes.data as unknown as InterviewPublic[]) || []);
+    setLoading(false);
   };
 
-  const bannerUrl = company.banner || sectorBanners[company.sector] || defaultBanner;
-  const colors = getInitialsColor(company.name);
+  useEffect(() => {
+    fetchCompanyData();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <p className="text-muted-foreground">Yükleniyor...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!company) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <p className="text-muted-foreground">Şirket bulunamadı.</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  const bannerUrl = company.banner_url || sectorBanners[company.sector || ""] || defaultBanner;
+  const avgRating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
+  const recommendRate = reviews.length > 0 ? Math.round((reviews.filter((r) => r.recommends).length / reviews.length) * 100) : 0;
 
   const tabLabels = [
     "Genel Bakış",
-    `Yorumlar (${company.reviews})`,
-    `Maaşlar (${company.salaries})`,
-    `Mülakatlar (${company.interviews})`,
+    `Yorumlar (${reviews.length})`,
+    `Maaşlar (${salaries.length})`,
+    `Mülakatlar (${interviews.length})`,
   ];
 
   const metaItems = [
-    { icon: Briefcase, label: "Şirket Türü", value: company.type },
-    { icon: Globe, label: "Durum", value: company.status },
-    { icon: Building2, label: "Sektör", value: company.sector },
-    { icon: MapPin, label: "Merkez", value: company.city },
-    { icon: Users, label: "Çalışan Sayısı", value: company.size },
+    { icon: Briefcase, label: "Şirket Türü", value: company.company_type || "–" },
+    { icon: Globe, label: "Durum", value: company.status || "–" },
+    { icon: Building2, label: "Sektör", value: company.sector || "–" },
+    { icon: MapPin, label: "Merkez", value: company.city || "–" },
+    { icon: Users, label: "Çalışan Sayısı", value: company.size || "–" },
   ];
+
+  const handleFormSuccess = () => {
+    setShowReviewForm(false);
+    setShowSalaryForm(false);
+    setShowInterviewForm(false);
+    fetchCompanyData();
+  };
+
+  const renderStars = (rating: number) => (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((s) => (
+        <span key={s} className={`text-sm ${s <= Math.round(rating) ? "text-alm-yellow" : "text-muted-foreground/30"}`}>★</span>
+      ))}
+    </div>
+  );
 
   return (
     <Layout>
-      {/* Banner + overlapping header */}
+      {/* Banner */}
       <div className="relative">
         <div className="h-36 md:h-44 overflow-hidden">
-          <img
-            src={bannerUrl}
-            alt={`${company.name} banner`}
-            className="h-full w-full object-cover"
-          />
+          <img src={bannerUrl} alt={`${company.name} banner`} className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
         </div>
-
-        {/* Company header - positioned to straddle the banner bottom */}
         <div className="container mx-auto px-4">
           <div className="absolute bottom-0 translate-y-1/2 flex items-center">
-            {/* Logo / Initials */}
             <div className="z-20 relative">
-              {company.logo ? (
-                <img
-                  src={company.logo}
-                  alt={company.name}
-                  className="h-48 w-48 flex-shrink-0 rounded-3xl border-4 border-background object-cover shadow-lg"
-                />
+              {company.logo_url ? (
+                <img src={company.logo_url} alt={company.name} className="h-36 w-36 flex-shrink-0 rounded-3xl border-4 border-background object-cover shadow-lg" />
               ) : (
                 <div className="flex h-36 w-36 flex-shrink-0 items-center justify-center rounded-3xl border-4 border-background bg-alm-yellow font-display text-4xl font-bold text-primary-foreground shadow-lg">
                   {company.initials}
                 </div>
               )}
             </div>
-            {/* Name badge - tucked behind logo */}
             <div className="z-10 -ml-4 rounded-r-xl bg-alm-orange px-6 pl-8 py-3 shadow-md">
-              <h1 className="font-display text-lg font-bold text-primary-foreground md:text-2xl">
-                {company.name}
-              </h1>
+              <h1 className="font-display text-lg font-bold text-primary-foreground md:text-2xl">{company.name}</h1>
             </div>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 pt-28">
-
-        {/* Meta cards + Quick Info row */}
+        {/* Meta */}
         <div className="mt-2 flex flex-wrap gap-1.5 items-start">
           {metaItems.map((item) => (
-            <div
-              key={item.label}
-              className="flex items-center gap-1.5 rounded-lg border-2 border-border/80 bg-card px-2 py-1 shadow-md min-w-[120px]"
-            >
+            <div key={item.label} className="flex items-center gap-1.5 rounded-lg border-2 border-border/80 bg-card px-2 py-1 shadow-md min-w-[120px]">
               <item.icon className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
               <div>
                 <div className="text-[9px] leading-tight text-muted-foreground">{item.label}</div>
@@ -129,27 +207,25 @@ const CompanyDetail = () => {
               </div>
             </div>
           ))}
-
-          {/* Quick Info - 3 separate boxes */}
           <div className="flex items-center gap-1.5 rounded-lg border-2 border-border/80 bg-card px-3 py-1 shadow-md min-w-[80px]">
             <MessageSquare className="h-3.5 w-3.5 flex-shrink-0 text-alm-blue" />
             <div>
               <div className="text-[9px] leading-tight text-muted-foreground">Yorum</div>
-              <div className="text-xs font-semibold text-foreground">{company.reviews}</div>
+              <div className="text-xs font-semibold text-foreground">{reviews.length}</div>
             </div>
           </div>
           <div className="flex items-center gap-1.5 rounded-lg border-2 border-border/80 bg-card px-3 py-1 shadow-md min-w-[80px]">
             <Banknote className="h-3.5 w-3.5 flex-shrink-0 text-alm-green" />
             <div>
               <div className="text-[9px] leading-tight text-muted-foreground">Maaş</div>
-              <div className="text-xs font-semibold text-foreground">{company.salaries}</div>
+              <div className="text-xs font-semibold text-foreground">{salaries.length}</div>
             </div>
           </div>
           <div className="flex items-center gap-1.5 rounded-lg border-2 border-border/80 bg-card px-3 py-1 shadow-md min-w-[80px]">
             <UserCheck className="h-3.5 w-3.5 flex-shrink-0 text-alm-orange" />
             <div>
               <div className="text-[9px] leading-tight text-muted-foreground">Mülakat</div>
-              <div className="text-xs font-semibold text-foreground">{company.interviews}</div>
+              <div className="text-xs font-semibold text-foreground">{interviews.length}</div>
             </div>
           </div>
         </div>
@@ -162,9 +238,7 @@ const CompanyDetail = () => {
                 key={i}
                 onClick={() => setActiveTab(i)}
                 className={`whitespace-nowrap border-b-2 px-5 py-3 text-sm font-medium transition-colors ${
-                  activeTab === i
-                    ? "border-primary text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                  activeTab === i ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {label}
@@ -175,91 +249,170 @@ const CompanyDetail = () => {
 
         {/* Content */}
         <div className="mt-8 grid gap-6 pb-16 lg:grid-cols-[1fr_320px]">
-          {/* Main content */}
           <div className="space-y-6">
+            {/* Overview */}
             {activeTab === 0 && (
+              <div className="card-elevated p-6">
+                <h3 className="font-display text-lg font-bold text-foreground">Şirket Bilgileri</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{company.description}</p>
+                <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                    {company.name}, {company.city} merkezli {(company.sector || "").toLowerCase()} alanında faaliyet göstermektedir.
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                    Şirket bünyesinde {company.size} çalışan bulunmaktadır.
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                    firmascope üzerinde {reviews.length} değerlendirme ve {salaries.length} maaş bilgisi paylaşılmıştır.
+                  </li>
+                  {reviews.length > 0 && (
+                    <>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                        Ortalama puan: {avgRating.toFixed(1)} / 5
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                        Çalışanların %{recommendRate}'i bu şirketi tavsiye etmektedir.
+                      </li>
+                    </>
+                  )}
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                    {interviews.length} mülakat deneyimi paylaşılmıştır.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            {/* Reviews */}
+            {activeTab === 1 && (
               <>
-                <div className="card-elevated p-6">
-                  <h3 className="font-display text-lg font-bold text-foreground">Şirket Bilgileri</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{company.desc}</p>
-                  <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                      {company.name}, {company.city} merkezli {company.sector.toLowerCase()} alanında faaliyet göstermektedir.
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                      Şirket bünyesinde {company.size} çalışan bulunmaktadır.
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                      firmascope üzerinde {company.reviews} değerlendirme ve {company.salaries} maaş bilgisi paylaşılmıştır.
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                      Çalışanların %0'i bu şirketi tavsiye etmektedir.
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                      {company.interviews} mülakat deneyimi paylaşılmıştır.
-                    </li>
-                  </ul>
-                </div>
-                {company.reviews > 0 && (
-                  <div className="card-elevated p-6">
-                    <h3 className="font-display text-lg font-bold text-foreground">Çalışan Memnuniyeti</h3>
-                    <p className="mt-3 text-sm text-muted-foreground">Veriler yükleniyor...</p>
+                {showReviewForm && user ? (
+                  <ReviewForm companyId={company.id} userId={user.id} onSuccess={handleFormSuccess} onCancel={() => setShowReviewForm(false)} />
+                ) : reviews.length === 0 ? (
+                  <div className="card-elevated p-10 text-center">
+                    <MessageSquare className="mx-auto h-10 w-10 text-muted-foreground/40" />
+                    <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk değerlendirmeyi sen yaz</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">Bu şirket hakkında henüz yorum yapılmamış.</p>
+                    <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11" onClick={() => setShowReviewForm(true)}>
+                      Değerlendirme Yaz
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11" onClick={() => setShowReviewForm(true)}>
+                      Değerlendirme Yaz
+                    </Button>
+                    {reviews.map((r) => (
+                      <div key={r.id} className="card-elevated p-5">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-display text-sm font-bold text-foreground">{r.title}</h4>
+                          <div className="flex items-center gap-1">{renderStars(r.rating)}</div>
+                        </div>
+                        {r.pros && <p className="mt-2 text-sm text-muted-foreground"><span className="text-alm-green font-semibold">+</span> {r.pros}</p>}
+                        {r.cons && <p className="mt-1 text-sm text-muted-foreground"><span className="text-alm-orange font-semibold">−</span> {r.cons}</p>}
+                        <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                          <span>{new Date(r.created_at).toLocaleDateString("tr-TR")}</span>
+                          {r.recommends !== null && (
+                            <span className={r.recommends ? "text-alm-green" : "text-alm-orange"}>
+                              {r.recommends ? "✓ Tavsiye eder" : "✗ Tavsiye etmez"}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </>
             )}
-            {activeTab === 1 && (
-              <div className="card-elevated p-10 text-center">
-                <MessageSquare className="mx-auto h-10 w-10 text-muted-foreground/40" />
-                <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk değerlendirmeyi sen yaz</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Bu şirket hakkında henüz yorum yapılmamış. Deneyimini paylaş!
-                </p>
-                <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11">
-                  Değerlendirme Yaz
-                </Button>
-              </div>
-            )}
+
+            {/* Salaries */}
             {activeTab === 2 && (
-              <div className="card-elevated p-10 text-center">
-                <Banknote className="mx-auto h-10 w-10 text-muted-foreground/40" />
-                <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk maaş bilgisini sen ekle</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Bu şirket hakkında henüz maaş bilgisi eklenmemiş. Bilgini paylaş!
-                </p>
-                <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90">
-                  Maaş Bilgisi Ekle
-                </Button>
-              </div>
+              <>
+                {showSalaryForm && user ? (
+                  <SalaryForm companyId={company.id} userId={user.id} onSuccess={handleFormSuccess} onCancel={() => setShowSalaryForm(false)} />
+                ) : salaries.length === 0 ? (
+                  <div className="card-elevated p-10 text-center">
+                    <Banknote className="mx-auto h-10 w-10 text-muted-foreground/40" />
+                    <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk maaş bilgisini sen ekle</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">Bu şirket hakkında henüz maaş bilgisi eklenmemiş.</p>
+                    <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => setShowSalaryForm(true)}>
+                      Maaş Bilgisi Ekle
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => setShowSalaryForm(true)}>
+                      Maaş Bilgisi Ekle
+                    </Button>
+                    {salaries.map((s) => (
+                      <div key={s.id} className="card-elevated p-5">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-display text-sm font-bold text-foreground">{s.job_title}</h4>
+                          <span className="text-lg font-bold text-alm-green">
+                            {s.salary_amount.toLocaleString("tr-TR")} {s.currency || "TRY"}
+                          </span>
+                        </div>
+                        <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                          {s.experience_years !== null && <span>{s.experience_years} yıl deneyim</span>}
+                          <span>{new Date(s.created_at).toLocaleDateString("tr-TR")}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
+
+            {/* Interviews */}
             {activeTab === 3 && (
-              <div className="card-elevated p-10 text-center">
-                <UserCheck className="mx-auto h-10 w-10 text-muted-foreground/40" />
-                <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk mülakat deneyimini sen paylaş</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Bu şirket hakkında henüz mülakat deneyimi paylaşılmamış. Deneyimini ekle!
-                </p>
-                <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-amber text-amber-foreground hover:bg-amber/90">
-                  Mülakat Bilgisi Ekle
-                </Button>
-              </div>
+              <>
+                {showInterviewForm && user ? (
+                  <InterviewForm companyId={company.id} userId={user.id} onSuccess={handleFormSuccess} onCancel={() => setShowInterviewForm(false)} />
+                ) : interviews.length === 0 ? (
+                  <div className="card-elevated p-10 text-center">
+                    <UserCheck className="mx-auto h-10 w-10 text-muted-foreground/40" />
+                    <h3 className="mt-4 font-display text-base font-bold text-foreground">İlk mülakat deneyimini sen paylaş</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">Bu şirket hakkında henüz mülakat deneyimi paylaşılmamış.</p>
+                    <Button className="mt-5 w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => setShowInterviewForm(true)}>
+                      Mülakat Bilgisi Ekle
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => setShowInterviewForm(true)}>
+                      Mülakat Bilgisi Ekle
+                    </Button>
+                    {interviews.map((i) => (
+                      <div key={i.id} className="card-elevated p-5">
+                        <h4 className="font-display text-sm font-bold text-foreground">{i.position}</h4>
+                        {i.experience && <p className="mt-2 text-sm text-muted-foreground">{i.experience}</p>}
+                        <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                          {i.difficulty && <span>Zorluk: {i.difficulty}</span>}
+                          {i.result && <span>Sonuç: {i.result}</span>}
+                          <span>{new Date(i.created_at).toLocaleDateString("tr-TR")}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <Button className="w-full rounded-xl font-semibold text-sm h-12">
+            <Button className="w-full rounded-xl font-semibold text-sm h-12" onClick={() => { setActiveTab(1); setShowReviewForm(true); }}>
               Değerlendirme Yaz
             </Button>
-            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90">
+            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => { setActiveTab(2); setShowSalaryForm(true); }}>
               Maaş Bilgisi Ekle
             </Button>
-            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-amber text-amber-foreground hover:bg-amber/90">
+            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => { setActiveTab(3); setShowInterviewForm(true); }}>
               Mülakat Bilgisi Ekle
             </Button>
           </div>

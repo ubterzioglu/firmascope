@@ -1,7 +1,8 @@
 import Layout from "@/components/Layout";
-import { Search, MapPin, Building2, Heart, Star, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { Search, MapPin, Building2, Star } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Select,
   SelectContent,
@@ -9,6 +10,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+interface Company {
+  id: string;
+  name: string;
+  slug: string;
+  initials: string;
+  sector: string | null;
+  city: string | null;
+  size: string | null;
+  company_type: string | null;
+  status: string | null;
+  description: string | null;
+  logo_url: string | null;
+  banner_url: string | null;
+}
+
+interface ReviewStats {
+  company_id: string;
+  avg_rating: number;
+  review_count: number;
+}
 
 const sectorBanners: Record<string, string> = {
   "Eğitim": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=200&fit=crop&q=70",
@@ -36,21 +58,6 @@ function getInitialsColor(name: string) {
   return initialsColors[index];
 }
 
-const mockCompanies = [
-  { slug: "edutech-academy", name: "EduTech Academy", city: "Ankara", sector: "Eğitim", size: "51-200 çalışan", verified: false, rating: 0, reviews: 0, recommendation: 0 },
-  { slug: "finanspro-as", name: "FinansPro A.Ş.", city: "İstanbul", sector: "Finans", size: "1000+ çalışan", verified: true, rating: 0, reviews: 0, recommendation: 0 },
-  { slug: "insaat-plus", name: "İnşaat Plus", city: "İstanbul", sector: "İnşaat", size: "1000+ çalışan", verified: false, rating: 0, reviews: 0, recommendation: 0 },
-  { slug: "logitrans", name: "LogiTrans", city: "İstanbul", sector: "Lojistik", size: "1000+ çalışan", verified: false, rating: 0, reviews: 0, recommendation: 0 },
-  { slug: "mediabox", name: "MediaBox", city: "İstanbul", sector: "Medya", size: "11-50 çalışan", verified: false, rating: 0, reviews: 0, recommendation: 0 },
-  { slug: "mercedes-benz-turk", name: "Mercedes Benz Türk A.Ş.", city: "İstanbul", sector: "Otomotiv", size: "1000+ çalışan", verified: false, rating: 0, reviews: 0, recommendation: 0 },
-  { slug: "sagliknet", name: "SağlıkNet", city: "İzmir", sector: "Sağlık", size: "201-1000 çalışan", verified: true, rating: 0, reviews: 0, recommendation: 0 },
-  { slug: "technova-yazilim", name: "TechNova Yazılım", city: "İstanbul", sector: "Teknoloji", size: "201-1000 çalışan", verified: false, rating: 0, reviews: 0, recommendation: 0 },
-  { slug: "yesilenerji", name: "YeşilEnerji", city: "Ankara", sector: "Enerji", size: "51-200 çalışan", verified: false, rating: 0, reviews: 0, recommendation: 0 },
-];
-
-const cities = ["Tüm Şehirler", "İstanbul", "Ankara", "İzmir"];
-const sectors = ["Tüm Sektörler", "Teknoloji", "Finans", "Sağlık", "Enerji", "Lojistik", "Otomotiv", "Medya", "İnşaat", "Eğitim"];
-
 const getInitials = (name: string) => {
   return name
     .split(" ")
@@ -60,34 +67,72 @@ const getInitials = (name: string) => {
     .join("");
 };
 
-const renderStars = (rating: number) => {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          className={`h-3 w-3 ${
-            star <= Math.round(rating)
-              ? "fill-alm-yellow text-alm-yellow"
-              : "fill-muted text-muted-foreground/30"
-          }`}
-        />
-      ))}
-    </div>
-  );
-};
+const renderStars = (rating: number) => (
+  <div className="flex items-center gap-0.5">
+    {[1, 2, 3, 4, 5].map((star) => (
+      <Star
+        key={star}
+        className={`h-3 w-3 ${
+          star <= Math.round(rating)
+            ? "fill-alm-yellow text-alm-yellow"
+            : "fill-muted text-muted-foreground/30"
+        }`}
+      />
+    ))}
+  </div>
+);
+
+const cities = ["Tüm Şehirler", "İstanbul", "Ankara", "İzmir", "Bursa", "Antalya"];
+const sectors = ["Tüm Sektörler", "Teknoloji", "Finans", "Sağlık", "Enerji", "Lojistik", "Otomotiv", "Medya", "İnşaat", "Eğitim"];
 
 const Companies = () => {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("Tüm Şehirler");
   const [sector, setSector] = useState("Tüm Sektörler");
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [reviewStats, setReviewStats] = useState<ReviewStats[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = mockCompanies.filter((c) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const [compRes, statsRes] = await Promise.all([
+        supabase.from("companies").select("*").eq("status", "Aktif").order("name"),
+        supabase.from("reviews_public" as any).select("company_id, rating"),
+      ]);
+
+      setCompanies((compRes.data as Company[]) || []);
+
+      // Aggregate review stats client-side
+      const statsMap = new Map<string, { total: number; count: number }>();
+      if (statsRes.data) {
+        for (const r of statsRes.data as any[]) {
+          const existing = statsMap.get(r.company_id) || { total: 0, count: 0 };
+          existing.total += r.rating;
+          existing.count += 1;
+          statsMap.set(r.company_id, existing);
+        }
+      }
+      setReviewStats(
+        Array.from(statsMap.entries()).map(([company_id, { total, count }]) => ({
+          company_id,
+          avg_rating: total / count,
+          review_count: count,
+        }))
+      );
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const filtered = companies.filter((c) => {
     const matchSearch = c.name.toLowerCase().includes(search.toLowerCase());
     const matchCity = city === "Tüm Şehirler" || c.city === city;
     const matchSector = sector === "Tüm Sektörler" || c.sector === sector;
     return matchSearch && matchCity && matchSector;
   });
+
+  const getStats = (companyId: string) => reviewStats.find((s) => s.company_id === companyId);
 
   return (
     <Layout>
@@ -115,9 +160,7 @@ const Companies = () => {
               </SelectTrigger>
               <SelectContent className="rounded-xl">
                 {cities.map((c) => (
-                  <SelectItem key={c} value={c} className="rounded-lg">
-                    {c}
-                  </SelectItem>
+                  <SelectItem key={c} value={c} className="rounded-lg">{c}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -127,103 +170,88 @@ const Companies = () => {
               </SelectTrigger>
               <SelectContent className="rounded-xl">
                 {sectors.map((s) => (
-                  <SelectItem key={s} value={s} className="rounded-lg">
-                    {s}
-                  </SelectItem>
+                  <SelectItem key={s} value={s} className="rounded-lg">{s}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          <p className="mb-6 text-sm text-muted-foreground text-center">{filtered.length} şirket bulundu</p>
+          {loading ? (
+            <p className="text-center text-muted-foreground py-12">Yükleniyor...</p>
+          ) : (
+            <>
+              <p className="mb-6 text-sm text-muted-foreground text-center">{filtered.length} şirket bulundu</p>
 
-          {/* Company Grid */}
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filtered.map((company) => {
-              const colors = getInitialsColor(company.name);
-              const bannerImg = sectorBanners[company.sector] || defaultBanner;
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {filtered.map((company) => {
+                  const colors = getInitialsColor(company.name);
+                  const bannerImg = company.banner_url || sectorBanners[company.sector || ""] || defaultBanner;
+                  const stats = getStats(company.id);
 
-              return (
-                <Link
-                  key={company.slug}
-                  to={`/sirket/${company.slug}`}
-                  className="group relative rounded-2xl border-2 border-border/80 bg-card overflow-hidden shadow-md transition-all hover:shadow-xl hover:shadow-primary/10"
-                >
-                  {/* Banner image */}
-                  <div className="relative h-28 overflow-hidden">
-                    <img
-                      src={bannerImg}
-                      alt={company.sector}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
-
-                    {/* Favorite */}
-                    <button
-                      className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-card/80 text-muted-foreground/60 backdrop-blur-sm hover:text-destructive transition-colors"
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                      aria-label="Favorilere ekle"
+                  return (
+                    <Link
+                      key={company.id}
+                      to={`/sirket/${company.slug}`}
+                      className="group relative rounded-2xl border-2 border-border/80 bg-card overflow-hidden shadow-md transition-all hover:shadow-xl hover:shadow-primary/10"
                     >
-                      <Heart className="h-4 w-4" />
-                    </button>
-                  </div>
+                      <div className="relative h-28 overflow-hidden">
+                        <img
+                          src={bannerImg}
+                          alt={company.sector || ""}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+                      </div>
 
-                  {/* Content */}
-                  <div className="relative px-5 pb-5 pt-10">
-                    {/* Avatar - positioned to straddle banner */}
-                    <div className={`absolute -top-7 left-5 flex h-14 w-14 items-center justify-center rounded-xl ${colors.bg} font-display text-base font-bold ${colors.fg} shadow-md border-2 border-background z-10`}>
-                      {getInitials(company.name)}
-                    </div>
+                      <div className="relative px-5 pb-5 pt-10">
+                        <div className={`absolute -top-7 left-5 flex h-14 w-14 items-center justify-center rounded-xl ${colors.bg} font-display text-base font-bold ${colors.fg} shadow-md border-2 border-background z-10`}>
+                          {company.logo_url ? (
+                            <img src={company.logo_url} alt={company.name} className="h-full w-full object-cover rounded-xl" />
+                          ) : (
+                            getInitials(company.name)
+                          )}
+                        </div>
 
-                    {/* Name */}
-                    <h3 className="font-display text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5 truncate">
-                      {company.name}
-                      {company.verified && (
-                        <svg className="h-4 w-4 text-alm-green flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                    </h3>
+                        <h3 className="font-display text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                          {company.name}
+                        </h3>
 
-                    {/* Rating */}
-                    <div className="mt-1.5 flex items-center gap-1.5">
-                      {company.rating > 0 ? (
-                        <>
-                          <span className="text-sm font-bold text-foreground">{company.rating.toFixed(1)}</span>
-                          {renderStars(company.rating)}
-                        </>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">Henüz değerlendirme yok</span>
-                      )}
-                    </div>
+                        <div className="mt-1.5 flex items-center gap-1.5">
+                          {stats && stats.avg_rating > 0 ? (
+                            <>
+                              <span className="text-sm font-bold text-foreground">{stats.avg_rating.toFixed(1)}</span>
+                              {renderStars(stats.avg_rating)}
+                              <span className="text-xs text-muted-foreground">({stats.review_count})</span>
+                            </>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">Henüz değerlendirme yok</span>
+                          )}
+                        </div>
 
-                    {/* Meta */}
-                    <div className="mt-2 space-y-1">
-                      <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <MapPin className="h-3 w-3" /> {company.city}
-                      </p>
-                      <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Building2 className="h-3 w-3" /> {company.sector}
-                      </p>
-                    </div>
+                        <div className="mt-2 space-y-1">
+                          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <MapPin className="h-3 w-3" /> {company.city || "–"}
+                          </p>
+                          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <Building2 className="h-3 w-3" /> {company.sector || "–"}
+                          </p>
+                        </div>
 
-                    {/* Tags */}
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      <span className="inline-block rounded-full border border-border px-2.5 py-0.5 text-[10px] text-muted-foreground">
-                        {company.size}
-                      </span>
-                      {company.recommendation > 0 && (
-                        <span className="inline-block rounded-full bg-alm-green/10 px-2.5 py-0.5 text-[10px] font-medium text-alm-green">
-                          %{company.recommendation} Tavsiye
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {company.size && (
+                            <span className="inline-block rounded-full border border-border px-2.5 py-0.5 text-[10px] text-muted-foreground">
+                              {company.size} çalışan
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
       </section>
     </Layout>
