@@ -56,7 +56,7 @@ const Legal = () => {
     <Layout>
       <section className="py-12">
         <div className="container mx-auto max-w-2xl px-4">
-          <h1 className="font-display text-2xl font-bold text-foreground">
+          <h1 className="font-display text-lg font-bold text-foreground">
             Yasal Bilgiler
           </h1>
           <p className="mt-2 text-xs text-muted-foreground">
