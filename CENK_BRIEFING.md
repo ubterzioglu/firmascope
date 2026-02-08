@@ -62,7 +62,7 @@
 ### 🗄️ Supabase (Backend)
 | Bilgi | Değer |
 |-------|-------|
-| **Project Ref** | `oosjerypgrvqvfnsncbq` |
+| **Project Ref** | `jhgtjldygapeztuoetng` |
 | **Dashboard** | Lovable Cloud üzerinden erişiliyor |
 | **Anon Key** | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (public, kodda var) |
 | **Service Role Key** | 🔐 Secret olarak saklanıyor (Umut'ta) |
