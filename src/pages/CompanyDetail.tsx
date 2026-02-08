@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useSalaryGate } from "@/hooks/useSalaryGate";
 import ReviewForm from "@/components/ReviewForm";
 import SalaryForm from "@/components/SalaryForm";
 import InterviewForm from "@/components/InterviewForm";
+import VoteButtons from "@/components/VoteButtons";
+import SalaryGateOverlay from "@/components/SalaryGateOverlay";
 
 interface Company {
   id: string;
@@ -72,6 +75,7 @@ const defaultBanner = "https://images.unsplash.com/photo-1497366216548-375260702
 const CompanyDetail = () => {
   const { slug } = useParams();
   const { user } = useAuth();
+  const { isGated: isSalaryGated } = useSalaryGate();
   const [activeTab, setActiveTab] = useState(0);
   const [company, setCompany] = useState<Company | null>(null);
   const [reviews, setReviews] = useState<ReviewPublic[]>([]);
@@ -315,13 +319,16 @@ const CompanyDetail = () => {
                         </div>
                         {r.pros && <p className="mt-2 text-sm text-muted-foreground"><span className="text-alm-green font-semibold">+</span> {r.pros}</p>}
                         {r.cons && <p className="mt-1 text-sm text-muted-foreground"><span className="text-alm-orange font-semibold">−</span> {r.cons}</p>}
-                        <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                          <span>{new Date(r.created_at).toLocaleDateString("tr-TR")}</span>
-                          {r.recommends !== null && (
-                            <span className={r.recommends ? "text-alm-green" : "text-alm-orange"}>
-                              {r.recommends ? "✓ Tavsiye eder" : "✗ Tavsiye etmez"}
-                            </span>
-                          )}
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <span>{new Date(r.created_at).toLocaleDateString("tr-TR")}</span>
+                            {r.recommends !== null && (
+                              <span className={r.recommends ? "text-alm-green" : "text-alm-orange"}>
+                                {r.recommends ? "✓ Tavsiye eder" : "✗ Tavsiye etmez"}
+                              </span>
+                            )}
+                          </div>
+                          <VoteButtons targetId={r.id} targetType="review" />
                         </div>
                       </div>
                     ))}
@@ -335,6 +342,8 @@ const CompanyDetail = () => {
               <>
                 {showSalaryForm && user ? (
                   <SalaryForm companyId={company.id} userId={user.id} onSuccess={handleFormSuccess} onCancel={() => setShowSalaryForm(false)} />
+                ) : isSalaryGated && salaries.length > 0 ? (
+                  <SalaryGateOverlay onSubmitSalary={() => setShowSalaryForm(true)} />
                 ) : salaries.length === 0 ? (
                   <div className="card-elevated p-10 text-center">
                     <Banknote className="mx-auto h-10 w-10 text-muted-foreground/40" />
@@ -357,9 +366,12 @@ const CompanyDetail = () => {
                             {s.salary_amount.toLocaleString("tr-TR")} {s.currency || "TRY"}
                           </span>
                         </div>
-                        <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                          {s.experience_years !== null && <span>{s.experience_years} yıl deneyim</span>}
-                          <span>{new Date(s.created_at).toLocaleDateString("tr-TR")}</span>
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            {s.experience_years !== null && <span>{s.experience_years} yıl deneyim</span>}
+                            <span>{new Date(s.created_at).toLocaleDateString("tr-TR")}</span>
+                          </div>
+                          <VoteButtons targetId={s.id} targetType="salary" />
                         </div>
                       </div>
                     ))}
@@ -391,10 +403,13 @@ const CompanyDetail = () => {
                       <div key={i.id} className="card-elevated p-5">
                         <h4 className="font-display text-sm font-bold text-foreground">{i.position}</h4>
                         {i.experience && <p className="mt-2 text-sm text-muted-foreground">{i.experience}</p>}
-                        <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                          {i.difficulty && <span>Zorluk: {i.difficulty}</span>}
-                          {i.result && <span>Sonuç: {i.result}</span>}
-                          <span>{new Date(i.created_at).toLocaleDateString("tr-TR")}</span>
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            {i.difficulty && <span>Zorluk: {i.difficulty}</span>}
+                            {i.result && <span>Sonuç: {i.result}</span>}
+                            <span>{new Date(i.created_at).toLocaleDateString("tr-TR")}</span>
+                          </div>
+                          <VoteButtons targetId={i.id} targetType="interview" />
                         </div>
                       </div>
                     ))}
