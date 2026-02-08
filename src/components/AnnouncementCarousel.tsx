@@ -10,6 +10,14 @@ interface Announcement {
   sort_order: number;
 }
 
+const placeholderAnnouncements: Announcement[] = Array.from({ length: 10 }, (_, i) => ({
+  id: `placeholder-${i + 1}`,
+  title: `Duyuru ${i + 1}`,
+  description: `Bu bir örnek duyuru içeriğidir. Gerçek duyurular admin panelinden eklenebilir.`,
+  link_url: null,
+  sort_order: i,
+}));
+
 const AnnouncementCarousel = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,13 +29,13 @@ const AnnouncementCarousel = () => {
         .select("id, title, description, link_url, sort_order")
         .eq("active", true)
         .order("sort_order", { ascending: true });
-      setAnnouncements(data || []);
+      setAnnouncements(data && data.length > 0 ? data : placeholderAnnouncements);
       setLoading(false);
     };
     fetchAnnouncements();
   }, []);
 
-  if (loading || announcements.length === 0) return null;
+  if (loading) return null;
 
   // Double the items for infinite scroll illusion
   const doubled = [...announcements, ...announcements];
