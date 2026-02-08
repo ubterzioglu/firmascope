@@ -58,9 +58,9 @@ const AnnouncementCarousel = () => {
             const imageUrl = ann.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop&q=70";
 
             const content = (
-              <div className="flex-shrink-0 w-[240px] rounded-xl overflow-hidden border border-border bg-card transition-shadow hover:shadow-lg group">
+              <div className="flex-shrink-0 w-[240px] h-[280px] rounded-xl overflow-hidden border border-border bg-card transition-shadow hover:shadow-lg group flex flex-col">
                 {/* Image - top half */}
-                <div className="h-[120px] overflow-hidden">
+                <div className="h-[140px] flex-shrink-0 overflow-hidden">
                   <img
                     src={imageUrl}
                     alt={item.title}
@@ -69,12 +69,12 @@ const AnnouncementCarousel = () => {
                   />
                 </div>
                 {/* Text - bottom half */}
-                <div className="p-4">
+                <div className="p-4 flex-1 flex flex-col">
                   <h3 className="font-display text-sm font-semibold text-foreground leading-tight line-clamp-2">
                     {item.title}
                   </h3>
                   {item.description && (
-                    <p className="mt-2 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                    <p className="mt-2 text-xs text-muted-foreground line-clamp-3 leading-relaxed">
                       {item.description}
                     </p>
                   )}
