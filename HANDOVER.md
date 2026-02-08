@@ -1,103 +1,165 @@
-# firmascope — AI Handover Document
+# firmascope - Handover (2026-02-08)
 
-> Bu döküman, projeyi devralan bir sonraki AI asistanı için hazırlanmıştır.
+This handover is written so the project can be continued from another computer without losing context.
+It intentionally does NOT include secrets or passwords.
 
----
+## 1) What Was Done In This Session
 
-## Projeye Hızlı Bakış
+### Supabase: moved to a new project
+- Target Supabase project ref: `jhgtjldygapeztuoetng` (Supabase Cloud).
+- App now uses the new project URL + **publishable** key (see `.env`).
 
-**firmascope** bir şirket değerlendirme platformudur. Türkiye'deki şirketler hakkında anonim yorum, maaş ve mülakat bilgisi paylaşılır. Glassdoor Türkiye versiyonu gibi düşünülebilir.
+### Supabase Auth: fixed Google OAuth + callback/allowlist
+- Frontend Google sign-in was migrated from Lovable Cloud auth to Supabase OAuth (PKCE).
+  - `src/pages/Auth.tsx`: uses `supabase.auth.signInWithOAuth({ provider: "google", ... })`
+  - `src/integrations/supabase/client.ts`: `flowType: "pkce"` + `detectSessionInUrl: true`
+- Supabase Auth config updated so production works on `https://www.firmascope.com`:
+  - `site_url`: `https://www.firmascope.com`
+  - `uri_allow_list`: includes:
+    - `https://www.firmascope.com`
+    - `https://firmascope.com`
+    - `https://firmascope-*.vercel.app`
+    - `http://localhost:5173`
 
----
+Important: in this project, the OAuth flow only worked consistently with the `sb_publishable_...` key.
 
-## Kritik Bilgiler
+### Admin / RLS fixes
+- Admin panel lists users from `profiles`. A previous migration locked down `profiles` SELECT to "own profile only",
+  which made the Admin panel user list empty.
+- Added a migration to allow admins to SELECT all profiles:
+  - `supabase/migrations/20260208132500_allow_admin_select_profiles.sql`
+  - Commit: `eee03dd`
 
-### Mimari Kararlar
-1. **Navbar yerine FirmaPill**: Klasik navbar kaldırıldı, yerine sağ üstte floating "firmascope" butonu konuldu (`FirmaPill.tsx`). Tıklanınca dropdown menü açılır. Navbar.tsx dosyası hâlâ var ama kullanılmıyor.
+### Admin panel: company create now supports logo/banner upload
+- Admin "Companies" dialog can upload logo and banner images to Supabase Storage bucket `company-assets`
+  and writes `companies.logo_url` / `companies.banner_url` automatically.
+  - File: `src/pages/Admin.tsx`
+  - Commit: `36431d5`
 
-2. **Anonim Veri Gösterimi**: `reviews`, `salaries`, `interviews` tablolarında `user_id` var ama frontend'e public view'lar üzerinden (`reviews_public`, `salaries_public`, `interviews_public`) veri çekiliyor. Bu view'lar user_id'yi expose etmez.
+### Seeded company
+- Inserted `Mercedes-Benz Turk AS` (display name uses Turkish chars) into `companies` with slug `mercedes-benz-turk-as`.
 
-3. **Type Casting**: Public view'lar Supabase types dosyasında tanımlı ama select sorgularında `as any` kullanılıyor (type uyumsuzluğu nedeniyle). Bu bir workaround.
+## 2) Current Production URLs
 
-4. **Auth Provider**: `useAuth` hook'u global `AuthProvider` ile sarılmış. `BrowserRouter` AuthProvider içinde. Google OAuth Lovable Cloud (`lovable.auth.signInWithOAuth`) üzerinden çalışır.
+- Production site: `https://www.firmascope.com`
+  - `https://firmascope.com` redirects to `https://www.firmascope.com`
+- Note: `firmascope2026.vercel.app` returns `DEPLOYMENT_NOT_FOUND` (it is NOT the current prod URL).
 
-5. **Rate Limiting**: Trigger tabanlı — `enforce_rate_limit()` fonksiyonu reviews/salaries/interviews insert'lerinde çalışır. Saatte 5 gönderi limiti var.
+## 3) Repos / Hosting
 
-6. **Salary Gating**: `has_submitted_salary()` RPC fonksiyonu ile kontrol edilir. Maaş paylaşmayan kullanıcılar, diğer maaş verilerini göremez (blur + overlay).
+### GitHub
+- Current remote in this workspace: `https://github.com/ubterzioglu/firmascope2026`
+- GitHub sometimes reports: "This repository moved" to `https://github.com/ubterzioglu/firmascope`
+  - If you clone fresh on the new computer, consider using the new repo URL if it is the canonical one.
 
-### Veritabanı Trigger'ları
-> ⚠️ Supabase dashboard'da trigger'lar "yok" olarak görünebilir ama aslında migration dosyalarında tanımlıdır. Kontrol etmeden silmeyin.
+### Vercel
+- Actual Vercel project name: `firmascope` (not `firmascope2026`).
+- On a fresh machine:
+  1. `vercel login`
+  2. `vercel link --project firmascope --yes`
+  3. `vercel list --status READY`
 
-Beklenen trigger'lar:
-- `handle_new_user` → `auth.users` INSERT → `profiles` tablosuna satır ekler
-- `enforce_rate_limit` → `reviews`, `salaries`, `interviews` BEFORE INSERT
-- `validate_vote` → `votes` BEFORE INSERT/UPDATE
+## 4) Supabase Project Details
 
-### Dosya Yapısı Notları
-- `src/integrations/supabase/client.ts` ve `types.ts` **otomatik üretilir**, elle düzenlenmemeli
-- `.env` dosyası otomatik yönetilir
-- `supabase/config.toml` Lovable Cloud tarafından yönetilir
-- Görseller `src/assets/` altında, büyük kısmı Unsplash URL'leri ile çekiliyor
+### Project ref
+- `jhgtjldygapeztuoetng`
 
-### Stil Sistemi
-- Tüm renkler `src/index.css`'te HSL custom property olarak tanımlı
-- Tailwind config'de semantic token'lar kullanılıyor
-- Komponentlerde direkt renk kullanımı yasak (`text-white` yerine `text-primary-foreground`)
-- `card-elevated` utility class'ı var: `rounded-2xl border-2 border-border/80 bg-card shadow-md`
+### Local env vars (Vite)
+- `.env` is committed and contains:
+  - `VITE_SUPABASE_URL`
+  - `VITE_SUPABASE_PUBLISHABLE_KEY` (public by design)
 
----
+### Supabase CLI
+On a fresh machine:
+1. `supabase login` (or export a PAT as `SUPABASE_ACCESS_TOKEN`)
+2. Link (requires DB password):
+   - `supabase link --project-ref jhgtjldygapeztuoetng -p "<DB_PASSWORD>"`
+3. Apply migrations:
+   - `supabase db push`
 
-## Dikkat Edilmesi Gerekenler
+Note: some Supabase Management/Auth admin API calls can be blocked by Cloudflare on corporate networks.
+Workarounds:
+- Prefer Supabase Dashboard UI when blocked.
+- Or switch network (hotspot) temporarily.
 
-### ❗ Yapma
-- `src/integrations/supabase/` altındaki dosyaları elle düzenleme
-- `.env` dosyasını düzenleme
-- `supabase/config.toml` düzenleme
-- Navbar.tsx'i aktif etme (FirmaPill kullanılıyor)
-- Auth tablolarına (auth.users) foreign key ekleme
-- CHECK constraint yerine trigger kullan
+## 5) Auth + Admin Accounts
 
-### ✅ Yap
-- Yeni tablo eklerken RLS policy ekle
-- Public view'lar üzerinden veri çek (user_id gizleme)
-- Yeni renk eklerken `index.css` + `tailwind.config.ts`'e ekle
-- Formlar için rate limiting trigger'ı ekle
-- Edge function'larda secret'ları environment variable olarak kullan
+The app determines admin permissions via:
+- Table: `public.user_roles`
+- RPC: `public.is_admin(_user_id uuid)`
+- Frontend: `src/hooks/useAuth.tsx` calls `supabase.rpc("is_admin", { _user_id: user.id })`
 
----
+Users with admin role (as of 2026-02-08):
+- `admin@firmascope.com` (admin)
+- `ubterzioglu@gmail.com` (admin)
+- `cenkkarakuz@gmail.com` (admin)
 
-## Proje Sahibi Bilgileri
+Regular user (as of 2026-02-08):
+- `user@firmascope.com` (not admin)
 
-- **Owner**: Umut Barış Terzioğlu (`ubterzioglu@gmail.com`)
-- **Super Admin** rolüne sahip
-- **Ortak**: Cenk (aynı hesapları kullanıyor)
-- Admin rolü `user_roles` tablosunda tanımlı
+Passwords are intentionally not recorded here; share them out-of-band if needed.
 
----
+## 6) Database Notes (Schema + Policies)
 
-## Mevcut Durumda Bilinen Sorunlar
+### Key tables/views
+- `companies`, `reviews`, `salaries`, `interviews`
+- `profiles`, `user_roles`
+- `company_suggestions`, `company_claims`, `company_admins`
+- `votes`, `reports`, `announcements`, `submission_logs`
+- Public views (user_id not exposed):
+  - `reviews_public`, `salaries_public`, `interviews_public`
 
-1. **Profil sayfası eksik**: `/profil` rotası Navbar'da link olarak var ama sayfa oluşturulmamış
-2. **Trigger'lar analytics'te görünmüyor**: Supabase info'da "no triggers" diyor ama migration'larda tanımlı, kontrol et
-3. **Type casting workaround**: Public view sorgularında `as any` + `as unknown` kullanılıyor
-4. **Carousel hızı**: 180s'e ayarlandı, kullanıcı hâlâ hızlı bulabilir
+### Storage
+- Bucket: `company-assets` (public read, admin write)
 
----
+### Rate limiting
+- Trigger-based rate limiting exists (see migrations). Typical limit: 5 submissions per hour.
 
-## Sık Kullanılan Supabase Komutları
+## 7) Local Dev Quickstart
 
-```typescript
-// Admin kontrolü
-const { data } = await supabase.rpc("is_admin", { _user_id: userId });
-
-// Salary gate kontrolü
-const { data } = await supabase.rpc("has_submitted_salary", { p_user_id: userId });
-
-// Public view'dan veri çekme
-const { data } = await supabase.from("reviews_public").select("*").eq("company_id", id);
-
-// Oy verme
-const { error } = await supabase.from("votes").upsert({
-  user_id, target_id, target_type, vote_type
-}, { onConflict: "user_id,target_type,target_id" });
+```powershell
+cd <repo>
+npm install
+npm run dev
 ```
+
+Optional checks:
+```powershell
+npm test
+npm run build
+```
+
+## 8) Known Sharp Edges / Troubleshooting
+
+### 1) OAuth issues
+If Google login fails:
+- Verify Supabase Auth:
+  - Provider Google enabled
+  - `site_url` and `uri_allow_list` match the current domain(s)
+- Verify frontend uses publishable key in `.env`.
+
+### 2) Admin panel user list empty
+This was fixed by `20260208132500_allow_admin_select_profiles.sql`.
+If it regresses, check `profiles` RLS policies.
+
+### 3) Node script flakiness
+Some Node-based auth tests can crash with a low-level Node assertion on Windows.
+Prefer testing auth in the browser or with simple HTTP calls.
+
+## 9) Security Follow-ups (Strongly Recommended)
+
+Some secrets were pasted into chat during debugging (Google client secret, service role JWT, PAT, DB password).
+After stabilizing:
+1. Rotate Supabase keys as needed.
+2. Rotate Google OAuth client secret if exposed.
+3. Rotate DB password if exposed.
+4. Revoke and recreate PAT tokens.
+
+## 10) Most Relevant Recent Commits
+
+- `36431d5` feat(admin): add company logo/banner upload in admin panel
+- `eee03dd` fix(rls): allow admins to list profiles
+- `64905cc` fix(env): point app to new Supabase project (publishable key)
+- `ada1047` fix(auth): use Supabase Google OAuth (pkce)
+- `a70da66` fix(db): make triggers and storage bucket migration idempotent
+
