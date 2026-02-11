@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 97%;
+    --foreground: 220 20% 18%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 18%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 18%;
+
+    --primary: 195 100% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 94%;
+    --secondary-foreground: 220 20% 18%;
+
+    --muted: 210 15% 95%;
+    --muted-foreground: 215 12% 52%;
+
+    --accent: 195 100% 42%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 20% 91%;
+    --input: 214 20% 91%;
+    --ring: 195 100% 42%;
+
+    --radius: 0.75rem;
+
+    /* Brand palette */
+    --alm-blue: 199 99% 47%;
+    --alm-green: 79 100% 37%;
+    --alm-orange: 12 92% 52%;
+    --alm-yellow: 44 100% 50%;
+    --alm-teal: 168 80% 38%;
+    --alm-red: 348 83% 52%;
+
+    /* Custom tokens */
+    --amber: 44 100% 50%;
+    --amber-foreground: 0 0% 100%;
+    --card-gradient-start: 45 100% 92%;
+    --card-gradient-mid: 150 60% 92%;
+    --card-gradient-end: 200 80% 92%;
+    --dot-color: 199 40% 82%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 195 100% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 15% 95%;
+    --sidebar-accent-foreground: 220 20% 18%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 195 100% 42%;
+  }
+
+  .dark {
+    --background: 220 20% 7%;
+    --foreground: 210 20% 95%;
+    --card: 220 20% 10%;
+    --card-foreground: 210 20% 95%;
+    --popover: 220 20% 10%;
+    --popover-foreground: 210 20% 95%;
+    --primary: 195 100% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 20% 17%;
+    --secondary-foreground: 210 20% 95%;
+    --muted: 217 20% 17%;
+    --muted-foreground: 215 15% 65%;
+    --accent: 195 100% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 20% 20%;
+    --input: 217 20% 20%;
+    --ring: 195 100% 42%;
+    --sidebar-background: 220 20% 7%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 195 100% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 20% 17%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 217 20% 20%;
+    --sidebar-ring: 195 100% 42%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .card-gradient-top {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--card-gradient-start)) 0%,
+      hsl(var(--card-gradient-mid)) 50%,
+      hsl(var(--card-gradient-end)) 100%
+    );
+  }
+
+  .text-highlight {
+    color: hsl(var(--primary));
+  }
+}
+
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@layer components {
+  .card-elevated {
+    @apply rounded-2xl border-2 border-border/80 bg-card shadow-md;
+  }
+}
