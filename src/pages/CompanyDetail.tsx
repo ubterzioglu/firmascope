@@ -447,13 +447,13 @@ const CompanyDetail = () => {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <Button className="w-full rounded-xl font-semibold text-sm h-12" onClick={() => { setActiveTab(1); setShowReviewForm(true); }}>
+            <Button className="w-full rounded-xl font-semibold text-sm h-12" onClick={() => requireAuth(() => { setActiveTab(1); setShowReviewForm(true); })}>
               Değerlendirme Yaz
             </Button>
-            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => { setActiveTab(2); setShowSalaryForm(true); }}>
+            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => requireAuth(() => { setActiveTab(2); setShowSalaryForm(true); })}>
               Maaş Bilgisi Ekle
             </Button>
-            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => { setActiveTab(3); setShowInterviewForm(true); }}>
+            <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => requireAuth(() => { setActiveTab(3); setShowInterviewForm(true); })}>
               Mülakat Bilgisi Ekle
             </Button>
           </div>
