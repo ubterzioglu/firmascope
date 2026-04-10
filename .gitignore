@@ -24,6 +24,8 @@ dist-ssr
 *.sw?
 .vercel
 .env*.local
+.secret
+source-public.sql
 
 # Supabase CLI temp files
 supabase/.temp/
