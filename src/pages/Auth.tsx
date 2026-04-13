@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { Mail, Lock, Eye, EyeOff, RefreshCw } from "lucide-react";
+import { Helmet } from "react-helmet-async";
+import { generateMeta } from "@/lib/seo";
 
 const emailSchema = z.string().email("Geçerli bir e-posta adresi girin");
 const passwordSchema = z.string().min(6, "Şifre en az 6 karakter olmalıdır");
@@ -23,6 +25,12 @@ const Auth = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const meta = generateMeta({
+    title: "Giris ve kayit",
+    description: "firmascope hesabiniza giris yapin veya yeni hesap olusturun.",
+    path: "/giris",
+    robots: "noindex,nofollow",
+  });
 
   useEffect(() => {
     if (user) navigate("/", { replace: true });
@@ -130,6 +138,13 @@ const Auth = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="robots" content={meta.robots} />
+        <link rel="canonical" href={meta.canonical} />
+      </Helmet>
+
       <section className="relative z-10 flex min-h-[calc(100vh-200px)] items-center justify-center py-12">
         <div className="w-full max-w-md mx-auto px-4">
           <div className="card-elevated p-8">

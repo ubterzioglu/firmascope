@@ -66,16 +66,16 @@ const AnnouncementCarousel = () => {
                 <div className="h-[140px] flex-shrink-0 overflow-hidden">
                   <img
                     src={imageUrl}
-                    alt={item.title}
+                    alt={`${item.title} - ${item.description || "firmascope duyurusu"}`}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                   />
                 </div>
                 {/* Text - bottom half */}
                 <div className="p-4 flex-1 flex flex-col">
-                  <h3 className="font-display text-sm font-semibold text-foreground leading-tight line-clamp-2">
+                  <div className="font-display text-sm font-semibold text-foreground leading-tight line-clamp-2">
                     {item.title}
-                  </h3>
+                  </div>
                   {item.description && (
                     <p className="mt-2 text-xs text-muted-foreground line-clamp-3 leading-relaxed">
                       {item.description}

@@ -9,6 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Building2, Send } from "lucide-react";
+import { Helmet } from "react-helmet-async";
+import { generateMeta } from "@/lib/seo";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const sectors = ["Teknoloji", "Finans", "Sağlık", "Enerji", "Lojistik", "Otomotiv", "Medya", "İnşaat", "Eğitim", "Diğer"];
 const cities = ["İstanbul", "Ankara", "İzmir", "Bursa", "Antalya", "Adana", "Konya", "Diğer"];
@@ -24,6 +27,11 @@ const SuggestCompany = () => {
     sector: "",
     city: "",
     website_url: "",
+  });
+  const meta = generateMeta({
+    title: "Sirket oner",
+    description: "Listede olmayan bir sirketi firmascope ekibine onererek platforma katkida bulunun.",
+    path: "/sirket-oner",
   });
 
   if (!user) {
@@ -60,8 +68,16 @@ const SuggestCompany = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="robots" content={meta.robots} />
+        <link rel="canonical" href={meta.canonical} />
+      </Helmet>
+
       <section className="py-10">
         <div className="container mx-auto max-w-lg px-4">
+          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Sirket Oner" }]} />
           <div className="card-elevated p-8">
             <div className="flex items-center gap-2 mb-6">
               <Building2 className="h-6 w-6 text-primary" />

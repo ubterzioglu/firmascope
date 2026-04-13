@@ -1,4 +1,7 @@
 import Layout from "@/components/Layout";
+import { Helmet } from "react-helmet-async";
+import { generateMeta } from "@/lib/seo";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const sections = [
   {
@@ -52,10 +55,25 @@ const sections = [
 ];
 
 const Legal = () => {
+  const meta = generateMeta({
+    title: "Yasal bilgiler",
+    description: "firmascope kullanim kosullari, KVKK bilgilendirme ve yasal metinler.",
+    path: "/yasal",
+    robots: "noindex,nofollow",
+  });
+
   return (
     <Layout>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="robots" content={meta.robots} />
+        <link rel="canonical" href={meta.canonical} />
+      </Helmet>
+
       <section className="py-12">
         <div className="container mx-auto max-w-2xl px-4">
+          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Yasal Bilgiler" }]} />
           <h1 className="font-display text-lg font-bold text-foreground">
             Yasal Bilgiler
           </h1>

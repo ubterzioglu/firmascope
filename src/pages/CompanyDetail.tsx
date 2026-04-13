@@ -13,6 +13,10 @@ import VoteButtons from "@/components/VoteButtons";
 import ReportButton from "@/components/ReportButton";
 import SalaryGateOverlay from "@/components/SalaryGateOverlay";
 import { useToast } from "@/hooks/use-toast";
+import Breadcrumb from "@/components/Breadcrumb";
+import { Helmet } from "react-helmet-async";
+import { generateJsonLd, generateMeta, seoConfig } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 
 interface Company {
   id: string;
@@ -159,6 +163,20 @@ const CompanyDetail = () => {
   const bannerUrl = company.banner_url || sectorBanners[company.sector || ""] || defaultBanner;
   const avgRating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
   const recommendRate = reviews.length > 0 ? Math.round((reviews.filter((r) => r.recommends).length / reviews.length) * 100) : 0;
+  const meta = generateMeta({
+    title: `${company.name} yorumlari, maas bilgisi ve mulakat deneyimleri`,
+    description:
+      company.description ||
+      `${company.name} sirketi hakkinda anonim yorumlari, maas bilgilerini ve mulakat deneyimlerini inceleyin.`,
+    path: `/sirket/${company.slug}`,
+    image: company.banner_url || seoConfig.defaultImage,
+    type: "article",
+    keywords: [
+      `${company.name} yorumlari`,
+      `${company.name} maas`,
+      `${company.name} mulakat`,
+    ],
+  });
 
   const tabLabels = [
     "Genel Bakış",
@@ -182,6 +200,51 @@ const CompanyDetail = () => {
     fetchCompanyData();
   };
 
+  const breadcrumbJsonLd = generateJsonLd.breadcrumb([
+    { name: "Ana Sayfa", item: `${seoConfig.siteUrl}/` },
+    { name: "Sirketler", item: `${seoConfig.siteUrl}/sirketler` },
+    { name: company.name, item: `${seoConfig.siteUrl}/sirket/${company.slug}` },
+  ]);
+
+  const companyJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: company.name,
+    description: company.description || `${company.name} sirket profili`,
+    url: `${seoConfig.siteUrl}/sirket/${company.slug}`,
+    logo: company.logo_url || undefined,
+    image: company.banner_url || undefined,
+    address: company.city
+      ? {
+          "@type": "PostalAddress",
+          addressLocality: company.city,
+          addressCountry: "TR",
+        }
+      : undefined,
+    aggregateRating:
+      reviews.length > 0
+        ? {
+            "@type": "AggregateRating",
+            ratingValue: Number(avgRating.toFixed(1)),
+            reviewCount: reviews.length,
+            bestRating: 5,
+            worstRating: 1,
+          }
+        : undefined,
+    review: reviews.slice(0, 5).map((review) => ({
+      "@type": "Review",
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: review.rating,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      reviewBody: `${review.pros || ""} ${review.cons || ""}`.trim(),
+      datePublished: review.created_at,
+      name: review.title,
+    })),
+  };
+
   const renderStars = (rating: number) => (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((s) => (
@@ -192,6 +255,21 @@ const CompanyDetail = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="robots" content={meta.robots} />
+        {meta.keywords && <meta name="keywords" content={meta.keywords} />}
+        <link rel="canonical" href={meta.canonical} />
+        <meta property="og:title" content={meta.openGraph.title} />
+        <meta property="og:description" content={meta.openGraph.description} />
+        <meta property="og:type" content={meta.openGraph.type} />
+        <meta property="og:url" content={meta.openGraph.url} />
+        <meta property="og:image" content={meta.openGraph.image} />
+      </Helmet>
+      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={companyJsonLd} />
+
       {/* Banner */}
       <div className="relative">
         <div className="h-36 md:h-44 overflow-hidden">
@@ -217,6 +295,14 @@ const CompanyDetail = () => {
       </div>
 
       <div className="container mx-auto px-4 pt-28">
+        <Breadcrumb
+          items={[
+            { label: "Ana Sayfa", href: "/" },
+            { label: "Sirketler", href: "/sirketler" },
+            { label: company.name },
+          ]}
+        />
+
         {/* Meta */}
         <div className="mt-2 flex flex-wrap gap-1.5 items-start">
           {metaItems.map((item) => (

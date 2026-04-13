@@ -71,16 +71,16 @@ const WhySection = () => {
             <div className="relative aspect-[4/3] overflow-hidden">
               <img
                 src={features[current].image}
-                alt={features[current].title}
+                alt={`${features[current].title} - anonim sirket degerlendirme ve maas bilgisi`}
                 className="h-full w-full object-cover transition-transform duration-500"
                 loading="lazy"
               />
             </div>
             {/* Text - bottom */}
             <div className="p-6 md:p-8">
-              <h3 className="font-display text-xl font-bold text-foreground md:text-2xl">
-                {features[current].title}
-              </h3>
+              <p className="font-display text-xl font-bold text-foreground md:text-2xl">
+                <strong>{features[current].title}</strong>
+              </p>
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed md:text-base">
                 {features[current].desc}
               </p>

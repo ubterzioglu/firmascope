@@ -10,6 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Breadcrumb from "@/components/Breadcrumb";
+import { Helmet } from "react-helmet-async";
+import { generateJsonLd, generateMeta, seoConfig } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 
 interface Company {
   id: string;
@@ -33,15 +37,15 @@ interface ReviewStats {
 }
 
 const sectorBanners: Record<string, string> = {
-  "Eğitim": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=200&fit=crop&q=70",
-  "Finans": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=200&fit=crop&q=70",
-  "İnşaat": "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=200&fit=crop&q=70",
-  "Lojistik": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=200&fit=crop&q=70",
-  "Medya": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&h=200&fit=crop&q=70",
-  "Otomotiv": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=200&fit=crop&q=70",
-  "Sağlık": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=200&fit=crop&q=70",
-  "Teknoloji": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=200&fit=crop&q=70",
-  "Enerji": "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=200&fit=crop&q=70",
+  Egitim: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=200&fit=crop&q=70",
+  Finans: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=200&fit=crop&q=70",
+  Insaat: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=200&fit=crop&q=70",
+  Lojistik: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=200&fit=crop&q=70",
+  Medya: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&h=200&fit=crop&q=70",
+  Otomotiv: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=200&fit=crop&q=70",
+  Saglik: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=200&fit=crop&q=70",
+  Teknoloji: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=200&fit=crop&q=70",
+  Enerji: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=200&fit=crop&q=70",
 };
 
 const defaultBanner = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop&q=70";
@@ -82,16 +86,24 @@ const renderStars = (rating: number) => (
   </div>
 );
 
-const cities = ["Tüm Şehirler", "İstanbul", "Ankara", "İzmir", "Bursa", "Antalya"];
-const sectors = ["Tüm Sektörler", "Teknoloji", "Finans", "Sağlık", "Enerji", "Lojistik", "Otomotiv", "Medya", "İnşaat", "Eğitim"];
+const cities = ["Tum Sehirler", "Istanbul", "Ankara", "Izmir", "Bursa", "Antalya"];
+const sectors = ["Tum Sektorler", "Teknoloji", "Finans", "Saglik", "Enerji", "Lojistik", "Otomotiv", "Medya", "Insaat", "Egitim"];
 
 const Companies = () => {
   const [search, setSearch] = useState("");
-  const [city, setCity] = useState("Tüm Şehirler");
-  const [sector, setSector] = useState("Tüm Sektörler");
+  const [city, setCity] = useState("Tum Sehirler");
+  const [sector, setSector] = useState("Tum Sektorler");
   const [companies, setCompanies] = useState<Company[]>([]);
   const [reviewStats, setReviewStats] = useState<ReviewStats[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const meta = generateMeta({
+    title: "Sirketler ve kullanici yorumlari",
+    description:
+      "Turkiye'deki sirket degerlendirmelerini, maas verilerini ve mulakat deneyimlerini tek listede kesfedin.",
+    path: "/sirketler",
+    keywords: ["sirket degerlendirmeleri", "sirket yorumlari", "mulakat deneyimleri"],
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,7 +115,6 @@ const Companies = () => {
 
       setCompanies((compRes.data as Company[]) || []);
 
-      // Aggregate review stats client-side
       const statsMap = new Map<string, { total: number; count: number }>();
       if (statsRes.data) {
         for (const r of statsRes.data as any[]) {
@@ -127,36 +138,68 @@ const Companies = () => {
 
   const filtered = companies.filter((c) => {
     const matchSearch = c.name.toLowerCase().includes(search.toLowerCase());
-    const matchCity = city === "Tüm Şehirler" || c.city === city;
-    const matchSector = sector === "Tüm Sektörler" || c.sector === sector;
+    const matchCity = city === "Tum Sehirler" || c.city === city;
+    const matchSector = sector === "Tum Sektorler" || c.sector === sector;
     return matchSearch && matchCity && matchSector;
   });
 
   const getStats = (companyId: string) => reviewStats.find((s) => s.company_id === companyId);
 
+  const breadcrumbJsonLd = generateJsonLd.breadcrumb([
+    { name: "Ana Sayfa", item: `${seoConfig.siteUrl}/` },
+    { name: "Sirketler", item: `${seoConfig.siteUrl}/sirketler` },
+  ]);
+
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Turkiye'de sirket degerlendirmeleri",
+    itemListElement: filtered.slice(0, 20).map((company, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${seoConfig.siteUrl}/sirket/${company.slug}`,
+      name: company.name,
+    })),
+  };
+
   return (
     <Layout>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="robots" content={meta.robots} />
+        {meta.keywords && <meta name="keywords" content={meta.keywords} />}
+        <link rel="canonical" href={meta.canonical} />
+        <meta property="og:title" content={meta.openGraph.title} />
+        <meta property="og:description" content={meta.openGraph.description} />
+        <meta property="og:type" content={meta.openGraph.type} />
+        <meta property="og:url" content={meta.openGraph.url} />
+        <meta property="og:image" content={meta.openGraph.image} />
+      </Helmet>
+
+      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={itemListJsonLd} />
+
       <section className="py-10">
         <div className="container mx-auto px-4">
-          <h1 className="font-display text-3xl font-bold text-foreground mb-6 text-center">Şirketler</h1>
+          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Sirketler" }]} />
+          <h1 className="mb-6 text-center font-display text-3xl font-bold text-foreground">Sirketler</h1>
 
-          {/* Search */}
-          <div className="relative mx-auto max-w-xl mb-4">
+          <div className="relative mx-auto mb-4 max-w-xl">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Şirket ara..."
+              placeholder="Sirket ara..."
               className="h-11 w-full rounded-xl border border-border bg-card pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
-          {/* Filters */}
-          <div className="flex justify-center gap-3 mb-4">
+          <div className="mb-4 flex justify-center gap-3">
             <Select value={city} onValueChange={setCity}>
               <SelectTrigger className="h-11 w-[180px] rounded-xl border-border bg-card text-sm">
-                <SelectValue placeholder="Tüm Şehirler" />
+                <SelectValue placeholder="Tum Sehirler" />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
                 {cities.map((c) => (
@@ -166,7 +209,7 @@ const Companies = () => {
             </Select>
             <Select value={sector} onValueChange={setSector}>
               <SelectTrigger className="h-11 w-[180px] rounded-xl border-border bg-card text-sm">
-                <SelectValue placeholder="Tüm Sektörler" />
+                <SelectValue placeholder="Tum Sektorler" />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
                 {sectors.map((s) => (
@@ -177,10 +220,10 @@ const Companies = () => {
           </div>
 
           {loading ? (
-            <p className="text-center text-muted-foreground py-12">Yükleniyor...</p>
+            <p className="py-12 text-center text-muted-foreground">Yukleniyor...</p>
           ) : (
             <>
-              <p className="mb-6 text-sm text-muted-foreground text-center">{filtered.length} şirket bulundu</p>
+              <p className="mb-6 text-center text-sm text-muted-foreground">{filtered.length} sirket bulundu</p>
 
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filtered.map((company) => {
@@ -192,12 +235,12 @@ const Companies = () => {
                     <Link
                       key={company.id}
                       to={`/sirket/${company.slug}`}
-                      className="group relative rounded-2xl border-2 border-border/80 bg-card overflow-hidden shadow-md transition-all hover:shadow-xl hover:shadow-primary/10"
+                      className="group relative overflow-hidden rounded-2xl border-2 border-border/80 bg-card shadow-md transition-all hover:shadow-xl hover:shadow-primary/10"
                     >
                       <div className="relative h-28 overflow-hidden">
                         <img
                           src={bannerImg}
-                          alt={company.sector || ""}
+                          alt={`${company.name} sektoru ${company.sector || "genel"} sirket kart gorseli`}
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                           loading="lazy"
                         />
@@ -205,17 +248,19 @@ const Companies = () => {
                       </div>
 
                       <div className="relative px-5 pb-5 pt-10">
-                        <div className={`absolute -top-7 left-5 flex h-14 w-14 items-center justify-center rounded-xl ${colors.bg} font-display text-base font-bold ${colors.fg} shadow-md border-2 border-background z-10`}>
+                        <div
+                          className={`absolute -top-7 left-5 z-10 flex h-14 w-14 items-center justify-center rounded-xl border-2 border-background ${colors.bg} font-display text-base font-bold ${colors.fg} shadow-md`}
+                        >
                           {company.logo_url ? (
-                            <img src={company.logo_url} alt={company.name} className="h-full w-full object-cover rounded-xl" />
+                            <img src={company.logo_url} alt={company.name} className="h-full w-full rounded-xl object-cover" />
                           ) : (
                             getInitials(company.name)
                           )}
                         </div>
 
-                        <h3 className="font-display text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                        <h2 className="truncate font-display text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
                           {company.name}
-                        </h3>
+                        </h2>
 
                         <div className="mt-1.5 flex items-center gap-1.5">
                           {stats && stats.avg_rating > 0 ? (
@@ -225,23 +270,23 @@ const Companies = () => {
                               <span className="text-xs text-muted-foreground">({stats.review_count})</span>
                             </>
                           ) : (
-                            <span className="text-xs text-muted-foreground">Henüz değerlendirme yok</span>
+                            <span className="text-xs text-muted-foreground">Henuz degerlendirme yok</span>
                           )}
                         </div>
 
                         <div className="mt-2 space-y-1">
                           <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <MapPin className="h-3 w-3" /> {company.city || "–"}
+                            <MapPin className="h-3 w-3" /> {company.city || "-"}
                           </p>
                           <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <Building2 className="h-3 w-3" /> {company.sector || "–"}
+                            <Building2 className="h-3 w-3" /> {company.sector || "-"}
                           </p>
                         </div>
 
                         <div className="mt-3 flex flex-wrap gap-1.5">
                           {company.size && (
                             <span className="inline-block rounded-full border border-border px-2.5 py-0.5 text-[10px] text-muted-foreground">
-                              {company.size} çalışan
+                              {company.size} calisan
                             </span>
                           )}
                         </div>

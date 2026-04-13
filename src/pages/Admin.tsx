@@ -6,6 +6,9 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -18,6 +21,8 @@ import {
 import { Check, X, Shield, Building2, Users, Lightbulb, FileCheck, Megaphone, Plus, Pencil, Trash2, Star, Banknote, UserCheck, Flag } from "lucide-react";
 import AdminAnnouncements from "@/components/AdminAnnouncements";
 import AdminReports from "@/components/AdminReports";
+import { Helmet } from "react-helmet-async";
+import { generateMeta } from "@/lib/seo";
 
 const slugify = (input: string) => {
   // ASCII-only slug for stable URLs.
@@ -26,7 +31,7 @@ const slugify = (input: string) => {
     .trim()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/ı/g, "i")
+    .replace(/\u0131/g, "i")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 };
@@ -39,7 +44,7 @@ const statusColors: Record<string, string> = {
 
 const statusLabels: Record<string, string> = {
   pending: "Bekliyor",
-  approved: "Onaylandı",
+  approved: "Onaylandi",
   rejected: "Reddedildi",
 };
 
@@ -61,12 +66,31 @@ const Admin = () => {
   const [companyDialogOpen, setCompanyDialogOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<any>(null);
   const [companyForm, setCompanyForm] = useState({
-    name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.Ş.", description: "",
+    name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.S.", description: "",
     logo_url: "", banner_url: "",
   });
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [uploadingAssets, setUploadingAssets] = useState(false);
+
+  // Review edit
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [editingReview, setEditingReview] = useState<any>(null);
+  const [reviewForm, setReviewForm] = useState({ title: "", pros: "", cons: "", rating: 5, recommends: false });
+  // Salary edit
+  const [salaryDialogOpen, setSalaryDialogOpen] = useState(false);
+  const [editingSalary, setEditingSalary] = useState<any>(null);
+  const [salaryForm, setSalaryForm] = useState({ job_title: "", salary_amount: 0, currency: "TRY", experience_years: "" });
+  // Interview edit
+  const [interviewDialogOpen, setInterviewDialogOpen] = useState(false);
+  const [editingInterview, setEditingInterview] = useState<any>(null);
+  const [interviewForm, setInterviewForm] = useState({ position: "", experience: "", difficulty: "Orta", result: "Belirsiz" });
+  const meta = generateMeta({
+    title: "Yonetim paneli",
+    description: "firmascope admin paneli.",
+    path: "/admin",
+    robots: "noindex,nofollow",
+  });
 
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
@@ -104,55 +128,42 @@ const Admin = () => {
     if (error) {
       toast({ title: "Hata", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Başarılı", description: `Öneri ${statusLabels[status].toLowerCase()}.` });
+      toast({ title: "Basarili", description: `Oneri ${statusLabels[status].toLowerCase()}.` });
       fetchAll();
     }
   };
 
-  // Create company from suggestion
   const handleCreateFromSuggestion = async (suggestion: any) => {
     const slug = slugify(String(suggestion.company_name || ""));
     const initials = suggestion.company_name.split(" ").filter((w: string) => w.length > 0).slice(0, 2).map((w: string) => w[0].toUpperCase()).join("");
-
     const { error } = await supabase.from("companies").insert({
-      name: suggestion.company_name,
-      slug,
-      initials,
-      sector: suggestion.sector,
-      city: suggestion.city,
-      description: suggestion.description,
+      name: suggestion.company_name, slug, initials,
+      sector: suggestion.sector, city: suggestion.city, description: suggestion.description,
     });
-
     if (error) {
       toast({ title: "Hata", description: error.message, variant: "destructive" });
     } else {
       await supabase.from("company_suggestions").update({ status: "approved" }).eq("id", suggestion.id);
-      toast({ title: "Başarılı", description: `${suggestion.company_name} şirketi oluşturuldu.` });
+      toast({ title: "Basarili", description: `${suggestion.company_name} sirketi olusturuldu.` });
       fetchAll();
     }
   };
 
   const handleClaimAction = async (id: string, status: "approved" | "rejected", userId?: string, companyId?: string) => {
     const { error } = await supabase.from("company_claims").update({ status }).eq("id", id);
-    if (error) {
-      toast({ title: "Hata", description: error.message, variant: "destructive" });
-      return;
-    }
+    if (error) { toast({ title: "Hata", description: error.message, variant: "destructive" }); return; }
     if (status === "approved" && userId && companyId) {
       await supabase.from("user_roles").upsert({ user_id: userId, role: "company_admin" as any }, { onConflict: "user_id,role" });
       await supabase.from("company_admins").upsert({ user_id: userId, company_id: companyId }, { onConflict: "user_id,company_id" });
     }
-    toast({ title: "Başarılı", description: `Talep ${statusLabels[status].toLowerCase()}.` });
+    toast({ title: "Basarili", description: `Talep ${statusLabels[status].toLowerCase()}.` });
     fetchAll();
   };
 
-  // Company CRUD
   const openCompanyCreate = () => {
     setEditingCompany(null);
-    setCompanyForm({ name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.Ş.", description: "", logo_url: "", banner_url: "" });
-    setLogoFile(null);
-    setBannerFile(null);
-    setCompanyDialogOpen(true);
+    setCompanyForm({ name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.S.", description: "", logo_url: "", banner_url: "" });
+    setLogoFile(null); setBannerFile(null); setCompanyDialogOpen(true);
   };
 
   const openCompanyEdit = (c: any) => {
@@ -160,12 +171,10 @@ const Admin = () => {
     setCompanyForm({
       name: c.name, slug: c.slug, initials: c.initials || "",
       sector: c.sector || "", city: c.city || "", size: c.size || "",
-      company_type: c.company_type || "A.Ş.", description: c.description || "",
+      company_type: c.company_type || "A.S.", description: c.description || "",
       logo_url: c.logo_url || "", banner_url: c.banner_url || "",
     });
-    setLogoFile(null);
-    setBannerFile(null);
-    setCompanyDialogOpen(true);
+    setLogoFile(null); setBannerFile(null); setCompanyDialogOpen(true);
   };
 
   const uploadCompanyAsset = async (companyId: string, kind: "logo" | "banner", file: File) => {
@@ -175,20 +184,17 @@ const Admin = () => {
       .from("company-assets")
       .upload(path, file, { upsert: true, contentType: file.type || "application/octet-stream" });
     if (uploadError) throw uploadError;
-
     const { data } = supabase.storage.from("company-assets").getPublicUrl(path);
     return data.publicUrl;
   };
 
   const handleCompanySave = async () => {
     if (!companyForm.name.trim() || !companyForm.slug.trim()) {
-      toast({ title: "Hata", description: "Ad ve slug zorunludur.", variant: "destructive" });
-      return;
+      toast({ title: "Hata", description: "Ad ve slug zorunludur.", variant: "destructive" }); return;
     }
     const initials = companyForm.initials || companyForm.name.split(" ").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
     const payload = {
-      ...companyForm,
-      initials,
+      ...companyForm, initials,
       description: companyForm.description?.trim() || null,
       sector: companyForm.sector?.trim() || null,
       city: companyForm.city?.trim() || null,
@@ -197,20 +203,13 @@ const Admin = () => {
       logo_url: companyForm.logo_url?.trim() || null,
       banner_url: companyForm.banner_url?.trim() || null,
     };
-
-    let saved: any = null;
-    let error: any = null;
+    let saved: any = null; let error: any = null;
     if (editingCompany) {
       ({ data: saved, error } = await supabase.from("companies").update(payload).eq("id", editingCompany.id).select("*").single());
     } else {
       ({ data: saved, error } = await supabase.from("companies").insert(payload).select("*").single());
     }
-
-    if (error) {
-      toast({ title: "Hata", description: error.message, variant: "destructive" });
-      return;
-    }
-
+    if (error) { toast({ title: "Hata", description: error.message, variant: "destructive" }); return; }
     const companyId = saved?.id || editingCompany?.id;
     if (companyId && (logoFile || bannerFile)) {
       setUploadingAssets(true);
@@ -220,18 +219,13 @@ const Admin = () => {
         if (bannerFile) updates.banner_url = await uploadCompanyAsset(companyId, "banner", bannerFile);
         const { error: assetErr } = await supabase.from("companies").update(updates).eq("id", companyId);
         if (assetErr) throw assetErr;
-        setLogoFile(null);
-        setBannerFile(null);
+        setLogoFile(null); setBannerFile(null);
       } catch (e: any) {
-        toast({ title: "Görsel yükleme hatası", description: e?.message || "Bilinmeyen hata", variant: "destructive" });
-      } finally {
-        setUploadingAssets(false);
-      }
+        toast({ title: "Gorsel yukleme hatasi", description: e?.message || "Bilinmeyen hata", variant: "destructive" });
+      } finally { setUploadingAssets(false); }
     }
-
-    toast({ title: "Başarılı", description: editingCompany ? "Şirket güncellendi." : "Şirket oluşturuldu." });
-    setCompanyDialogOpen(false);
-    fetchAll();
+    toast({ title: "Basarili", description: editingCompany ? "Sirket guncellendi." : "Sirket olusturuldu." });
+    setCompanyDialogOpen(false); fetchAll();
   };
 
   const handleDeleteReview = async (id: string) => {
@@ -252,11 +246,66 @@ const Admin = () => {
     else { toast({ title: "Silindi" }); fetchAll(); }
   };
 
+  const openReviewEdit = (r: any) => {
+    setEditingReview(r);
+    setReviewForm({ title: r.title || "", pros: r.pros || "", cons: r.cons || "", rating: r.rating || 5, recommends: r.recommends || false });
+    setReviewDialogOpen(true);
+  };
+
+  const handleUpdateReview = async () => {
+    if (!reviewForm.title.trim()) { toast({ title: "Hata", description: "Baslik zorunludur.", variant: "destructive" }); return; }
+    const { error } = await supabase.from("reviews").update({
+      title: reviewForm.title.trim(),
+      pros: reviewForm.pros.trim() || null,
+      cons: reviewForm.cons.trim() || null,
+      rating: Number(reviewForm.rating),
+      recommends: reviewForm.recommends,
+    }).eq("id", editingReview.id);
+    if (error) toast({ title: "Hata", description: error.message, variant: "destructive" });
+    else { toast({ title: "Guncellendi" }); setReviewDialogOpen(false); fetchAll(); }
+  };
+
+  const openSalaryEdit = (s: any) => {
+    setEditingSalary(s);
+    setSalaryForm({ job_title: s.job_title || "", salary_amount: s.salary_amount || 0, currency: s.currency || "TRY", experience_years: s.experience_years?.toString() || "" });
+    setSalaryDialogOpen(true);
+  };
+
+  const handleUpdateSalary = async () => {
+    if (!salaryForm.job_title.trim() || !salaryForm.salary_amount) { toast({ title: "Hata", description: "Pozisyon ve maas zorunludur.", variant: "destructive" }); return; }
+    const { error } = await supabase.from("salaries").update({
+      job_title: salaryForm.job_title.trim(),
+      salary_amount: Number(salaryForm.salary_amount),
+      currency: salaryForm.currency || "TRY",
+      experience_years: salaryForm.experience_years ? Number(salaryForm.experience_years) : null,
+    }).eq("id", editingSalary.id);
+    if (error) toast({ title: "Hata", description: error.message, variant: "destructive" });
+    else { toast({ title: "Guncellendi" }); setSalaryDialogOpen(false); fetchAll(); }
+  };
+
+  const openInterviewEdit = (i: any) => {
+    setEditingInterview(i);
+    setInterviewForm({ position: i.position || "", experience: i.experience || "", difficulty: i.difficulty || "Orta", result: i.result || "Belirsiz" });
+    setInterviewDialogOpen(true);
+  };
+
+  const handleUpdateInterview = async () => {
+    if (!interviewForm.position.trim()) { toast({ title: "Hata", description: "Pozisyon zorunludur.", variant: "destructive" }); return; }
+    const { error } = await supabase.from("interviews").update({
+      position: interviewForm.position.trim(),
+      experience: interviewForm.experience.trim() || null,
+      difficulty: interviewForm.difficulty || null,
+      result: interviewForm.result || null,
+    }).eq("id", editingInterview.id);
+    if (error) toast({ title: "Hata", description: error.message, variant: "destructive" });
+    else { toast({ title: "Guncellendi" }); setInterviewDialogOpen(false); fetchAll(); }
+  };
+
   if (authLoading || loadingData) {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-muted-foreground">Yükleniyor...</p>
+          <p className="text-muted-foreground">Yukleniyor...</p>
         </div>
       </Layout>
     );
@@ -264,29 +313,35 @@ const Admin = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="robots" content={meta.robots} />
+        <link rel="canonical" href={meta.canonical} />
+      </Helmet>
+
       <section className="py-8">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-2 mb-6">
             <Shield className="h-6 w-6 text-primary" />
-            <h1 className="font-display text-2xl font-bold text-foreground">Yönetim Paneli</h1>
+            <h1 className="font-display text-2xl font-bold text-foreground">Yonetim Paneli</h1>
           </div>
 
-          {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="card-elevated p-4 text-center">
               <Building2 className="h-5 w-5 text-primary mx-auto mb-1" />
               <p className="text-2xl font-bold text-foreground">{companies.length}</p>
-              <p className="text-xs text-muted-foreground">Şirket</p>
+              <p className="text-xs text-muted-foreground">Sirket</p>
             </div>
             <div className="card-elevated p-4 text-center">
               <Users className="h-5 w-5 text-primary mx-auto mb-1" />
               <p className="text-2xl font-bold text-foreground">{users.length}</p>
-              <p className="text-xs text-muted-foreground">Kullanıcı</p>
+              <p className="text-xs text-muted-foreground">Kullanici</p>
             </div>
             <div className="card-elevated p-4 text-center">
               <Lightbulb className="h-5 w-5 text-amber mx-auto mb-1" />
               <p className="text-2xl font-bold text-foreground">{suggestions.filter(s => s.status === "pending").length}</p>
-              <p className="text-xs text-muted-foreground">Bekleyen Öneri</p>
+              <p className="text-xs text-muted-foreground">Bekleyen Oneri</p>
             </div>
             <div className="card-elevated p-4 text-center">
               <Star className="h-5 w-5 text-alm-yellow mx-auto mb-1" />
@@ -298,41 +353,39 @@ const Admin = () => {
           <Tabs defaultValue="announcements" className="w-full">
             <TabsList className="mb-4 flex-wrap">
               <TabsTrigger value="announcements"><Megaphone className="h-3.5 w-3.5 mr-1" />Duyurular</TabsTrigger>
-              <TabsTrigger value="suggestions"><Lightbulb className="h-3.5 w-3.5 mr-1" />Öneriler</TabsTrigger>
+              <TabsTrigger value="suggestions"><Lightbulb className="h-3.5 w-3.5 mr-1" />Oneriler</TabsTrigger>
               <TabsTrigger value="claims"><FileCheck className="h-3.5 w-3.5 mr-1" />Talepler</TabsTrigger>
-              <TabsTrigger value="companies"><Building2 className="h-3.5 w-3.5 mr-1" />Şirketler</TabsTrigger>
+              <TabsTrigger value="companies"><Building2 className="h-3.5 w-3.5 mr-1" />Sirketler</TabsTrigger>
               <TabsTrigger value="reviews"><Star className="h-3.5 w-3.5 mr-1" />Yorumlar</TabsTrigger>
-              <TabsTrigger value="salaries"><Banknote className="h-3.5 w-3.5 mr-1" />Maaşlar</TabsTrigger>
-              <TabsTrigger value="interviews"><UserCheck className="h-3.5 w-3.5 mr-1" />Mülakatlar</TabsTrigger>
-              <TabsTrigger value="users"><Users className="h-3.5 w-3.5 mr-1" />Kullanıcılar</TabsTrigger>
+              <TabsTrigger value="salaries"><Banknote className="h-3.5 w-3.5 mr-1" />Maaslar</TabsTrigger>
+              <TabsTrigger value="interviews"><UserCheck className="h-3.5 w-3.5 mr-1" />Mulakatlar</TabsTrigger>
+              <TabsTrigger value="users"><Users className="h-3.5 w-3.5 mr-1" />Kullanicilar</TabsTrigger>
               <TabsTrigger value="reports"><Flag className="h-3.5 w-3.5 mr-1" />Raporlar</TabsTrigger>
             </TabsList>
 
-            {/* Announcements */}
             <TabsContent value="announcements"><AdminAnnouncements /></TabsContent>
 
-            {/* Suggestions */}
             <TabsContent value="suggestions">
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Şirket Adı</TableHead>
-                      <TableHead>Sektör</TableHead>
-                      <TableHead>Şehir</TableHead>
+                      <TableHead>Sirket Adi</TableHead>
+                      <TableHead>Sektor</TableHead>
+                      <TableHead>Sehir</TableHead>
                       <TableHead>Durum</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">İşlem</TableHead>
+                      <TableHead className="text-right">Islem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {suggestions.length === 0 ? (
-                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Henüz öneri yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Henuz oneri yok.</TableCell></TableRow>
                     ) : suggestions.map((s) => (
                       <TableRow key={s.id}>
                         <TableCell className="font-medium">{s.company_name}</TableCell>
-                        <TableCell>{s.sector || "–"}</TableCell>
-                        <TableCell>{s.city || "–"}</TableCell>
+                        <TableCell>{s.sector || "-"}</TableCell>
+                        <TableCell>{s.city || "-"}</TableCell>
                         <TableCell>
                           <Badge className={statusColors[s.status] || ""} variant="outline">{statusLabels[s.status]}</Badge>
                         </TableCell>
@@ -341,7 +394,7 @@ const Admin = () => {
                           {s.status === "pending" && (
                             <div className="flex justify-end gap-1">
                               <Button size="sm" variant="ghost" onClick={() => handleCreateFromSuggestion(s)} className="text-alm-blue hover:text-alm-blue text-xs">
-                                <Plus className="h-3.5 w-3.5 mr-1" /> Şirket Oluştur
+                                <Plus className="h-3.5 w-3.5 mr-1" /> Sirket Olustur
                               </Button>
                               <Button size="sm" variant="ghost" onClick={() => handleSuggestionAction(s.id, "rejected")} className="text-destructive hover:text-destructive">
                                 <X className="h-4 w-4" />
@@ -356,26 +409,25 @@ const Admin = () => {
               </div>
             </TabsContent>
 
-            {/* Claims */}
             <TabsContent value="claims">
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Şirket</TableHead>
+                      <TableHead>Sirket</TableHead>
                       <TableHead>Mesaj</TableHead>
                       <TableHead>Durum</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">İşlem</TableHead>
+                      <TableHead className="text-right">Islem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {claims.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henüz talep yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henuz talep yok.</TableCell></TableRow>
                     ) : claims.map((c) => (
                       <TableRow key={c.id}>
-                        <TableCell className="font-medium">{c.companies?.name || "–"}</TableCell>
-                        <TableCell className="max-w-[200px] truncate">{c.message || "–"}</TableCell>
+                        <TableCell className="font-medium">{c.companies?.name || "-"}</TableCell>
+                        <TableCell className="max-w-[200px] truncate">{c.message || "-"}</TableCell>
                         <TableCell><Badge className={statusColors[c.status] || ""} variant="outline">{statusLabels[c.status]}</Badge></TableCell>
                         <TableCell className="text-muted-foreground text-xs">{new Date(c.created_at).toLocaleDateString("tr-TR")}</TableCell>
                         <TableCell className="text-right">
@@ -393,22 +445,21 @@ const Admin = () => {
               </div>
             </TabsContent>
 
-            {/* Companies */}
             <TabsContent value="companies">
               <div className="flex justify-end mb-4">
-                <Button size="sm" onClick={openCompanyCreate}><Plus className="h-4 w-4 mr-1" /> Şirket Ekle</Button>
+                <Button size="sm" onClick={openCompanyCreate}><Plus className="h-4 w-4 mr-1" /> Sirket Ekle</Button>
               </div>
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Adı</TableHead>
+                      <TableHead>Adi</TableHead>
                       <TableHead>Slug</TableHead>
-                      <TableHead>Sektör</TableHead>
-                      <TableHead>Şehir</TableHead>
-                      <TableHead>Tür</TableHead>
+                      <TableHead>Sektor</TableHead>
+                      <TableHead>Sehir</TableHead>
+                      <TableHead>Tur</TableHead>
                       <TableHead>Durum</TableHead>
-                      <TableHead className="text-right">İşlem</TableHead>
+                      <TableHead className="text-right">Islem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -416,9 +467,9 @@ const Admin = () => {
                       <TableRow key={c.id}>
                         <TableCell className="font-medium">{c.name}</TableCell>
                         <TableCell className="text-xs text-muted-foreground">{c.slug}</TableCell>
-                        <TableCell>{c.sector || "–"}</TableCell>
-                        <TableCell>{c.city || "–"}</TableCell>
-                        <TableCell>{c.company_type || "–"}</TableCell>
+                        <TableCell>{c.sector || "-"}</TableCell>
+                        <TableCell>{c.city || "-"}</TableCell>
+                        <TableCell>{c.company_type || "-"}</TableCell>
                         <TableCell><Badge variant="outline">{c.status || "Aktif"}</Badge></TableCell>
                         <TableCell className="text-right">
                           <Button size="sm" variant="ghost" onClick={() => openCompanyEdit(c)}><Pencil className="h-3.5 w-3.5" /></Button>
@@ -428,161 +479,222 @@ const Admin = () => {
                   </TableBody>
                 </Table>
               </div>
-
-              {/* Company Dialog */}
               <Dialog open={companyDialogOpen} onOpenChange={setCompanyDialogOpen}>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>{editingCompany ? "Şirket Düzenle" : "Yeni Şirket"}</DialogTitle>
+                    <DialogTitle>{editingCompany ? "Sirket Duzenle" : "Yeni Sirket"}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-3 mt-2">
                     <div><Label>Ad *</Label><Input value={companyForm.name} onChange={(e) => setCompanyForm({ ...companyForm, name: e.target.value, slug: slugify(e.target.value) })} /></div>
                     <div><Label>Slug *</Label><Input value={companyForm.slug} onChange={(e) => setCompanyForm({ ...companyForm, slug: e.target.value })} /></div>
                     <div className="grid grid-cols-2 gap-3">
-                      <div><Label>Sektör</Label><Input value={companyForm.sector} onChange={(e) => setCompanyForm({ ...companyForm, sector: e.target.value })} /></div>
-                      <div><Label>Şehir</Label><Input value={companyForm.city} onChange={(e) => setCompanyForm({ ...companyForm, city: e.target.value })} /></div>
+                      <div><Label>Sektor</Label><Input value={companyForm.sector} onChange={(e) => setCompanyForm({ ...companyForm, sector: e.target.value })} /></div>
+                      <div><Label>Sehir</Label><Input value={companyForm.city} onChange={(e) => setCompanyForm({ ...companyForm, city: e.target.value })} /></div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <div><Label>Büyüklük</Label><Input value={companyForm.size} onChange={(e) => setCompanyForm({ ...companyForm, size: e.target.value })} placeholder="51-200" /></div>
-                      <div><Label>Tür</Label><Input value={companyForm.company_type} onChange={(e) => setCompanyForm({ ...companyForm, company_type: e.target.value })} /></div>
+                      <div><Label>Buyukluk</Label><Input value={companyForm.size} onChange={(e) => setCompanyForm({ ...companyForm, size: e.target.value })} placeholder="51-200" /></div>
+                      <div><Label>Tur</Label><Input value={companyForm.company_type} onChange={(e) => setCompanyForm({ ...companyForm, company_type: e.target.value })} /></div>
                     </div>
-                    <div><Label>Açıklama</Label><Input value={companyForm.description} onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })} /></div>
+                    <div><Label>Aciklama</Label><Input value={companyForm.description} onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })} /></div>
                     <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <Label>Logo (opsiyonel)</Label>
-                        <Input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} />
-                      </div>
-                      <div>
-                        <Label>Banner (opsiyonel)</Label>
-                        <Input type="file" accept="image/*" onChange={(e) => setBannerFile(e.target.files?.[0] || null)} />
-                      </div>
+                      <div><Label>Logo (opsiyonel)</Label><Input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} /></div>
+                      <div><Label>Banner (opsiyonel)</Label><Input type="file" accept="image/*" onChange={(e) => setBannerFile(e.target.files?.[0] || null)} /></div>
                     </div>
                     <Button onClick={handleCompanySave} className="w-full" disabled={uploadingAssets}>
-                      {uploadingAssets ? "Yükleniyor..." : (editingCompany ? "Güncelle" : "Oluştur")}
+                      {uploadingAssets ? "Yukleniyor..." : (editingCompany ? "Guncelle" : "Olustur")}
                     </Button>
                   </div>
                 </DialogContent>
               </Dialog>
             </TabsContent>
 
-            {/* Reviews moderation */}
             <TabsContent value="reviews">
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Şirket</TableHead>
-                      <TableHead>Başlık</TableHead>
+                      <TableHead>Sirket</TableHead>
+                      <TableHead>Baslik</TableHead>
                       <TableHead>Puan</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">İşlem</TableHead>
+                      <TableHead className="text-right">Islem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {reviews.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henüz yorum yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henuz yorum yok.</TableCell></TableRow>
                     ) : reviews.map((r) => (
                       <TableRow key={r.id}>
-                        <TableCell className="font-medium">{r.companies?.name || "–"}</TableCell>
+                        <TableCell className="font-medium">{r.companies?.name || "-"}</TableCell>
                         <TableCell className="max-w-[200px] truncate">{r.title}</TableCell>
                         <TableCell>{r.rating}/5</TableCell>
                         <TableCell className="text-muted-foreground text-xs">{new Date(r.created_at).toLocaleDateString("tr-TR")}</TableCell>
                         <TableCell className="text-right">
-                          <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDeleteReview(r.id)}>
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                          <div className="flex justify-end gap-1">
+                            <Button size="sm" variant="ghost" onClick={() => openReviewEdit(r)}><Pencil className="h-3.5 w-3.5" /></Button>
+                            <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDeleteReview(r.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </div>
+              <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
+                <DialogContent>
+                  <DialogHeader><DialogTitle>Yorumu Duzenle</DialogTitle></DialogHeader>
+                  <div className="space-y-3 mt-2">
+                    <div><Label>Baslik *</Label><Input value={reviewForm.title} onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })} /></div>
+                    <div><Label>Olumlu Yonler</Label><Textarea value={reviewForm.pros} onChange={(e) => setReviewForm({ ...reviewForm, pros: e.target.value })} rows={3} /></div>
+                    <div><Label>Olumsuz Yonler</Label><Textarea value={reviewForm.cons} onChange={(e) => setReviewForm({ ...reviewForm, cons: e.target.value })} rows={3} /></div>
+                    <div><Label>Puan (1-5)</Label><Input type="number" min={1} max={5} value={reviewForm.rating} onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })} /></div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="recommends" checked={reviewForm.recommends} onCheckedChange={(v) => setReviewForm({ ...reviewForm, recommends: Boolean(v) })} />
+                      <Label htmlFor="recommends">Sirketi tavsiye eder</Label>
+                    </div>
+                    <Button onClick={handleUpdateReview} className="w-full">Guncelle</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </TabsContent>
 
-            {/* Salaries moderation */}
             <TabsContent value="salaries">
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Şirket</TableHead>
+                      <TableHead>Sirket</TableHead>
                       <TableHead>Pozisyon</TableHead>
-                      <TableHead>Maaş</TableHead>
+                      <TableHead>Maas</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">İşlem</TableHead>
+                      <TableHead className="text-right">Islem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {salaries.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henüz maaş bilgisi yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henuz maas bilgisi yok.</TableCell></TableRow>
                     ) : salaries.map((s) => (
                       <TableRow key={s.id}>
-                        <TableCell className="font-medium">{s.companies?.name || "–"}</TableCell>
+                        <TableCell className="font-medium">{s.companies?.name || "-"}</TableCell>
                         <TableCell>{s.job_title}</TableCell>
                         <TableCell>{s.salary_amount?.toLocaleString("tr-TR")} {s.currency || "TRY"}</TableCell>
                         <TableCell className="text-muted-foreground text-xs">{new Date(s.created_at).toLocaleDateString("tr-TR")}</TableCell>
                         <TableCell className="text-right">
-                          <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDeleteSalary(s.id)}>
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                          <div className="flex justify-end gap-1">
+                            <Button size="sm" variant="ghost" onClick={() => openSalaryEdit(s)}><Pencil className="h-3.5 w-3.5" /></Button>
+                            <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDeleteSalary(s.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </div>
+              <Dialog open={salaryDialogOpen} onOpenChange={setSalaryDialogOpen}>
+                <DialogContent>
+                  <DialogHeader><DialogTitle>Maas Bilgisini Duzenle</DialogTitle></DialogHeader>
+                  <div className="space-y-3 mt-2">
+                    <div><Label>Pozisyon *</Label><Input value={salaryForm.job_title} onChange={(e) => setSalaryForm({ ...salaryForm, job_title: e.target.value })} /></div>
+                    <div><Label>Maas *</Label><Input type="number" value={salaryForm.salary_amount} onChange={(e) => setSalaryForm({ ...salaryForm, salary_amount: Number(e.target.value) })} /></div>
+                    <div>
+                      <Label>Para Birimi</Label>
+                      <Select value={salaryForm.currency} onValueChange={(v) => setSalaryForm({ ...salaryForm, currency: v })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="TRY">TRY</SelectItem>
+                          <SelectItem value="USD">USD</SelectItem>
+                          <SelectItem value="EUR">EUR</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div><Label>Deneyim (Yil)</Label><Input type="number" value={salaryForm.experience_years} onChange={(e) => setSalaryForm({ ...salaryForm, experience_years: e.target.value })} placeholder="0" /></div>
+                    <Button onClick={handleUpdateSalary} className="w-full">Guncelle</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </TabsContent>
 
-            {/* Interviews moderation */}
             <TabsContent value="interviews">
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Şirket</TableHead>
+                      <TableHead>Sirket</TableHead>
                       <TableHead>Pozisyon</TableHead>
                       <TableHead>Zorluk</TableHead>
-                      <TableHead>Sonuç</TableHead>
+                      <TableHead>Sonuc</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">İşlem</TableHead>
+                      <TableHead className="text-right">Islem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {interviews.length === 0 ? (
-                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Henüz mülakat bilgisi yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Henuz mulakat bilgisi yok.</TableCell></TableRow>
                     ) : interviews.map((i) => (
                       <TableRow key={i.id}>
-                        <TableCell className="font-medium">{i.companies?.name || "–"}</TableCell>
+                        <TableCell className="font-medium">{i.companies?.name || "-"}</TableCell>
                         <TableCell>{i.position}</TableCell>
-                        <TableCell>{i.difficulty || "–"}</TableCell>
-                        <TableCell>{i.result || "–"}</TableCell>
+                        <TableCell>{i.difficulty || "-"}</TableCell>
+                        <TableCell>{i.result || "-"}</TableCell>
                         <TableCell className="text-muted-foreground text-xs">{new Date(i.created_at).toLocaleDateString("tr-TR")}</TableCell>
                         <TableCell className="text-right">
-                          <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDeleteInterview(i.id)}>
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                          <div className="flex justify-end gap-1">
+                            <Button size="sm" variant="ghost" onClick={() => openInterviewEdit(i)}><Pencil className="h-3.5 w-3.5" /></Button>
+                            <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDeleteInterview(i.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </div>
+              <Dialog open={interviewDialogOpen} onOpenChange={setInterviewDialogOpen}>
+                <DialogContent>
+                  <DialogHeader><DialogTitle>Mulakat Bilgisini Duzenle</DialogTitle></DialogHeader>
+                  <div className="space-y-3 mt-2">
+                    <div><Label>Pozisyon *</Label><Input value={interviewForm.position} onChange={(e) => setInterviewForm({ ...interviewForm, position: e.target.value })} /></div>
+                    <div><Label>Deneyim</Label><Textarea value={interviewForm.experience} onChange={(e) => setInterviewForm({ ...interviewForm, experience: e.target.value })} rows={3} /></div>
+                    <div>
+                      <Label>Zorluk</Label>
+                      <Select value={interviewForm.difficulty} onValueChange={(v) => setInterviewForm({ ...interviewForm, difficulty: v })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Kolay">Kolay</SelectItem>
+                          <SelectItem value="Orta">Orta</SelectItem>
+                          <SelectItem value="Zor">Zor</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Sonuc</Label>
+                      <Select value={interviewForm.result} onValueChange={(v) => setInterviewForm({ ...interviewForm, result: v })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Olumlu">Olumlu</SelectItem>
+                          <SelectItem value="Olumsuz">Olumsuz</SelectItem>
+                          <SelectItem value="Belirsiz">Belirsiz</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button onClick={handleUpdateInterview} className="w-full">Guncelle</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </TabsContent>
 
-            {/* Users */}
             <TabsContent value="users">
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>İsim</TableHead>
-                      <TableHead>Kayıt Tarihi</TableHead>
+                      <TableHead>Isim</TableHead>
+                      <TableHead>Kayit Tarihi</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {users.map((u) => (
                       <TableRow key={u.id}>
-                        <TableCell className="font-medium">{u.display_name || "–"}</TableCell>
+                        <TableCell className="font-medium">{u.display_name || "-"}</TableCell>
                         <TableCell className="text-muted-foreground text-xs">{new Date(u.created_at).toLocaleDateString("tr-TR")}</TableCell>
                       </TableRow>
                     ))}
@@ -591,7 +703,6 @@ const Admin = () => {
               </div>
             </TabsContent>
 
-            {/* Reports */}
             <TabsContent value="reports"><AdminReports /></TabsContent>
           </Tabs>
         </div>

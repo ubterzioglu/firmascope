@@ -11,6 +11,9 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Building2, Star, Banknote, UserCheck, BarChart3 } from "lucide-react";
+import { Helmet } from "react-helmet-async";
+import { generateMeta } from "@/lib/seo";
+import Breadcrumb from "@/components/Breadcrumb";
 
 interface CompanyAssignment {
   company_id: string;
@@ -28,6 +31,12 @@ const CompanyAdmin = () => {
   const [salaries, setSalaries] = useState<any[]>([]);
   const [interviews, setInterviews] = useState<any[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const meta = generateMeta({
+    title: "Sirket yonetimi",
+    description: "Yetkili sirket yoneticileri icin yonetim paneli.",
+    path: "/sirket-yonetimi",
+    robots: "noindex,nofollow",
+  });
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -104,8 +113,16 @@ const CompanyAdmin = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="robots" content={meta.robots} />
+        <link rel="canonical" href={meta.canonical} />
+      </Helmet>
+
       <section className="py-8">
         <div className="container mx-auto px-4">
+          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Sirket Yonetimi" }]} />
           <div className="flex items-center gap-2 mb-6">
             <Building2 className="h-6 w-6 text-primary" />
             <h1 className="font-display text-2xl font-bold text-foreground">Şirket Yönetimi</h1>
