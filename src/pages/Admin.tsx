@@ -86,7 +86,7 @@ const Admin = () => {
   const [editingInterview, setEditingInterview] = useState<any>(null);
   const [interviewForm, setInterviewForm] = useState({ position: "", experience: "", difficulty: "Orta", result: "Belirsiz" });
   const meta = generateMeta({
-    title: "Yonetim paneli",
+    title: "Yönetim paneli",
     description: "firmascope admin paneli.",
     path: "/admin",
     robots: "noindex,nofollow",
@@ -128,7 +128,7 @@ const Admin = () => {
     if (error) {
       toast({ title: "Hata", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Basarili", description: `Oneri ${statusLabels[status].toLowerCase()}.` });
+      toast({ title: "Başarılı", description: `Öneri ${statusLabels[status].toLowerCase()}.` });
       fetchAll();
     }
   };
@@ -144,7 +144,7 @@ const Admin = () => {
       toast({ title: "Hata", description: error.message, variant: "destructive" });
     } else {
       await supabase.from("company_suggestions").update({ status: "approved" }).eq("id", suggestion.id);
-      toast({ title: "Basarili", description: `${suggestion.company_name} sirketi olusturuldu.` });
+      toast({ title: "Başarılı", description: `${suggestion.company_name} şirketi oluşturuldu.` });
       fetchAll();
     }
   };
@@ -156,7 +156,7 @@ const Admin = () => {
       await supabase.from("user_roles").upsert({ user_id: userId, role: "company_admin" as any }, { onConflict: "user_id,role" });
       await supabase.from("company_admins").upsert({ user_id: userId, company_id: companyId }, { onConflict: "user_id,company_id" });
     }
-    toast({ title: "Basarili", description: `Talep ${statusLabels[status].toLowerCase()}.` });
+    toast({ title: "Başarılı", description: `Talep ${statusLabels[status].toLowerCase()}.` });
     fetchAll();
   };
 
@@ -224,7 +224,7 @@ const Admin = () => {
         toast({ title: "Gorsel yukleme hatasi", description: e?.message || "Bilinmeyen hata", variant: "destructive" });
       } finally { setUploadingAssets(false); }
     }
-    toast({ title: "Basarili", description: editingCompany ? "Sirket guncellendi." : "Sirket olusturuldu." });
+    toast({ title: "Başarılı", description: editingCompany ? "Şirket güncellendi." : "Şirket oluşturuldu." });
     setCompanyDialogOpen(false); fetchAll();
   };
 
@@ -253,7 +253,7 @@ const Admin = () => {
   };
 
   const handleUpdateReview = async () => {
-    if (!reviewForm.title.trim()) { toast({ title: "Hata", description: "Baslik zorunludur.", variant: "destructive" }); return; }
+    if (!reviewForm.title.trim()) { toast({ title: "Hata", description: "Başlık zorunludur.", variant: "destructive" }); return; }
     const { error } = await supabase.from("reviews").update({
       title: reviewForm.title.trim(),
       pros: reviewForm.pros.trim() || null,
@@ -262,7 +262,7 @@ const Admin = () => {
       recommends: reviewForm.recommends,
     }).eq("id", editingReview.id);
     if (error) toast({ title: "Hata", description: error.message, variant: "destructive" });
-    else { toast({ title: "Guncellendi" }); setReviewDialogOpen(false); fetchAll(); }
+    else { toast({ title: "Güncellendi" }); setReviewDialogOpen(false); fetchAll(); }
   };
 
   const openSalaryEdit = (s: any) => {
@@ -272,7 +272,7 @@ const Admin = () => {
   };
 
   const handleUpdateSalary = async () => {
-    if (!salaryForm.job_title.trim() || !salaryForm.salary_amount) { toast({ title: "Hata", description: "Pozisyon ve maas zorunludur.", variant: "destructive" }); return; }
+    if (!salaryForm.job_title.trim() || !salaryForm.salary_amount) { toast({ title: "Hata", description: "Pozisyon ve maaş zorunludur.", variant: "destructive" }); return; }
     const { error } = await supabase.from("salaries").update({
       job_title: salaryForm.job_title.trim(),
       salary_amount: Number(salaryForm.salary_amount),
@@ -280,7 +280,7 @@ const Admin = () => {
       experience_years: salaryForm.experience_years ? Number(salaryForm.experience_years) : null,
     }).eq("id", editingSalary.id);
     if (error) toast({ title: "Hata", description: error.message, variant: "destructive" });
-    else { toast({ title: "Guncellendi" }); setSalaryDialogOpen(false); fetchAll(); }
+    else { toast({ title: "Güncellendi" }); setSalaryDialogOpen(false); fetchAll(); }
   };
 
   const openInterviewEdit = (i: any) => {
@@ -298,14 +298,14 @@ const Admin = () => {
       result: interviewForm.result || null,
     }).eq("id", editingInterview.id);
     if (error) toast({ title: "Hata", description: error.message, variant: "destructive" });
-    else { toast({ title: "Guncellendi" }); setInterviewDialogOpen(false); fetchAll(); }
+    else { toast({ title: "Güncellendi" }); setInterviewDialogOpen(false); fetchAll(); }
   };
 
   if (authLoading || loadingData) {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-muted-foreground">Yukleniyor...</p>
+          <p className="text-muted-foreground">Yükleniyor...</p>
         </div>
       </Layout>
     );
@@ -324,24 +324,24 @@ const Admin = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-2 mb-6">
             <Shield className="h-6 w-6 text-primary" />
-            <h1 className="font-display text-2xl font-bold text-foreground">Yonetim Paneli</h1>
+            <h1 className="font-display text-2xl font-bold text-foreground">Yönetim Paneli</h1>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="card-elevated p-4 text-center">
               <Building2 className="h-5 w-5 text-primary mx-auto mb-1" />
               <p className="text-2xl font-bold text-foreground">{companies.length}</p>
-              <p className="text-xs text-muted-foreground">Sirket</p>
+              <p className="text-xs text-muted-foreground">Şirket</p>
             </div>
             <div className="card-elevated p-4 text-center">
               <Users className="h-5 w-5 text-primary mx-auto mb-1" />
               <p className="text-2xl font-bold text-foreground">{users.length}</p>
-              <p className="text-xs text-muted-foreground">Kullanici</p>
+              <p className="text-xs text-muted-foreground">Kullanıcı</p>
             </div>
             <div className="card-elevated p-4 text-center">
               <Lightbulb className="h-5 w-5 text-amber mx-auto mb-1" />
               <p className="text-2xl font-bold text-foreground">{suggestions.filter(s => s.status === "pending").length}</p>
-              <p className="text-xs text-muted-foreground">Bekleyen Oneri</p>
+              <p className="text-xs text-muted-foreground">Bekleyen Öneri</p>
             </div>
             <div className="card-elevated p-4 text-center">
               <Star className="h-5 w-5 text-alm-yellow mx-auto mb-1" />
@@ -353,13 +353,13 @@ const Admin = () => {
           <Tabs defaultValue="announcements" className="w-full">
             <TabsList className="mb-4 flex-wrap">
               <TabsTrigger value="announcements"><Megaphone className="h-3.5 w-3.5 mr-1" />Duyurular</TabsTrigger>
-              <TabsTrigger value="suggestions"><Lightbulb className="h-3.5 w-3.5 mr-1" />Oneriler</TabsTrigger>
+              <TabsTrigger value="suggestions"><Lightbulb className="h-3.5 w-3.5 mr-1" />Öneriler</TabsTrigger>
               <TabsTrigger value="claims"><FileCheck className="h-3.5 w-3.5 mr-1" />Talepler</TabsTrigger>
-              <TabsTrigger value="companies"><Building2 className="h-3.5 w-3.5 mr-1" />Sirketler</TabsTrigger>
+              <TabsTrigger value="companies"><Building2 className="h-3.5 w-3.5 mr-1" />Şirketler</TabsTrigger>
               <TabsTrigger value="reviews"><Star className="h-3.5 w-3.5 mr-1" />Yorumlar</TabsTrigger>
-              <TabsTrigger value="salaries"><Banknote className="h-3.5 w-3.5 mr-1" />Maaslar</TabsTrigger>
-              <TabsTrigger value="interviews"><UserCheck className="h-3.5 w-3.5 mr-1" />Mulakatlar</TabsTrigger>
-              <TabsTrigger value="users"><Users className="h-3.5 w-3.5 mr-1" />Kullanicilar</TabsTrigger>
+              <TabsTrigger value="salaries"><Banknote className="h-3.5 w-3.5 mr-1" />Maaşlar</TabsTrigger>
+              <TabsTrigger value="interviews"><UserCheck className="h-3.5 w-3.5 mr-1" />Mülakatlar</TabsTrigger>
+              <TabsTrigger value="users"><Users className="h-3.5 w-3.5 mr-1" />Kullanıcılar</TabsTrigger>
               <TabsTrigger value="reports"><Flag className="h-3.5 w-3.5 mr-1" />Raporlar</TabsTrigger>
             </TabsList>
 
@@ -370,17 +370,17 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Sirket Adi</TableHead>
-                      <TableHead>Sektor</TableHead>
-                      <TableHead>Sehir</TableHead>
+                      <TableHead>Şirket Adı</TableHead>
+                      <TableHead>Sektör</TableHead>
+                      <TableHead>Şehir</TableHead>
                       <TableHead>Durum</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">Islem</TableHead>
+                      <TableHead className="text-right">İşlem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {suggestions.length === 0 ? (
-                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Henuz oneri yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Henüz öneri yok.</TableCell></TableRow>
                     ) : suggestions.map((s) => (
                       <TableRow key={s.id}>
                         <TableCell className="font-medium">{s.company_name}</TableCell>
@@ -394,7 +394,7 @@ const Admin = () => {
                           {s.status === "pending" && (
                             <div className="flex justify-end gap-1">
                               <Button size="sm" variant="ghost" onClick={() => handleCreateFromSuggestion(s)} className="text-alm-blue hover:text-alm-blue text-xs">
-                                <Plus className="h-3.5 w-3.5 mr-1" /> Sirket Olustur
+                                <Plus className="h-3.5 w-3.5 mr-1" /> Şirket Oluştur
                               </Button>
                               <Button size="sm" variant="ghost" onClick={() => handleSuggestionAction(s.id, "rejected")} className="text-destructive hover:text-destructive">
                                 <X className="h-4 w-4" />
@@ -414,16 +414,16 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Sirket</TableHead>
+                      <TableHead>Şirket</TableHead>
                       <TableHead>Mesaj</TableHead>
                       <TableHead>Durum</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">Islem</TableHead>
+                      <TableHead className="text-right">İşlem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {claims.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henuz talep yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henüz talep yok.</TableCell></TableRow>
                     ) : claims.map((c) => (
                       <TableRow key={c.id}>
                         <TableCell className="font-medium">{c.companies?.name || "-"}</TableCell>
@@ -447,19 +447,19 @@ const Admin = () => {
 
             <TabsContent value="companies">
               <div className="flex justify-end mb-4">
-                <Button size="sm" onClick={openCompanyCreate}><Plus className="h-4 w-4 mr-1" /> Sirket Ekle</Button>
+                <Button size="sm" onClick={openCompanyCreate}><Plus className="h-4 w-4 mr-1" /> Şirket Ekle</Button>
               </div>
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Adi</TableHead>
+                      <TableHead>Adı</TableHead>
                       <TableHead>Slug</TableHead>
-                      <TableHead>Sektor</TableHead>
-                      <TableHead>Sehir</TableHead>
-                      <TableHead>Tur</TableHead>
+                      <TableHead>Sektör</TableHead>
+                      <TableHead>Şehir</TableHead>
+                      <TableHead>Tür</TableHead>
                       <TableHead>Durum</TableHead>
-                      <TableHead className="text-right">Islem</TableHead>
+                      <TableHead className="text-right">İşlem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -482,26 +482,26 @@ const Admin = () => {
               <Dialog open={companyDialogOpen} onOpenChange={setCompanyDialogOpen}>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>{editingCompany ? "Sirket Duzenle" : "Yeni Sirket"}</DialogTitle>
+                    <DialogTitle>{editingCompany ? "Şirket Düzenle" : "Yeni Şirket"}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-3 mt-2">
                     <div><Label>Ad *</Label><Input value={companyForm.name} onChange={(e) => setCompanyForm({ ...companyForm, name: e.target.value, slug: slugify(e.target.value) })} /></div>
                     <div><Label>Slug *</Label><Input value={companyForm.slug} onChange={(e) => setCompanyForm({ ...companyForm, slug: e.target.value })} /></div>
                     <div className="grid grid-cols-2 gap-3">
-                      <div><Label>Sektor</Label><Input value={companyForm.sector} onChange={(e) => setCompanyForm({ ...companyForm, sector: e.target.value })} /></div>
-                      <div><Label>Sehir</Label><Input value={companyForm.city} onChange={(e) => setCompanyForm({ ...companyForm, city: e.target.value })} /></div>
+                      <div><Label>Sektör</Label><Input value={companyForm.sector} onChange={(e) => setCompanyForm({ ...companyForm, sector: e.target.value })} /></div>
+                      <div><Label>Şehir</Label><Input value={companyForm.city} onChange={(e) => setCompanyForm({ ...companyForm, city: e.target.value })} /></div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <div><Label>Buyukluk</Label><Input value={companyForm.size} onChange={(e) => setCompanyForm({ ...companyForm, size: e.target.value })} placeholder="51-200" /></div>
-                      <div><Label>Tur</Label><Input value={companyForm.company_type} onChange={(e) => setCompanyForm({ ...companyForm, company_type: e.target.value })} /></div>
+                      <div><Label>Büyüklük</Label><Input value={companyForm.size} onChange={(e) => setCompanyForm({ ...companyForm, size: e.target.value })} placeholder="51-200" /></div>
+                      <div><Label>Tür</Label><Input value={companyForm.company_type} onChange={(e) => setCompanyForm({ ...companyForm, company_type: e.target.value })} /></div>
                     </div>
-                    <div><Label>Aciklama</Label><Input value={companyForm.description} onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })} /></div>
+                    <div><Label>Açıklama</Label><Input value={companyForm.description} onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })} /></div>
                     <div className="grid grid-cols-2 gap-3">
                       <div><Label>Logo (opsiyonel)</Label><Input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} /></div>
                       <div><Label>Banner (opsiyonel)</Label><Input type="file" accept="image/*" onChange={(e) => setBannerFile(e.target.files?.[0] || null)} /></div>
                     </div>
                     <Button onClick={handleCompanySave} className="w-full" disabled={uploadingAssets}>
-                      {uploadingAssets ? "Yukleniyor..." : (editingCompany ? "Guncelle" : "Olustur")}
+                      {uploadingAssets ? "Yükleniyor..." : (editingCompany ? "Güncelle" : "Oluştur")}
                     </Button>
                   </div>
                 </DialogContent>
@@ -513,16 +513,16 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Sirket</TableHead>
-                      <TableHead>Baslik</TableHead>
+                      <TableHead>Şirket</TableHead>
+                      <TableHead>Başlık</TableHead>
                       <TableHead>Puan</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">Islem</TableHead>
+                      <TableHead className="text-right">İşlem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {reviews.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henuz yorum yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henüz yorum yok.</TableCell></TableRow>
                     ) : reviews.map((r) => (
                       <TableRow key={r.id}>
                         <TableCell className="font-medium">{r.companies?.name || "-"}</TableCell>
@@ -542,17 +542,17 @@ const Admin = () => {
               </div>
               <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
                 <DialogContent>
-                  <DialogHeader><DialogTitle>Yorumu Duzenle</DialogTitle></DialogHeader>
+                  <DialogHeader><DialogTitle>Yorumu Düzenle</DialogTitle></DialogHeader>
                   <div className="space-y-3 mt-2">
-                    <div><Label>Baslik *</Label><Input value={reviewForm.title} onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })} /></div>
-                    <div><Label>Olumlu Yonler</Label><Textarea value={reviewForm.pros} onChange={(e) => setReviewForm({ ...reviewForm, pros: e.target.value })} rows={3} /></div>
-                    <div><Label>Olumsuz Yonler</Label><Textarea value={reviewForm.cons} onChange={(e) => setReviewForm({ ...reviewForm, cons: e.target.value })} rows={3} /></div>
+                    <div><Label>Başlık *</Label><Input value={reviewForm.title} onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })} /></div>
+                    <div><Label>Olumlu Yönler</Label><Textarea value={reviewForm.pros} onChange={(e) => setReviewForm({ ...reviewForm, pros: e.target.value })} rows={3} /></div>
+                    <div><Label>Olumsuz Yönler</Label><Textarea value={reviewForm.cons} onChange={(e) => setReviewForm({ ...reviewForm, cons: e.target.value })} rows={3} /></div>
                     <div><Label>Puan (1-5)</Label><Input type="number" min={1} max={5} value={reviewForm.rating} onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })} /></div>
                     <div className="flex items-center gap-2">
                       <Checkbox id="recommends" checked={reviewForm.recommends} onCheckedChange={(v) => setReviewForm({ ...reviewForm, recommends: Boolean(v) })} />
-                      <Label htmlFor="recommends">Sirketi tavsiye eder</Label>
+                      <Label htmlFor="recommends">Şirketi tavsiye eder</Label>
                     </div>
-                    <Button onClick={handleUpdateReview} className="w-full">Guncelle</Button>
+                    <Button onClick={handleUpdateReview} className="w-full">Güncelle</Button>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -563,16 +563,16 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Sirket</TableHead>
+                      <TableHead>Şirket</TableHead>
                       <TableHead>Pozisyon</TableHead>
-                      <TableHead>Maas</TableHead>
+                      <TableHead>Maaş</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">Islem</TableHead>
+                      <TableHead className="text-right">İşlem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {salaries.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henuz maas bilgisi yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Henüz maaş bilgisi yok.</TableCell></TableRow>
                     ) : salaries.map((s) => (
                       <TableRow key={s.id}>
                         <TableCell className="font-medium">{s.companies?.name || "-"}</TableCell>
@@ -592,10 +592,10 @@ const Admin = () => {
               </div>
               <Dialog open={salaryDialogOpen} onOpenChange={setSalaryDialogOpen}>
                 <DialogContent>
-                  <DialogHeader><DialogTitle>Maas Bilgisini Duzenle</DialogTitle></DialogHeader>
+                  <DialogHeader><DialogTitle>Maaş Bilgisini Düzenle</DialogTitle></DialogHeader>
                   <div className="space-y-3 mt-2">
                     <div><Label>Pozisyon *</Label><Input value={salaryForm.job_title} onChange={(e) => setSalaryForm({ ...salaryForm, job_title: e.target.value })} /></div>
-                    <div><Label>Maas *</Label><Input type="number" value={salaryForm.salary_amount} onChange={(e) => setSalaryForm({ ...salaryForm, salary_amount: Number(e.target.value) })} /></div>
+                    <div><Label>Maaş *</Label><Input type="number" value={salaryForm.salary_amount} onChange={(e) => setSalaryForm({ ...salaryForm, salary_amount: Number(e.target.value) })} /></div>
                     <div>
                       <Label>Para Birimi</Label>
                       <Select value={salaryForm.currency} onValueChange={(v) => setSalaryForm({ ...salaryForm, currency: v })}>
@@ -607,8 +607,8 @@ const Admin = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div><Label>Deneyim (Yil)</Label><Input type="number" value={salaryForm.experience_years} onChange={(e) => setSalaryForm({ ...salaryForm, experience_years: e.target.value })} placeholder="0" /></div>
-                    <Button onClick={handleUpdateSalary} className="w-full">Guncelle</Button>
+                    <div><Label>Deneyim (Yıl)</Label><Input type="number" value={salaryForm.experience_years} onChange={(e) => setSalaryForm({ ...salaryForm, experience_years: e.target.value })} placeholder="0" /></div>
+                    <Button onClick={handleUpdateSalary} className="w-full">Güncelle</Button>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -619,17 +619,17 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Sirket</TableHead>
+                      <TableHead>Şirket</TableHead>
                       <TableHead>Pozisyon</TableHead>
                       <TableHead>Zorluk</TableHead>
-                      <TableHead>Sonuc</TableHead>
+                      <TableHead>Sonuç</TableHead>
                       <TableHead>Tarih</TableHead>
-                      <TableHead className="text-right">Islem</TableHead>
+                      <TableHead className="text-right">İşlem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {interviews.length === 0 ? (
-                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Henuz mulakat bilgisi yok.</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Henüz mülakat bilgisi yok.</TableCell></TableRow>
                     ) : interviews.map((i) => (
                       <TableRow key={i.id}>
                         <TableCell className="font-medium">{i.companies?.name || "-"}</TableCell>
@@ -650,7 +650,7 @@ const Admin = () => {
               </div>
               <Dialog open={interviewDialogOpen} onOpenChange={setInterviewDialogOpen}>
                 <DialogContent>
-                  <DialogHeader><DialogTitle>Mulakat Bilgisini Duzenle</DialogTitle></DialogHeader>
+                  <DialogHeader><DialogTitle>Mülakat Bilgisini Düzenle</DialogTitle></DialogHeader>
                   <div className="space-y-3 mt-2">
                     <div><Label>Pozisyon *</Label><Input value={interviewForm.position} onChange={(e) => setInterviewForm({ ...interviewForm, position: e.target.value })} /></div>
                     <div><Label>Deneyim</Label><Textarea value={interviewForm.experience} onChange={(e) => setInterviewForm({ ...interviewForm, experience: e.target.value })} rows={3} /></div>
@@ -666,7 +666,7 @@ const Admin = () => {
                       </Select>
                     </div>
                     <div>
-                      <Label>Sonuc</Label>
+                      <Label>Sonuç</Label>
                       <Select value={interviewForm.result} onValueChange={(v) => setInterviewForm({ ...interviewForm, result: v })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
@@ -676,7 +676,7 @@ const Admin = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <Button onClick={handleUpdateInterview} className="w-full">Guncelle</Button>
+                    <Button onClick={handleUpdateInterview} className="w-full">Güncelle</Button>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -687,8 +687,8 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Isim</TableHead>
-                      <TableHead>Kayit Tarihi</TableHead>
+                      <TableHead>İsim</TableHead>
+                      <TableHead>Kayıt Tarihi</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

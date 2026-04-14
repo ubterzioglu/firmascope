@@ -16,51 +16,51 @@ type FaqItem = {
 
 const faqItems: FaqItem[] = [
   {
-    question: "firmascope nasil calisir?",
+    question: "firmascope nasıl çalışır?",
     answer:
-      "firmascope, calisanlarin sirket deneyimlerini anonim olarak paylastigi bir platformdur. Degerlendirme, maas ve mulakat bilgilerini guvenle paylasabilirsiniz.",
+      "firmascope, çalışanların şirket deneyimlerini anonim olarak paylaştığı bir platformdur. Değerlendirme, maaş ve mülakat bilgilerini güvenle paylaşabilirsiniz.",
     color: "text-alm-blue",
   },
   {
-    question: "Kimligim gercekten gizli mi kaliyor?",
+    question: "Kimliğim gerçekten gizli mi kalıyor?",
     answer:
-      "Evet, yuzde 100 anonim. IP adresi, e-posta veya kisisel bilgiler asla sirketlerle paylasilmaz. Gelismis sifreleme ile verileriniz korunur.",
+      "Evet, yüzde 100 anonim. IP adresi, e-posta veya kişisel bilgiler asla şirketlerle paylaşılmaz. Gelişmiş şifreleme ile verileriniz korunur.",
     color: "text-alm-green",
   },
   {
-    question: "Sirket degerlendirmesi nasil yapilir?",
+    question: "Şirket değerlendirmesi nasıl yapılır?",
     answer:
-      "Bir sirket sayfasina gidip 'Degerlendirme Yaz' butonuna tiklayin. Artilari, eksileri ve puaninizi paylasin. Tamamen anonim kalirsiniz.",
+      "Bir şirket sayfasına gidip 'Değerlendirme Yaz' butonuna tıklayın. Artıları, eksileri ve puanınızı paylaşın. Tamamen anonim kalırsınız.",
     color: "text-alm-orange",
   },
   {
-    question: "Maas bilgileri nasil paylasilir?",
+    question: "Maaş bilgileri nasıl paylaşılır?",
     answer:
-      "Calistiginiz sirketin sayfasinda 'Maas Bilgisi Ekle' butonunu kullanin. Pozisyon, deneyim yili ve maas tutarini girin.",
+      "Çalıştığınız şirketin sayfasında 'Maaş Bilgisi Ekle' butonunu kullanın. Pozisyon, deneyim yılı ve maaş tutarını girin.",
     color: "text-alm-yellow",
   },
   {
-    question: "Mulakat deneyimi nedir?",
+    question: "Mülakat deneyimi nedir?",
     answer:
-      "Basvurdugunuz sirketin mulakat surecini, zorluk derecesini ve sonucunu paylasarak diger adaylara yol gosterirsiniz.",
+      "Başvurduğunuz şirketin mülakat sürecini, zorluk derecesini ve sonucunu paylaşarak diğer adaylara yol gösterirsiniz.",
     color: "text-alm-blue",
   },
   {
-    question: "Sirketler yorumlari silebilir mi?",
+    question: "Şirketler yorumları silebilir mi?",
     answer:
-      "Hayir. Sirketlerin yorumlari silme veya duzenleme yetkisi yoktur. Tum icerikler bagimsiz olarak yonetilir.",
+      "Hayır. Şirketlerin yorumları silme veya düzenleme yetkisi yoktur. Tüm içerikler bağımsız olarak yönetilir.",
     color: "text-alm-green",
   },
   {
-    question: "Sahte yorumlari nasil engelliyorsunuz?",
+    question: "Sahte yorumları nasıl engelliyorsunuz?",
     answer:
-      "Gelismis dogrulama sistemimiz ve topluluk moderasyonu ile sahte icerikleri tespit edip kaldiriyoruz.",
+      "Gelişmiş doğrulama sistemimiz ve topluluk moderasyonu ile sahte içerikleri tespit edip kaldırıyoruz.",
     color: "text-alm-orange",
   },
   {
-    question: "firmascope ucretsiz mi?",
+    question: "firmascope ücretsiz mi?",
     answer:
-      "Evet, firmascope tamamen ucretsiz bir platformdur. Degerlendirme okuma, maas bilgisi goruntuleme ve paylasim yapmak icin herhangi bir ucret alinmaz.",
+      "Evet, firmascope tamamen ücretsiz bir platformdur. Değerlendirme okuma, maaş bilgisi görüntüleme ve paylaşım yapmak için herhangi bir ücret alınmaz.",
     color: "text-alm-yellow",
   },
 ];
@@ -75,7 +75,7 @@ const WhyFirmascope = () => {
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-6 shadow-lg md:p-10">
           <h2 className="mb-8 text-center font-display text-2xl font-bold text-foreground md:text-3xl">
-            Sik Sorulan Sorular
+            Sık Sorulan Sorular
           </h2>
 
           <Accordion type="single" collapsible className="w-full">
@@ -91,13 +91,13 @@ const WhyFirmascope = () => {
                   {(index === 0 || index === 3) && (
                     <>
                       {" "}
-                      Daha fazla bilgi icin <Link to="/sirketler" className="font-semibold text-primary hover:underline">Sirketler</Link> sayfasina bakabilirsiniz.
+                      Daha fazla bilgi için <Link to="/sirketler" className="font-semibold text-primary hover:underline">Şirketler</Link> sayfasına bakabilirsiniz.
                     </>
                   )}
                   {index === 7 && (
                     <>
                       {" "}
-                      Yeni sirket eklemek icin <Link to="/sirket-oner" className="font-semibold text-primary hover:underline">Sirket Oner</Link> sayfasini kullanabilirsiniz.
+                      Yeni şirket eklemek için <Link to="/sirket-oner" className="font-semibold text-primary hover:underline">Şirket Öner</Link> sayfasını kullanabilirsiniz.
                     </>
                   )}
                 </AccordionContent>

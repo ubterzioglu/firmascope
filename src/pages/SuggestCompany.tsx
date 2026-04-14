@@ -29,8 +29,8 @@ const SuggestCompany = () => {
     website_url: "",
   });
   const meta = generateMeta({
-    title: "Sirket oner",
-    description: "Listede olmayan bir sirketi firmascope ekibine onererek platforma katkida bulunun.",
+    title: "Şirket öner",
+    description: "Listede olmayan bir şirketi firmascope ekibine önererek platforma katkıda bulunun.",
     path: "/sirket-oner",
   });
 
@@ -77,7 +77,7 @@ const SuggestCompany = () => {
 
       <section className="py-10">
         <div className="container mx-auto max-w-lg px-4">
-          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Sirket Oner" }]} />
+          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Şirket Öner" }]} />
           <div className="card-elevated p-8">
             <div className="flex items-center gap-2 mb-6">
               <Building2 className="h-6 w-6 text-primary" />

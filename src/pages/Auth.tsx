@@ -26,8 +26,8 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const meta = generateMeta({
-    title: "Giris ve kayit",
-    description: "firmascope hesabiniza giris yapin veya yeni hesap olusturun.",
+    title: "Giriş ve kayıt",
+    description: "firmascope hesabınıza giriş yapın veya yeni hesap oluşturun.",
     path: "/giris",
     robots: "noindex,nofollow",
   });

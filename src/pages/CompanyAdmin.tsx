@@ -32,8 +32,8 @@ const CompanyAdmin = () => {
   const [interviews, setInterviews] = useState<any[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const meta = generateMeta({
-    title: "Sirket yonetimi",
-    description: "Yetkili sirket yoneticileri icin yonetim paneli.",
+    title: "Şirket yönetimi",
+    description: "Yetkili şirket yöneticileri için yönetim paneli.",
     path: "/sirket-yonetimi",
     robots: "noindex,nofollow",
   });
@@ -122,7 +122,7 @@ const CompanyAdmin = () => {
 
       <section className="py-8">
         <div className="container mx-auto px-4">
-          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Sirket Yonetimi" }]} />
+          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Şirket Yönetimi" }]} />
           <div className="flex items-center gap-2 mb-6">
             <Building2 className="h-6 w-6 text-primary" />
             <h1 className="font-display text-2xl font-bold text-foreground">Şirket Yönetimi</h1>

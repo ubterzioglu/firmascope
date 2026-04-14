@@ -24,9 +24,9 @@ const CookieConsentBanner = () => {
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
       <div className="container mx-auto flex flex-col gap-3 px-4 py-4 md:flex-row md:items-center md:justify-between">
         <div className="max-w-3xl">
-          <p className="text-sm font-medium text-foreground">Deneyimi iyilestirmek ve kullanim akisini anlamak icin analiz cerezleri kullanabiliriz.</p>
+          <p className="text-sm font-medium text-foreground">Deneyimi iyileştirmek ve kullanım akışını anlamak için analiz çerezleri kullanabiliriz.</p>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            Ayrintilar icin <Link to="/yasal" className="font-medium text-foreground underline underline-offset-2">yasal bilgiler</Link>.
+            Ayrıntılar için <Link to="/yasal" className="font-medium text-foreground underline underline-offset-2">yasal bilgiler</Link>.
           </p>
         </div>
 

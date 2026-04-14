@@ -71,7 +71,7 @@ const WhySection = () => {
             <div className="relative aspect-[4/3] overflow-hidden">
               <img
                 src={features[current].image}
-                alt={`${features[current].title} - anonim sirket degerlendirme ve maas bilgisi`}
+                alt={`${features[current].title} - anonim şirket değerlendirme ve maaş bilgisi`}
                 className="h-full w-full object-cover transition-transform duration-500"
                 loading="lazy"
               />

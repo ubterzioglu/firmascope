@@ -164,17 +164,17 @@ const CompanyDetail = () => {
   const avgRating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
   const recommendRate = reviews.length > 0 ? Math.round((reviews.filter((r) => r.recommends).length / reviews.length) * 100) : 0;
   const meta = generateMeta({
-    title: `${company.name} yorumlari, maas bilgisi ve mulakat deneyimleri`,
+    title: `${company.name} yorumları, maaş bilgisi ve mülakat deneyimleri`,
     description:
       company.description ||
-      `${company.name} sirketi hakkinda anonim yorumlari, maas bilgilerini ve mulakat deneyimlerini inceleyin.`,
+      `${company.name} şirketi hakkında anonim yorumları, maaş bilgilerini ve mülakat deneyimlerini inceleyin.`,
     path: `/sirket/${company.slug}`,
     image: company.banner_url || seoConfig.defaultImage,
     type: "article",
     keywords: [
       `${company.name} yorumlari`,
-      `${company.name} maas`,
-      `${company.name} mulakat`,
+      `${company.name} maaş`,
+      `${company.name} mülakat`,
     ],
   });
 
@@ -202,7 +202,7 @@ const CompanyDetail = () => {
 
   const breadcrumbJsonLd = generateJsonLd.breadcrumb([
     { name: "Ana Sayfa", item: `${seoConfig.siteUrl}/` },
-    { name: "Sirketler", item: `${seoConfig.siteUrl}/sirketler` },
+    { name: "Şirketler", item: `${seoConfig.siteUrl}/sirketler` },
     { name: company.name, item: `${seoConfig.siteUrl}/sirket/${company.slug}` },
   ]);
 
@@ -210,7 +210,7 @@ const CompanyDetail = () => {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: company.name,
-    description: company.description || `${company.name} sirket profili`,
+    description: company.description || `${company.name} şirket profili`,
     url: `${seoConfig.siteUrl}/sirket/${company.slug}`,
     logo: company.logo_url || undefined,
     image: company.banner_url || undefined,
@@ -298,7 +298,7 @@ const CompanyDetail = () => {
         <Breadcrumb
           items={[
             { label: "Ana Sayfa", href: "/" },
-            { label: "Sirketler", href: "/sirketler" },
+            { label: "Şirketler", href: "/sirketler" },
             { label: company.name },
           ]}
         />

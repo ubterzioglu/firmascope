@@ -37,13 +37,13 @@ interface ReviewStats {
 }
 
 const sectorBanners: Record<string, string> = {
-  Egitim: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=200&fit=crop&q=70",
+  Eğitim: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=200&fit=crop&q=70",
   Finans: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=200&fit=crop&q=70",
-  Insaat: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=200&fit=crop&q=70",
+  İnşaat: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=200&fit=crop&q=70",
   Lojistik: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=200&fit=crop&q=70",
   Medya: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&h=200&fit=crop&q=70",
   Otomotiv: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=200&fit=crop&q=70",
-  Saglik: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=200&fit=crop&q=70",
+  Sağlık: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=200&fit=crop&q=70",
   Teknoloji: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=200&fit=crop&q=70",
   Enerji: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=200&fit=crop&q=70",
 };
@@ -86,23 +86,23 @@ const renderStars = (rating: number) => (
   </div>
 );
 
-const cities = ["Tum Sehirler", "Istanbul", "Ankara", "Izmir", "Bursa", "Antalya"];
-const sectors = ["Tum Sektorler", "Teknoloji", "Finans", "Saglik", "Enerji", "Lojistik", "Otomotiv", "Medya", "Insaat", "Egitim"];
+const cities = ["Tüm Şehirler", "İstanbul", "Ankara", "İzmir", "Bursa", "Antalya"];
+const sectors = ["Tüm Sektörler", "Teknoloji", "Finans", "Sağlık", "Enerji", "Lojistik", "Otomotiv", "Medya", "İnşaat", "Eğitim"];
 
 const Companies = () => {
   const [search, setSearch] = useState("");
-  const [city, setCity] = useState("Tum Sehirler");
-  const [sector, setSector] = useState("Tum Sektorler");
+  const [city, setCity] = useState("Tüm Şehirler");
+  const [sector, setSector] = useState("Tüm Sektörler");
   const [companies, setCompanies] = useState<Company[]>([]);
   const [reviewStats, setReviewStats] = useState<ReviewStats[]>([]);
   const [loading, setLoading] = useState(true);
 
   const meta = generateMeta({
-    title: "Sirketler ve kullanici yorumlari",
+    title: "Şirketler ve kullanıcı yorumları",
     description:
-      "Turkiye'deki sirket degerlendirmelerini, maas verilerini ve mulakat deneyimlerini tek listede kesfedin.",
+      "Türkiye'deki şirket değerlendirmelerini, maaş verilerini ve mülakat deneyimlerini tek listede keşfedin.",
     path: "/sirketler",
-    keywords: ["sirket degerlendirmeleri", "sirket yorumlari", "mulakat deneyimleri"],
+    keywords: ["şirket değerlendirmeleri", "şirket yorumları", "mülakat deneyimleri"],
   });
 
   useEffect(() => {
@@ -138,8 +138,8 @@ const Companies = () => {
 
   const filtered = companies.filter((c) => {
     const matchSearch = c.name.toLowerCase().includes(search.toLowerCase());
-    const matchCity = city === "Tum Sehirler" || c.city === city;
-    const matchSector = sector === "Tum Sektorler" || c.sector === sector;
+    const matchCity = city === "Tüm Şehirler" || c.city === city;
+    const matchSector = sector === "Tüm Sektörler" || c.sector === sector;
     return matchSearch && matchCity && matchSector;
   });
 
@@ -147,13 +147,13 @@ const Companies = () => {
 
   const breadcrumbJsonLd = generateJsonLd.breadcrumb([
     { name: "Ana Sayfa", item: `${seoConfig.siteUrl}/` },
-    { name: "Sirketler", item: `${seoConfig.siteUrl}/sirketler` },
+    { name: "Şirketler", item: `${seoConfig.siteUrl}/sirketler` },
   ]);
 
   const itemListJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Turkiye'de sirket degerlendirmeleri",
+    name: "Türkiye'de şirket değerlendirmeleri",
     itemListElement: filtered.slice(0, 20).map((company, index) => ({
       "@type": "ListItem",
       position: index + 1,
@@ -182,8 +182,8 @@ const Companies = () => {
 
       <section className="py-10">
         <div className="container mx-auto px-4">
-          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Sirketler" }]} />
-          <h1 className="mb-6 text-center font-display text-3xl font-bold text-foreground">Sirketler</h1>
+          <Breadcrumb items={[{ label: "Ana Sayfa", href: "/" }, { label: "Şirketler" }]} />
+          <h1 className="mb-6 text-center font-display text-3xl font-bold text-foreground">Şirketler</h1>
 
           <div className="relative mx-auto mb-4 max-w-xl">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -191,7 +191,7 @@ const Companies = () => {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Sirket ara..."
+              placeholder="Şirket ara..."
               className="h-11 w-full rounded-xl border border-border bg-card pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
@@ -199,7 +199,7 @@ const Companies = () => {
           <div className="mb-4 flex justify-center gap-3">
             <Select value={city} onValueChange={setCity}>
               <SelectTrigger className="h-11 w-[180px] rounded-xl border-border bg-card text-sm">
-                <SelectValue placeholder="Tum Sehirler" />
+                <SelectValue placeholder="Tüm Şehirler" />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
                 {cities.map((c) => (
@@ -209,7 +209,7 @@ const Companies = () => {
             </Select>
             <Select value={sector} onValueChange={setSector}>
               <SelectTrigger className="h-11 w-[180px] rounded-xl border-border bg-card text-sm">
-                <SelectValue placeholder="Tum Sektorler" />
+                <SelectValue placeholder="Tüm Sektörler" />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
                 {sectors.map((s) => (
@@ -220,10 +220,10 @@ const Companies = () => {
           </div>
 
           {loading ? (
-            <p className="py-12 text-center text-muted-foreground">Yukleniyor...</p>
+            <p className="py-12 text-center text-muted-foreground">Yükleniyor...</p>
           ) : (
             <>
-              <p className="mb-6 text-center text-sm text-muted-foreground">{filtered.length} sirket bulundu</p>
+              <p className="mb-6 text-center text-sm text-muted-foreground">{filtered.length} şirket bulundu</p>
 
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filtered.map((company) => {
@@ -240,7 +240,7 @@ const Companies = () => {
                       <div className="relative h-28 overflow-hidden">
                         <img
                           src={bannerImg}
-                          alt={`${company.name} sektoru ${company.sector || "genel"} sirket kart gorseli`}
+                          alt={`${company.name} sektörü ${company.sector || "genel"} şirket kart görseli`}
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                           loading="lazy"
                         />
@@ -270,7 +270,7 @@ const Companies = () => {
                               <span className="text-xs text-muted-foreground">({stats.review_count})</span>
                             </>
                           ) : (
-                            <span className="text-xs text-muted-foreground">Henuz degerlendirme yok</span>
+                            <span className="text-xs text-muted-foreground">Henüz değerlendirme yok</span>
                           )}
                         </div>
 
@@ -286,7 +286,7 @@ const Companies = () => {
                         <div className="mt-3 flex flex-wrap gap-1.5">
                           {company.size && (
                             <span className="inline-block rounded-full border border-border px-2.5 py-0.5 text-[10px] text-muted-foreground">
-                              {company.size} calisan
+                              {company.size} çalışan
                             </span>
                           )}
                         </div>

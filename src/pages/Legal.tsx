@@ -57,7 +57,7 @@ const sections = [
 const Legal = () => {
   const meta = generateMeta({
     title: "Yasal bilgiler",
-    description: "firmascope kullanim kosullari, KVKK bilgilendirme ve yasal metinler.",
+    description: "firmascope kullanım koşulları, KVKK bilgilendirme ve yasal metinler.",
     path: "/yasal",
     robots: "noindex,nofollow",
   });
