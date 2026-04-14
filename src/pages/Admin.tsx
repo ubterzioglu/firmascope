@@ -23,6 +23,22 @@ import AdminAnnouncements from "@/components/AdminAnnouncements";
 import AdminReports from "@/components/AdminReports";
 import { Helmet } from "react-helmet-async";
 import { generateMeta } from "@/lib/seo";
+import {
+  REVIEWER_RELATIONSHIPS,
+  POSITION_LEVELS,
+  WORK_MODELS,
+  EMPLOYMENT_TYPES,
+  SENIORITY_LEVELS,
+  SALARY_BASES,
+  CURRENCIES,
+  INTERVIEW_DIFFICULTIES,
+  INTERVIEW_RESULTS,
+  INTERVIEW_TYPES,
+  BENEFIT_OPTIONS,
+  normalizeEmptyToNull,
+  normalizeEmptyToArray,
+  parseNumericOrNull,
+} from "@/lib/form-options";
 
 const slugify = (input: string) => {
   // ASCII-only slug for stable URLs.
@@ -76,15 +92,33 @@ const Admin = () => {
   // Review edit
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [editingReview, setEditingReview] = useState<any>(null);
-  const [reviewForm, setReviewForm] = useState({ title: "", pros: "", cons: "", rating: 5, recommends: false });
+  const [reviewForm, setReviewForm] = useState({
+    title: "", pros: "", cons: "", rating: 5, recommends: false,
+    reviewer_relationship: "", position_level: "", department: "", work_model: "",
+    rating_work_atmosphere: 0, rating_communication: 0, rating_team_spirit: 0,
+    rating_work_life_balance: 0, rating_manager_behavior: 0, rating_tasks: 0,
+    rating_compensation_benefits: 0, rating_career_growth: 0,
+    benefits: [] as string[],
+  });
   // Salary edit
   const [salaryDialogOpen, setSalaryDialogOpen] = useState(false);
   const [editingSalary, setEditingSalary] = useState<any>(null);
-  const [salaryForm, setSalaryForm] = useState({ job_title: "", salary_amount: 0, currency: "TRY", experience_years: "" });
+  const [salaryForm, setSalaryForm] = useState({
+    job_title: "", salary_amount: 0, currency: "TRY", experience_years: "",
+    salary_basis: "", employment_type: "", seniority_level: "",
+    department: "", work_model: "", location_city: "",
+    bonus_amount_yearly: "", equity_or_stock: "", benefits: [] as string[],
+  });
   // Interview edit
   const [interviewDialogOpen, setInterviewDialogOpen] = useState(false);
   const [editingInterview, setEditingInterview] = useState<any>(null);
-  const [interviewForm, setInterviewForm] = useState({ position: "", experience: "", difficulty: "Orta", result: "Belirsiz" });
+  const [interviewForm, setInterviewForm] = useState({
+    position: "", experience: "", difficulty: "Orta", result: "Belirsiz",
+    interview_year: "", interview_type: "",
+    stage_count: "", has_case_study: null as boolean | null,
+    response_time_days: "", salary_discussed: null as boolean | null,
+    offered_salary_amount: "", offered_salary_currency: "TRY",
+  });
   const meta = generateMeta({
     title: "Yönetim paneli",
     description: "firmascope admin paneli.",
@@ -248,18 +282,44 @@ const Admin = () => {
 
   const openReviewEdit = (r: any) => {
     setEditingReview(r);
-    setReviewForm({ title: r.title || "", pros: r.pros || "", cons: r.cons || "", rating: r.rating || 5, recommends: r.recommends || false });
+    setReviewForm({
+      title: r.title || "", pros: r.pros || "", cons: r.cons || "",
+      rating: r.rating || 5, recommends: r.recommends || false,
+      reviewer_relationship: r.reviewer_relationship || "",
+      position_level: r.position_level || "",
+      department: r.department || "",
+      work_model: r.work_model || "",
+      rating_work_atmosphere: r.rating_work_atmosphere || 0,
+      rating_communication: r.rating_communication || 0,
+      rating_team_spirit: r.rating_team_spirit || 0,
+      rating_work_life_balance: r.rating_work_life_balance || 0,
+      rating_manager_behavior: r.rating_manager_behavior || 0,
+      rating_tasks: r.rating_tasks || 0,
+      rating_compensation_benefits: r.rating_compensation_benefits || 0,
+      rating_career_growth: r.rating_career_growth || 0,
+      benefits: r.benefits || [],
+    });
     setReviewDialogOpen(true);
   };
 
   const handleUpdateReview = async () => {
     if (!reviewForm.title.trim()) { toast({ title: "Hata", description: "Başlık zorunludur.", variant: "destructive" }); return; }
+    const detailFields: Record<string, number | null> = {};
+    for (const key of ["rating_work_atmosphere","rating_communication","rating_team_spirit","rating_work_life_balance","rating_manager_behavior","rating_tasks","rating_compensation_benefits","rating_career_growth"] as const) {
+      detailFields[key] = (reviewForm as any)[key] > 0 ? (reviewForm as any)[key] : null;
+    }
     const { error } = await supabase.from("reviews").update({
       title: reviewForm.title.trim(),
-      pros: reviewForm.pros.trim() || null,
-      cons: reviewForm.cons.trim() || null,
+      pros: normalizeEmptyToNull(reviewForm.pros),
+      cons: normalizeEmptyToNull(reviewForm.cons),
       rating: Number(reviewForm.rating),
       recommends: reviewForm.recommends,
+      reviewer_relationship: reviewForm.reviewer_relationship || null,
+      position_level: reviewForm.position_level || null,
+      department: normalizeEmptyToNull(reviewForm.department),
+      work_model: reviewForm.work_model || null,
+      ...detailFields,
+      benefits: normalizeEmptyToArray(reviewForm.benefits),
     }).eq("id", editingReview.id);
     if (error) toast({ title: "Hata", description: error.message, variant: "destructive" });
     else { toast({ title: "Güncellendi" }); setReviewDialogOpen(false); fetchAll(); }
@@ -267,7 +327,17 @@ const Admin = () => {
 
   const openSalaryEdit = (s: any) => {
     setEditingSalary(s);
-    setSalaryForm({ job_title: s.job_title || "", salary_amount: s.salary_amount || 0, currency: s.currency || "TRY", experience_years: s.experience_years?.toString() || "" });
+    setSalaryForm({
+      job_title: s.job_title || "", salary_amount: s.salary_amount || 0,
+      currency: s.currency || "TRY", experience_years: s.experience_years?.toString() || "",
+      salary_basis: s.salary_basis || "", employment_type: s.employment_type || "",
+      seniority_level: s.seniority_level || "",
+      department: s.department || "", work_model: s.work_model || "",
+      location_city: s.location_city || "",
+      bonus_amount_yearly: s.bonus_amount_yearly?.toString() || "",
+      equity_or_stock: s.equity_or_stock || "",
+      benefits: s.benefits || [],
+    });
     setSalaryDialogOpen(true);
   };
 
@@ -278,6 +348,15 @@ const Admin = () => {
       salary_amount: Number(salaryForm.salary_amount),
       currency: salaryForm.currency || "TRY",
       experience_years: salaryForm.experience_years ? Number(salaryForm.experience_years) : null,
+      salary_basis: salaryForm.salary_basis || null,
+      employment_type: salaryForm.employment_type || null,
+      seniority_level: salaryForm.seniority_level || null,
+      department: normalizeEmptyToNull(salaryForm.department),
+      work_model: salaryForm.work_model || null,
+      location_city: normalizeEmptyToNull(salaryForm.location_city),
+      bonus_amount_yearly: parseNumericOrNull(salaryForm.bonus_amount_yearly),
+      equity_or_stock: normalizeEmptyToNull(salaryForm.equity_or_stock),
+      benefits: normalizeEmptyToArray(salaryForm.benefits),
     }).eq("id", editingSalary.id);
     if (error) toast({ title: "Hata", description: error.message, variant: "destructive" });
     else { toast({ title: "Güncellendi" }); setSalaryDialogOpen(false); fetchAll(); }
@@ -285,17 +364,37 @@ const Admin = () => {
 
   const openInterviewEdit = (i: any) => {
     setEditingInterview(i);
-    setInterviewForm({ position: i.position || "", experience: i.experience || "", difficulty: i.difficulty || "Orta", result: i.result || "Belirsiz" });
+    setInterviewForm({
+      position: i.position || "", experience: i.experience || "",
+      difficulty: i.difficulty || "Orta", result: i.result || "Belirsiz",
+      interview_year: i.interview_year?.toString() || "",
+      interview_type: i.interview_type || "",
+      stage_count: i.stage_count?.toString() || "",
+      has_case_study: i.has_case_study ?? null,
+      response_time_days: i.response_time_days?.toString() || "",
+      salary_discussed: i.salary_discussed ?? null,
+      offered_salary_amount: i.offered_salary_amount?.toString() || "",
+      offered_salary_currency: i.offered_salary_currency || "TRY",
+    });
     setInterviewDialogOpen(true);
   };
 
   const handleUpdateInterview = async () => {
     if (!interviewForm.position.trim()) { toast({ title: "Hata", description: "Pozisyon zorunludur.", variant: "destructive" }); return; }
+    const showOffered = interviewForm.result === "Teklif Aldım";
     const { error } = await supabase.from("interviews").update({
       position: interviewForm.position.trim(),
-      experience: interviewForm.experience.trim() || null,
+      experience: normalizeEmptyToNull(interviewForm.experience),
       difficulty: interviewForm.difficulty || null,
       result: interviewForm.result || null,
+      interview_year: parseNumericOrNull(interviewForm.interview_year),
+      interview_type: interviewForm.interview_type || null,
+      stage_count: parseNumericOrNull(interviewForm.stage_count),
+      has_case_study: interviewForm.has_case_study,
+      response_time_days: parseNumericOrNull(interviewForm.response_time_days),
+      salary_discussed: interviewForm.salary_discussed,
+      offered_salary_amount: showOffered ? parseNumericOrNull(interviewForm.offered_salary_amount) : null,
+      offered_salary_currency: showOffered && interviewForm.offered_salary_amount ? interviewForm.offered_salary_currency : null,
     }).eq("id", editingInterview.id);
     if (error) toast({ title: "Hata", description: error.message, variant: "destructive" });
     else { toast({ title: "Güncellendi" }); setInterviewDialogOpen(false); fetchAll(); }
@@ -541,7 +640,7 @@ const Admin = () => {
                 </Table>
               </div>
               <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
-                <DialogContent>
+                <DialogContent className="max-h-[85vh] overflow-y-auto">
                   <DialogHeader><DialogTitle>Yorumu Düzenle</DialogTitle></DialogHeader>
                   <div className="space-y-3 mt-2">
                     <div><Label>Başlık *</Label><Input value={reviewForm.title} onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })} /></div>
@@ -551,6 +650,68 @@ const Admin = () => {
                     <div className="flex items-center gap-2">
                       <Checkbox id="recommends" checked={reviewForm.recommends} onCheckedChange={(v) => setReviewForm({ ...reviewForm, recommends: Boolean(v) })} />
                       <Label htmlFor="recommends">Şirketi tavsiye eder</Label>
+                    </div>
+                    <div>
+                      <Label>İlişki Tipi</Label>
+                      <Select value={reviewForm.reviewer_relationship} onValueChange={(v) => setReviewForm({ ...reviewForm, reviewer_relationship: v })}>
+                        <SelectTrigger><SelectValue placeholder="Seçiniz" /></SelectTrigger>
+                        <SelectContent>
+                          {REVIEWER_RELATIONSHIPS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Pozisyon Seviyesi</Label>
+                      <Select value={reviewForm.position_level} onValueChange={(v) => setReviewForm({ ...reviewForm, position_level: v })}>
+                        <SelectTrigger><SelectValue placeholder="Seçiniz" /></SelectTrigger>
+                        <SelectContent>
+                          {POSITION_LEVELS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div><Label>Departman</Label><Input value={reviewForm.department} onChange={(e) => setReviewForm({ ...reviewForm, department: e.target.value })} /></div>
+                    <div>
+                      <Label>Çalışma Modeli</Label>
+                      <Select value={reviewForm.work_model} onValueChange={(v) => setReviewForm({ ...reviewForm, work_model: v })}>
+                        <SelectTrigger><SelectValue placeholder="Seçiniz" /></SelectTrigger>
+                        <SelectContent>
+                          {WORK_MODELS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div><Label>Çalışma Ortamı (1-5)</Label><Input type="number" min={0} max={5} value={reviewForm.rating_work_atmosphere} onChange={(e) => setReviewForm({ ...reviewForm, rating_work_atmosphere: Number(e.target.value) })} /></div>
+                      <div><Label>İletişim (1-5)</Label><Input type="number" min={0} max={5} value={reviewForm.rating_communication} onChange={(e) => setReviewForm({ ...reviewForm, rating_communication: Number(e.target.value) })} /></div>
+                      <div><Label>Takım Ruhu (1-5)</Label><Input type="number" min={0} max={5} value={reviewForm.rating_team_spirit} onChange={(e) => setReviewForm({ ...reviewForm, rating_team_spirit: Number(e.target.value) })} /></div>
+                      <div><Label>İş-Hayat Dengesi (1-5)</Label><Input type="number" min={0} max={5} value={reviewForm.rating_work_life_balance} onChange={(e) => setReviewForm({ ...reviewForm, rating_work_life_balance: Number(e.target.value) })} /></div>
+                      <div><Label>Yönetici Tutumu (1-5)</Label><Input type="number" min={0} max={5} value={reviewForm.rating_manager_behavior} onChange={(e) => setReviewForm({ ...reviewForm, rating_manager_behavior: Number(e.target.value) })} /></div>
+                      <div><Label>Görevler (1-5)</Label><Input type="number" min={0} max={5} value={reviewForm.rating_tasks} onChange={(e) => setReviewForm({ ...reviewForm, rating_tasks: Number(e.target.value) })} /></div>
+                      <div><Label>Ücret ve Yan Haklar (1-5)</Label><Input type="number" min={0} max={5} value={reviewForm.rating_compensation_benefits} onChange={(e) => setReviewForm({ ...reviewForm, rating_compensation_benefits: Number(e.target.value) })} /></div>
+                      <div><Label>Kariyer Gelişimi (1-5)</Label><Input type="number" min={0} max={5} value={reviewForm.rating_career_growth} onChange={(e) => setReviewForm({ ...reviewForm, rating_career_growth: Number(e.target.value) })} /></div>
+                    </div>
+                    <div>
+                      <Label>Yan Haklar</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {BENEFIT_OPTIONS.map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => setReviewForm({
+                              ...reviewForm,
+                              benefits: reviewForm.benefits.includes(opt.value)
+                                ? reviewForm.benefits.filter((b: string) => b !== opt.value)
+                                : [...reviewForm.benefits, opt.value],
+                            })}
+                            className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                              reviewForm.benefits.includes(opt.value)
+                                ? "border-alm-green bg-alm-green/20 text-alm-green"
+                                : "border-border bg-card text-muted-foreground"
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                     <Button onClick={handleUpdateReview} className="w-full">Güncelle</Button>
                   </div>
@@ -591,7 +752,7 @@ const Admin = () => {
                 </Table>
               </div>
               <Dialog open={salaryDialogOpen} onOpenChange={setSalaryDialogOpen}>
-                <DialogContent>
+                <DialogContent className="max-h-[85vh] overflow-y-auto">
                   <DialogHeader><DialogTitle>Maaş Bilgisini Düzenle</DialogTitle></DialogHeader>
                   <div className="space-y-3 mt-2">
                     <div><Label>Pozisyon *</Label><Input value={salaryForm.job_title} onChange={(e) => setSalaryForm({ ...salaryForm, job_title: e.target.value })} /></div>
@@ -601,13 +762,75 @@ const Admin = () => {
                       <Select value={salaryForm.currency} onValueChange={(v) => setSalaryForm({ ...salaryForm, currency: v })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="TRY">TRY</SelectItem>
-                          <SelectItem value="USD">USD</SelectItem>
-                          <SelectItem value="EUR">EUR</SelectItem>
+                          {CURRENCIES.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Net / Brüt</Label>
+                      <Select value={salaryForm.salary_basis} onValueChange={(v) => setSalaryForm({ ...salaryForm, salary_basis: v })}>
+                        <SelectTrigger><SelectValue placeholder="Seçiniz" /></SelectTrigger>
+                        <SelectContent>
+                          {SALARY_BASES.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
                     <div><Label>Deneyim (Yıl)</Label><Input type="number" value={salaryForm.experience_years} onChange={(e) => setSalaryForm({ ...salaryForm, experience_years: e.target.value })} placeholder="0" /></div>
+                    <div>
+                      <Label>Çalışma Tipi</Label>
+                      <Select value={salaryForm.employment_type} onValueChange={(v) => setSalaryForm({ ...salaryForm, employment_type: v })}>
+                        <SelectTrigger><SelectValue placeholder="Seçiniz" /></SelectTrigger>
+                        <SelectContent>
+                          {EMPLOYMENT_TYPES.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Seniority</Label>
+                      <Select value={salaryForm.seniority_level} onValueChange={(v) => setSalaryForm({ ...salaryForm, seniority_level: v })}>
+                        <SelectTrigger><SelectValue placeholder="Seçiniz" /></SelectTrigger>
+                        <SelectContent>
+                          {SENIORITY_LEVELS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div><Label>Departman</Label><Input value={salaryForm.department} onChange={(e) => setSalaryForm({ ...salaryForm, department: e.target.value })} /></div>
+                    <div>
+                      <Label>Çalışma Modeli</Label>
+                      <Select value={salaryForm.work_model} onValueChange={(v) => setSalaryForm({ ...salaryForm, work_model: v })}>
+                        <SelectTrigger><SelectValue placeholder="Seçiniz" /></SelectTrigger>
+                        <SelectContent>
+                          {WORK_MODELS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div><Label>Şehir</Label><Input value={salaryForm.location_city} onChange={(e) => setSalaryForm({ ...salaryForm, location_city: e.target.value })} /></div>
+                    <div><Label>Yıllık Bonus</Label><Input type="number" value={salaryForm.bonus_amount_yearly} onChange={(e) => setSalaryForm({ ...salaryForm, bonus_amount_yearly: e.target.value })} placeholder="0" /></div>
+                    <div><Label>Hisse / Equity</Label><Input value={salaryForm.equity_or_stock} onChange={(e) => setSalaryForm({ ...salaryForm, equity_or_stock: e.target.value })} /></div>
+                    <div>
+                      <Label>Yan Haklar</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {BENEFIT_OPTIONS.map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => setSalaryForm({
+                              ...salaryForm,
+                              benefits: salaryForm.benefits.includes(opt.value)
+                                ? salaryForm.benefits.filter((b: string) => b !== opt.value)
+                                : [...salaryForm.benefits, opt.value],
+                            })}
+                            className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                              salaryForm.benefits.includes(opt.value)
+                                ? "border-alm-green bg-alm-green/20 text-alm-green"
+                                : "border-border bg-card text-muted-foreground"
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <Button onClick={handleUpdateSalary} className="w-full">Güncelle</Button>
                   </div>
                 </DialogContent>
@@ -649,7 +872,7 @@ const Admin = () => {
                 </Table>
               </div>
               <Dialog open={interviewDialogOpen} onOpenChange={setInterviewDialogOpen}>
-                <DialogContent>
+                <DialogContent className="max-h-[85vh] overflow-y-auto">
                   <DialogHeader><DialogTitle>Mülakat Bilgisini Düzenle</DialogTitle></DialogHeader>
                   <div className="space-y-3 mt-2">
                     <div><Label>Pozisyon *</Label><Input value={interviewForm.position} onChange={(e) => setInterviewForm({ ...interviewForm, position: e.target.value })} /></div>
@@ -659,9 +882,7 @@ const Admin = () => {
                       <Select value={interviewForm.difficulty} onValueChange={(v) => setInterviewForm({ ...interviewForm, difficulty: v })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Kolay">Kolay</SelectItem>
-                          <SelectItem value="Orta">Orta</SelectItem>
-                          <SelectItem value="Zor">Zor</SelectItem>
+                          {INTERVIEW_DIFFICULTIES.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
@@ -670,12 +891,47 @@ const Admin = () => {
                       <Select value={interviewForm.result} onValueChange={(v) => setInterviewForm({ ...interviewForm, result: v })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
+                          {INTERVIEW_RESULTS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
                           <SelectItem value="Olumlu">Olumlu</SelectItem>
                           <SelectItem value="Olumsuz">Olumsuz</SelectItem>
                           <SelectItem value="Belirsiz">Belirsiz</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
+                    <div><Label>Mülakat Yılı</Label><Input type="number" value={interviewForm.interview_year} onChange={(e) => setInterviewForm({ ...interviewForm, interview_year: e.target.value })} placeholder="2025" /></div>
+                    <div>
+                      <Label>Mülakat Türü</Label>
+                      <Select value={interviewForm.interview_type} onValueChange={(v) => setInterviewForm({ ...interviewForm, interview_type: v })}>
+                        <SelectTrigger><SelectValue placeholder="Seçiniz" /></SelectTrigger>
+                        <SelectContent>
+                          {INTERVIEW_TYPES.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div><Label>Aşama Sayısı</Label><Input type="number" value={interviewForm.stage_count} onChange={(e) => setInterviewForm({ ...interviewForm, stage_count: e.target.value })} placeholder="3" /></div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="has_case_study" checked={interviewForm.has_case_study === true} onCheckedChange={(v) => setInterviewForm({ ...interviewForm, has_case_study: v ? true : null })} />
+                      <Label htmlFor="has_case_study">Case Study / Ödev Var</Label>
+                    </div>
+                    <div><Label>Geri Dönüş Süresi (gün)</Label><Input type="number" value={interviewForm.response_time_days} onChange={(e) => setInterviewForm({ ...interviewForm, response_time_days: e.target.value })} placeholder="7" /></div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="salary_discussed" checked={interviewForm.salary_discussed === true} onCheckedChange={(v) => setInterviewForm({ ...interviewForm, salary_discussed: v ? true : null })} />
+                      <Label htmlFor="salary_discussed">Maaş Konuşuldu</Label>
+                    </div>
+                    {interviewForm.result === "Teklif Aldım" && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div><Label>Teklif Edilen Maaş</Label><Input type="number" value={interviewForm.offered_salary_amount} onChange={(e) => setInterviewForm({ ...interviewForm, offered_salary_amount: e.target.value })} /></div>
+                        <div>
+                          <Label>Para Birimi</Label>
+                          <Select value={interviewForm.offered_salary_currency} onValueChange={(v) => setInterviewForm({ ...interviewForm, offered_salary_currency: v })}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {CURRENCIES.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    )}
                     <Button onClick={handleUpdateInterview} className="w-full">Güncelle</Button>
                   </div>
                 </DialogContent>

@@ -216,9 +216,17 @@ export type Database = {
           created_at: string
           difficulty: string | null
           experience: string | null
+          has_case_study: boolean | null
           id: string
+          interview_type: string | null
+          interview_year: number | null
+          offered_salary_amount: number | null
+          offered_salary_currency: string | null
           position: string
+          response_time_days: number | null
           result: string | null
+          salary_discussed: boolean | null
+          stage_count: number | null
           user_id: string
         }
         Insert: {
@@ -226,9 +234,17 @@ export type Database = {
           created_at?: string
           difficulty?: string | null
           experience?: string | null
+          has_case_study?: boolean | null
           id?: string
+          interview_type?: string | null
+          interview_year?: number | null
+          offered_salary_amount?: number | null
+          offered_salary_currency?: string | null
           position: string
+          response_time_days?: number | null
           result?: string | null
+          salary_discussed?: boolean | null
+          stage_count?: number | null
           user_id: string
         }
         Update: {
@@ -236,9 +252,17 @@ export type Database = {
           created_at?: string
           difficulty?: string | null
           experience?: string | null
+          has_case_study?: boolean | null
           id?: string
+          interview_type?: string | null
+          interview_year?: number | null
+          offered_salary_amount?: number | null
+          offered_salary_currency?: string | null
           position?: string
+          response_time_days?: number | null
           result?: string | null
+          salary_discussed?: boolean | null
+          stage_count?: number | null
           user_id?: string
         }
         Relationships: [
@@ -319,40 +343,79 @@ export type Database = {
       }
       reviews: {
         Row: {
+          benefits: string[] | null
           company_id: string
           cons: string | null
           created_at: string
+          department: string | null
           id: string
+          position_level: string | null
           pros: string | null
           rating: number
+          rating_career_growth: number | null
+          rating_communication: number | null
+          rating_compensation_benefits: number | null
+          rating_manager_behavior: number | null
+          rating_tasks: number | null
+          rating_team_spirit: number | null
+          rating_work_atmosphere: number | null
+          rating_work_life_balance: number | null
           recommends: boolean | null
+          reviewer_relationship: string | null
           title: string
           updated_at: string
           user_id: string
+          work_model: string | null
         }
         Insert: {
+          benefits?: string[] | null
           company_id: string
           cons?: string | null
           created_at?: string
+          department?: string | null
           id?: string
+          position_level?: string | null
           pros?: string | null
           rating: number
+          rating_career_growth?: number | null
+          rating_communication?: number | null
+          rating_compensation_benefits?: number | null
+          rating_manager_behavior?: number | null
+          rating_tasks?: number | null
+          rating_team_spirit?: number | null
+          rating_work_atmosphere?: number | null
+          rating_work_life_balance?: number | null
           recommends?: boolean | null
+          reviewer_relationship?: string | null
           title: string
           updated_at?: string
           user_id: string
+          work_model?: string | null
         }
         Update: {
+          benefits?: string[] | null
           company_id?: string
           cons?: string | null
           created_at?: string
+          department?: string | null
           id?: string
+          position_level?: string | null
           pros?: string | null
           rating?: number
+          rating_career_growth?: number | null
+          rating_communication?: number | null
+          rating_compensation_benefits?: number | null
+          rating_manager_behavior?: number | null
+          rating_tasks?: number | null
+          rating_team_spirit?: number | null
+          rating_work_atmosphere?: number | null
+          rating_work_life_balance?: number | null
           recommends?: boolean | null
+          reviewer_relationship?: string | null
           title?: string
           updated_at?: string
           user_id?: string
+          work_model?: string | null
         }
         Relationships: [
           {
@@ -366,34 +429,61 @@ export type Database = {
       }
       salaries: {
         Row: {
+          benefits: string[] | null
+          bonus_amount_yearly: number | null
           company_id: string
           created_at: string
           currency: string | null
+          department: string | null
+          employment_type: string | null
+          equity_or_stock: string | null
           experience_years: number | null
           id: string
           job_title: string
+          location_city: string | null
           salary_amount: number
+          salary_basis: string | null
+          seniority_level: string | null
           user_id: string
+          work_model: string | null
         }
         Insert: {
+          benefits?: string[] | null
+          bonus_amount_yearly?: number | null
           company_id: string
           created_at?: string
           currency?: string | null
+          department?: string | null
+          employment_type?: string | null
+          equity_or_stock?: string | null
           experience_years?: number | null
           id?: string
           job_title: string
+          location_city?: string | null
           salary_amount: number
+          salary_basis?: string | null
+          seniority_level?: string | null
           user_id: string
+          work_model?: string | null
         }
         Update: {
+          benefits?: string[] | null
+          bonus_amount_yearly?: number | null
           company_id?: string
           created_at?: string
           currency?: string | null
+          department?: string | null
+          employment_type?: string | null
+          equity_or_stock?: string | null
           experience_years?: number | null
           id?: string
           job_title?: string
+          location_city?: string | null
           salary_amount?: number
+          salary_basis?: string | null
+          seniority_level?: string | null
           user_id?: string
+          work_model?: string | null
         }
         Relationships: [
           {
@@ -479,27 +569,51 @@ export type Database = {
           created_at: string | null
           difficulty: string | null
           experience: string | null
+          has_case_study: boolean | null
           id: string | null
+          interview_type: string | null
+          interview_year: number | null
+          offered_salary_amount: number | null
+          offered_salary_currency: string | null
           position: string | null
+          response_time_days: number | null
           result: string | null
+          salary_discussed: boolean | null
+          stage_count: number | null
         }
         Insert: {
           company_id?: string | null
           created_at?: string | null
           difficulty?: string | null
           experience?: string | null
+          has_case_study?: boolean | null
           id?: string | null
+          interview_type?: string | null
+          interview_year?: number | null
+          offered_salary_amount?: number | null
+          offered_salary_currency?: string | null
           position?: string | null
+          response_time_days?: number | null
           result?: string | null
+          salary_discussed?: boolean | null
+          stage_count?: number | null
         }
         Update: {
           company_id?: string | null
           created_at?: string | null
           difficulty?: string | null
           experience?: string | null
+          has_case_study?: boolean | null
           id?: string | null
+          interview_type?: string | null
+          interview_year?: number | null
+          offered_salary_amount?: number | null
+          offered_salary_currency?: string | null
           position?: string | null
+          response_time_days?: number | null
           result?: string | null
+          salary_discussed?: boolean | null
+          stage_count?: number | null
         }
         Relationships: [
           {
@@ -513,37 +627,76 @@ export type Database = {
       }
       reviews_public: {
         Row: {
+          benefits: string[] | null
           company_id: string | null
           cons: string | null
           created_at: string | null
+          department: string | null
           id: string | null
+          position_level: string | null
           pros: string | null
           rating: number | null
+          rating_career_growth: number | null
+          rating_communication: number | null
+          rating_compensation_benefits: number | null
+          rating_manager_behavior: number | null
+          rating_tasks: number | null
+          rating_team_spirit: number | null
+          rating_work_atmosphere: number | null
+          rating_work_life_balance: number | null
           recommends: boolean | null
+          reviewer_relationship: string | null
           title: string | null
           updated_at: string | null
+          work_model: string | null
         }
         Insert: {
+          benefits?: string[] | null
           company_id?: string | null
           cons?: string | null
           created_at?: string | null
+          department?: string | null
           id?: string | null
+          position_level?: string | null
           pros?: string | null
           rating?: number | null
+          rating_career_growth?: number | null
+          rating_communication?: number | null
+          rating_compensation_benefits?: number | null
+          rating_manager_behavior?: number | null
+          rating_tasks?: number | null
+          rating_team_spirit?: number | null
+          rating_work_atmosphere?: number | null
+          rating_work_life_balance?: number | null
           recommends?: boolean | null
+          reviewer_relationship?: string | null
           title?: string | null
           updated_at?: string | null
+          work_model?: string | null
         }
         Update: {
+          benefits?: string[] | null
           company_id?: string | null
           cons?: string | null
           created_at?: string | null
+          department?: string | null
           id?: string | null
+          position_level?: string | null
           pros?: string | null
           rating?: number | null
+          rating_career_growth?: number | null
+          rating_communication?: number | null
+          rating_compensation_benefits?: number | null
+          rating_manager_behavior?: number | null
+          rating_tasks?: number | null
+          rating_team_spirit?: number | null
+          rating_work_atmosphere?: number | null
+          rating_work_life_balance?: number | null
           recommends?: boolean | null
+          reviewer_relationship?: string | null
           title?: string | null
           updated_at?: string | null
+          work_model?: string | null
         }
         Relationships: [
           {
@@ -557,31 +710,58 @@ export type Database = {
       }
       salaries_public: {
         Row: {
+          benefits: string[] | null
+          bonus_amount_yearly: number | null
           company_id: string | null
           created_at: string | null
           currency: string | null
+          department: string | null
+          employment_type: string | null
+          equity_or_stock: string | null
           experience_years: number | null
           id: string | null
           job_title: string | null
+          location_city: string | null
           salary_amount: number | null
+          salary_basis: string | null
+          seniority_level: string | null
+          work_model: string | null
         }
         Insert: {
+          benefits?: string[] | null
+          bonus_amount_yearly?: number | null
           company_id?: string | null
           created_at?: string | null
           currency?: string | null
+          department?: string | null
+          employment_type?: string | null
+          equity_or_stock?: string | null
           experience_years?: number | null
           id?: string | null
           job_title?: string | null
+          location_city?: string | null
           salary_amount?: number | null
+          salary_basis?: string | null
+          seniority_level?: string | null
+          work_model?: string | null
         }
         Update: {
+          benefits?: string[] | null
+          bonus_amount_yearly?: number | null
           company_id?: string | null
           created_at?: string | null
           currency?: string | null
+          department?: string | null
+          employment_type?: string | null
+          equity_or_stock?: string | null
           experience_years?: number | null
           id?: string | null
           job_title?: string | null
+          location_city?: string | null
           salary_amount?: number | null
+          salary_basis?: string | null
+          seniority_level?: string | null
+          work_model?: string | null
         }
         Relationships: [
           {

@@ -41,6 +41,19 @@ interface ReviewPublic {
   cons: string | null;
   rating: number;
   recommends: boolean | null;
+  reviewer_relationship: string | null;
+  position_level: string | null;
+  department: string | null;
+  work_model: string | null;
+  rating_work_atmosphere: number | null;
+  rating_communication: number | null;
+  rating_team_spirit: number | null;
+  rating_work_life_balance: number | null;
+  rating_manager_behavior: number | null;
+  rating_tasks: number | null;
+  rating_compensation_benefits: number | null;
+  rating_career_growth: number | null;
+  benefits: string[] | null;
   created_at: string;
 }
 
@@ -50,7 +63,16 @@ interface SalaryPublic {
   job_title: string;
   salary_amount: number;
   currency: string | null;
+  salary_basis: string | null;
   experience_years: number | null;
+  employment_type: string | null;
+  seniority_level: string | null;
+  department: string | null;
+  work_model: string | null;
+  location_city: string | null;
+  bonus_amount_yearly: number | null;
+  equity_or_stock: string | null;
+  benefits: string[] | null;
   created_at: string;
 }
 
@@ -61,6 +83,14 @@ interface InterviewPublic {
   experience: string | null;
   difficulty: string | null;
   result: string | null;
+  interview_year: number | null;
+  interview_type: string | null;
+  stage_count: number | null;
+  has_case_study: boolean | null;
+  response_time_days: number | null;
+  salary_discussed: boolean | null;
+  offered_salary_amount: number | null;
+  offered_salary_currency: string | null;
   created_at: string;
 }
 
@@ -467,14 +497,26 @@ const CompanyDetail = () => {
                     {salaries.map((s) => (
                       <div key={s.id} className="card-elevated p-5">
                         <div className="flex items-center justify-between">
-                          <h4 className="font-display text-sm font-bold text-foreground">{s.job_title}</h4>
-                          <span className="text-lg font-bold text-alm-green">
-                            {s.salary_amount.toLocaleString("tr-TR")} {s.currency || "TRY"}
-                          </span>
+                          <div>
+                            <h4 className="font-display text-sm font-bold text-foreground">{s.job_title}</h4>
+                            {(s.seniority_level || s.employment_type) && (
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {[s.seniority_level, s.employment_type === "full_time" ? "Tam Zamanlı" : s.employment_type === "part_time" ? "Yarı Zamanlı" : s.employment_type].filter(Boolean).join(" · ")}
+                              </p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <span className="text-lg font-bold text-alm-green">
+                              {s.salary_amount.toLocaleString("tr-TR")} {s.currency || "TRY"}
+                            </span>
+                            {s.salary_basis && <p className="text-xs text-muted-foreground">{s.salary_basis === "net" ? "Net" : "Brüt"}</p>}
+                          </div>
                         </div>
                         <div className="mt-3 flex items-center justify-between">
                           <div className="flex items-center gap-3 text-xs text-muted-foreground">
                             {s.experience_years !== null && <span>{s.experience_years} yıl deneyim</span>}
+                            {s.work_model && <span>{s.work_model === "onsite" ? "Ofisten" : s.work_model === "hybrid" ? "Hibrit" : "Uzaktan"}</span>}
+                            {s.location_city && <span>{s.location_city}</span>}
                             <span>{new Date(s.created_at).toLocaleDateString("tr-TR")}</span>
                           </div>
                           <div className="flex items-center gap-1">
@@ -510,12 +552,18 @@ const CompanyDetail = () => {
                     </Button>
                     {interviews.map((i) => (
                       <div key={i.id} className="card-elevated p-5">
-                        <h4 className="font-display text-sm font-bold text-foreground">{i.position}</h4>
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-display text-sm font-bold text-foreground">{i.position}</h4>
+                          {i.interview_year && <span className="text-xs text-muted-foreground">{i.interview_year}</span>}
+                        </div>
                         {i.experience && <p className="mt-2 text-sm text-muted-foreground">{i.experience}</p>}
                         <div className="mt-3 flex items-center justify-between">
                           <div className="flex items-center gap-3 text-xs text-muted-foreground">
                             {i.difficulty && <span>Zorluk: {i.difficulty}</span>}
                             {i.result && <span>Sonuç: {i.result}</span>}
+                            {i.interview_type && <span>{i.interview_type === "onsite" ? "Yüzyüze" : i.interview_type === "remote" ? "Online" : "Hibrit"}</span>}
+                            {i.stage_count && <span>{i.stage_count} aşama</span>}
+                            {i.offered_salary_amount && <span className="text-alm-green font-medium">Teklif: {i.offered_salary_amount.toLocaleString("tr-TR")} {i.offered_salary_currency || "TRY"}</span>}
                             <span>{new Date(i.created_at).toLocaleDateString("tr-TR")}</span>
                           </div>
                           <div className="flex items-center gap-1">
