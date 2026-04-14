@@ -4,6 +4,14 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Shield, User, Menu, X } from "lucide-react";
 import { useState } from "react";
 
+const quickLinks = [
+  { label: "Ara", href: "/sirketler" },
+  { label: "Öner", href: "/sirket-oner" },
+  { label: "Değerlendir", href: "/sirketler" },
+  { label: "Mülakat", href: "/sirketler" },
+  { label: "Maaş", href: "/sirketler" },
+];
+
 const Navbar = () => {
   const { user, isAdmin, signOut, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -20,14 +28,24 @@ const Navbar = () => {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-4 md:flex">
-          <Link to="/sirketler" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Şirketler
-          </Link>
-          {user && (
-            <Link to="/sirket-oner" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Şirket Öner
-            </Link>
-          )}
+          <div className="flex items-center text-sm text-muted-foreground">
+            {quickLinks.map((item, index) => (
+              <div key={item.label} className="flex items-center">
+                {index > 0 && <span className="px-2 text-border">|</span>}
+                <Link to={item.href} className="transition-colors hover:text-foreground">
+                  {item.label}
+                </Link>
+              </div>
+            ))}
+            {!user && (
+              <div className="flex items-center">
+                <span className="px-2 text-border">|</span>
+                <Link to="/giris" className="transition-colors hover:text-foreground">
+                  Üye Ol
+                </Link>
+              </div>
+            )}
+          </div>
           {isAdmin && (
             <Link to="/admin" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
               <Shield className="h-3.5 w-3.5" /> Admin
@@ -60,14 +78,16 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="border-t border-border bg-background px-4 py-3 md:hidden">
           <nav className="flex flex-col gap-2">
-            <Link to="/sirketler" onClick={() => setMobileOpen(false)} className="text-sm text-muted-foreground hover:text-foreground py-1">
-              Şirketler
-            </Link>
-            {user && (
-              <Link to="/sirket-oner" onClick={() => setMobileOpen(false)} className="text-sm text-muted-foreground hover:text-foreground py-1">
-                Şirket Öner
+            {quickLinks.map((item) => (
+              <Link
+                key={item.label}
+                to={item.href}
+                onClick={() => setMobileOpen(false)}
+                className="text-sm text-muted-foreground hover:text-foreground py-1"
+              >
+                {item.label}
               </Link>
-            )}
+            ))}
             {isAdmin && (
               <Link to="/admin" onClick={() => setMobileOpen(false)} className="text-sm text-muted-foreground hover:text-foreground py-1 flex items-center gap-1">
                 <Shield className="h-3.5 w-3.5" /> Admin

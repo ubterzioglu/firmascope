@@ -204,48 +204,50 @@ const Index = () => {
 
         <section className="py-10">
           <div className="container mx-auto max-w-4xl px-4">
-            <h2 className="text-center font-display text-2xl font-bold text-foreground md:text-3xl">
-              Türkiye'de Şirket Değerlendirmesi Neden Önemli?
-            </h2>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
-              2026 yılında yapılan kariyer araştırmalarına göre, adayların büyük bölümü iş teklifi öncesinde kurum kültürü ve ücret adaleti hakkında bağımsız kaynak arıyor.
-              Şirketlerin resmi iletişimi her zaman gerçek ekip deneyimini yansıtmayabilir; bu nedenle anonim geri bildirimler, adayların karar sürecinde daha yüksek isabet sağlar.
-              <strong>Anonim değerlendirme</strong> modeli, çalışanların çekinmeden geri bildirim bırakmasını kolaylaştırırken,
-              şirketlerin de tekrar eden sorunları daha hızlı tespit etmesine yardımcı olur.
-            </p>
+            <div className="rounded-lg border border-border bg-card px-5 py-6 shadow-sm md:px-8 md:py-8">
+              <h2 className="text-center font-display text-2xl font-bold text-foreground md:text-3xl">
+                Türkiye'de Şirket Değerlendirmesi Neden Önemli?
+              </h2>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">
+                2026 yılında yapılan kariyer araştırmalarına göre, adayların büyük bölümü iş teklifi öncesinde kurum kültürü ve ücret adaleti hakkında bağımsız kaynak arıyor.
+                Şirketlerin resmi iletişimi her zaman gerçek ekip deneyimini yansıtmayabilir; bu nedenle anonim geri bildirimler, adayların karar sürecinde daha yüksek isabet sağlar.
+                <strong>Anonim değerlendirme</strong> modeli, çalışanların çekinmeden geri bildirim bırakmasını kolaylaştırırken,
+                şirketlerin de tekrar eden sorunları daha hızlı tespit etmesine yardımcı olur.
+              </p>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <section className="rounded-xl border border-border bg-card p-4">
-                <h3 className="text-base font-semibold text-foreground">Adaylar için kazanımlar</h3>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
-                  <li>Mülakat sürecinin gerçek zorluk seviyesini önceden görürsünüz.</li>
-                  <li>Rol bazlı maaş bantlarını karşılaştırıp pazarlık gücünüz artar.</li>
-                  <li>Kültür, yönetim stili ve ekip dengesi hakkında net sinyaller alırsınız.</li>
-                </ul>
-              </section>
-              <section className="rounded-xl border border-border bg-card p-4">
-                <h3 className="text-base font-semibold text-foreground">Şirketler için kazanımlar</h3>
-                <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
-                  <li>Tekrarlayan şikayetleri erken fark edip iyileştirme yapabilirler.</li>
-                  <li>İşe alım markası açısından güven oluşturacak somut veri elde ederler.</li>
-                  <li>Yetkin adaylarla daha uyumlu beklenti yönetimi sağlarlar.</li>
-                </ol>
-              </section>
-            </div>
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                <section className="rounded-lg border border-border/80 bg-alm-blue/5 p-4">
+                  <h3 className="text-base font-semibold text-foreground">Adaylar için kazanımlar</h3>
+                  <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
+                    <li>Mülakat sürecinin gerçek zorluk seviyesini önceden görürsünüz.</li>
+                    <li>Rol bazlı maaş bantlarını karşılaştırıp pazarlık gücünüz artar.</li>
+                    <li>Kültür, yönetim stili ve ekip dengesi hakkında net sinyaller alırsınız.</li>
+                  </ul>
+                </section>
+                <section className="rounded-lg border border-border/80 bg-alm-green/5 p-4">
+                  <h3 className="text-base font-semibold text-foreground">Şirketler için kazanımlar</h3>
+                  <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
+                    <li>Tekrarlayan şikayetleri erken fark edip iyileştirme yapabilirler.</li>
+                    <li>İşe alım markası açısından güven oluşturacak somut veri elde ederler.</li>
+                    <li>Yetkin adaylarla daha uyumlu beklenti yönetimi sağlarlar.</li>
+                  </ul>
+                </section>
+              </div>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <section className="rounded-xl border border-border bg-card p-4">
-                <h3 className="text-base font-semibold text-foreground">firmascope nedir?</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  firmascope; <strong>anonim değerlendirme</strong>, maaş paylaşımı ve mülakat geri bildirimini tek akışta sunan, Türkiye odaklı şirket şeffaflık platformudur.
-                </p>
-              </section>
-              <section className="rounded-xl border border-border bg-card p-4">
-                <h3 className="text-base font-semibold text-foreground">Anonim şirket değerlendirmesi ne demek?</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Kullanıcı kimliğinin saklı kaldığı, sadece deneyim bilgisinin paylaşıldığı ve topluluğun karar kalitesini artıran geri bildirim modelidir.
-                </p>
-              </section>
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                <section className="rounded-lg border border-border/80 bg-alm-yellow/10 p-4">
+                  <h3 className="text-base font-semibold text-foreground">firmascope nedir?</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    firmascope; <strong>anonim değerlendirme</strong>, maaş paylaşımı ve mülakat geri bildirimini tek akışta sunan, Türkiye odaklı şirket şeffaflık platformudur.
+                  </p>
+                </section>
+                <section className="rounded-lg border border-border/80 bg-alm-orange/5 p-4">
+                  <h3 className="text-base font-semibold text-foreground">Anonim şirket değerlendirmesi ne demek?</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    Kullanıcı kimliğinin saklı kaldığı, sadece deneyim bilgisinin paylaşıldığı ve topluluğun karar kalitesini artıran geri bildirim modelidir.
+                  </p>
+                </section>
+              </div>
             </div>
           </div>
         </section>

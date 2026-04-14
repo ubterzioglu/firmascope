@@ -1,7 +1,7 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import Layout from "@/components/Layout";
-import { Search, Home, Building2, ArrowLeft } from "lucide-react";
+import { Search, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const NotFound = () => {
@@ -17,7 +17,7 @@ const NotFound = () => {
         <div className="container mx-auto px-4 text-center">
           {/* Big 404 */}
           <div className="relative inline-block">
-            <span className="font-display text-[10rem] font-extrabold leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-primary via-alm-teal to-alm-green select-none md:text-[14rem]">
+            <span className="select-none font-display text-[10rem] font-extrabold leading-none tracking-tighter text-alm-orange md:text-[14rem]">
               404
             </span>
             <div className="absolute inset-0 flex items-center justify-center">
@@ -31,41 +31,32 @@ const NotFound = () => {
           <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground leading-relaxed">
             Aradığınız sayfa taşınmış, silinmiş veya hiç var olmamış olabilir.
             <br />
-            <span className="font-mono text-xs text-muted-foreground/70">{location.pathname}</span>
+            firmascope bu sayfayı bulamadı
+            <br />
+            seni ana sayfaya alalım :)
           </p>
 
-          {/* Action buttons */}
-          <div className="mx-auto mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild className="rounded-xl font-semibold text-sm h-11 px-6">
+          <div className="mx-auto mt-8 flex items-center justify-center">
+            <Button asChild className="h-11 rounded-lg px-6 text-sm font-semibold">
               <Link to="/">
                 <Home className="mr-2 h-4 w-4" />
                 Ana Sayfa
               </Link>
             </Button>
-            <Button asChild variant="outline" className="rounded-xl font-semibold text-sm h-11 px-6 border-2">
-              <Link to="/sirketler">
-                <Building2 className="mr-2 h-4 w-4" />
-                Şirketleri Keşfet
-              </Link>
-            </Button>
-            <Button
-              variant="ghost"
-              className="rounded-xl font-semibold text-sm h-11 px-6"
-              onClick={() => window.history.back()}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Geri Dön
-            </Button>
           </div>
 
-          {/* Decorative pills */}
-          <div className="mx-auto mt-12 flex flex-wrap items-center justify-center gap-2 max-w-xs">
+          <div className="mx-auto mt-12 flex max-w-full flex-nowrap items-center justify-center gap-2 overflow-x-auto px-2">
             {["Değerlendirmeler", "Maaşlar", "Mülakatlar", "Şirketler"].map((label, i) => {
-              const colors = ["bg-alm-blue/15 text-primary", "bg-alm-green/15 text-alm-green", "bg-alm-orange/15 text-alm-orange", "bg-alm-teal/15 text-alm-teal"];
+              const colors = [
+                "bg-[#4285F4]/15 text-[#4285F4]",
+                "bg-[#EA4335]/15 text-[#EA4335]",
+                "bg-[#FBBC05]/15 text-[#C58B00]",
+                "bg-[#34A853]/15 text-[#34A853]",
+              ];
               return (
                 <span
                   key={label}
-                  className={`inline-block rounded-full px-3 py-1 text-[11px] font-medium ${colors[i]} animate-pulse`}
+                  className={`inline-block whitespace-nowrap rounded-full px-3 py-1 text-[11px] font-medium ${colors[i]} animate-pulse`}
                   style={{ animationDelay: `${i * 0.2}s`, animationDuration: "3s" }}
                 >
                   {label}
