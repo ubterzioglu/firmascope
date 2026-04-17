@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+.vercel
+.vscode
+.idea
+.omc
+.kilo
+*.log
+.env*.local
+supabase/.temp

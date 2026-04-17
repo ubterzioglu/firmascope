@@ -1,0 +1,333 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1776422507724,
+  "projectRoot": "C:\\temp_private\\firmascope",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "react",
+        "version": "18.3.1",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "18.3.1",
+        "category": "frontend"
+      },
+      {
+        "name": "vite",
+        "version": "5.4.19",
+        "category": "build"
+      },
+      {
+        "name": "vitest",
+        "version": "3.2.4",
+        "category": "testing"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "bun build",
+    "testCommand": "bun test",
+    "lintCommand": "bun lint",
+    "devCommand": "bun dev",
+    "scripts": {
+      "dev": "vite",
+      "build": "tsx scripts/generate-sitemap.ts && vite build",
+      "build:dev": "vite build --mode development",
+      "lint": "eslint .",
+      "preview": "vite preview",
+      "test": "vitest run",
+      "test:watch": "vitest"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": "type-based"
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "public",
+      "scripts",
+      "src"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "0docu": {
+      "path": "0docu",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1776422507644,
+      "keyFiles": [
+        "status.md"
+      ]
+    },
+    "data": {
+      "path": "data",
+      "purpose": "Data files",
+      "fileCount": 4,
+      "lastAccessed": 1776422507644,
+      "keyFiles": [
+        "linkedin-companies-100.json",
+        "linkedin-companies-simple.json",
+        "linkedin-import.sql",
+        "linkedin-turkey-100.json"
+      ]
+    },
+    "dist": {
+      "path": "dist",
+      "purpose": "Distribution/build output",
+      "fileCount": 7,
+      "lastAccessed": 1776422507688,
+      "keyFiles": [
+        "favicon.ico",
+        "favicon.svg",
+        "index.html",
+        "og-image.png",
+        "placeholder.svg"
+      ]
+    },
+    "docu": {
+      "path": "docu",
+      "purpose": null,
+      "fileCount": 10,
+      "lastAccessed": 1776422507689,
+      "keyFiles": [
+        "APIFY_LINKEDIN_GUIDE.md",
+        "CENK_BRIEFING.md",
+        "HANDOVER.md",
+        "LINKEDIN_SCRAPE_RESULTS.md",
+        "MIGRATION_TO_SUPABASE.md"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 6,
+      "lastAccessed": 1776422507689,
+      "keyFiles": [
+        "favicon.ico",
+        "favicon.svg",
+        "og-image.png",
+        "placeholder.svg",
+        "robots.txt"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 12,
+      "lastAccessed": 1776422507690,
+      "keyFiles": [
+        "check-data.cjs",
+        "check-run.cjs",
+        "debug-api.cjs",
+        "generate-sitemap.ts",
+        "generate-sql.cjs"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 5,
+      "lastAccessed": 1776422507690,
+      "keyFiles": [
+        "App.css",
+        "App.tsx",
+        "index.css",
+        "main.tsx",
+        "vite-env.d.ts"
+      ]
+    },
+    "supabase": {
+      "path": "supabase",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1776422507690,
+      "keyFiles": [
+        "config.toml"
+      ]
+    },
+    "dist\\assets": {
+      "path": "dist\\assets",
+      "purpose": "Static assets",
+      "fileCount": 2,
+      "lastAccessed": 1776422507692,
+      "keyFiles": [
+        "index-CBGInzdm.js",
+        "index-Dr9MAiZ-.css"
+      ]
+    },
+    "src\\assets": {
+      "path": "src\\assets",
+      "purpose": "Static assets",
+      "fileCount": 3,
+      "lastAccessed": 1776422507694,
+      "keyFiles": [
+        "hero-keyhole.jpg",
+        "hero.jpg",
+        "hero.png"
+      ]
+    },
+    "src\\components": {
+      "path": "src\\components",
+      "purpose": "UI components",
+      "fileCount": 23,
+      "lastAccessed": 1776422507695,
+      "keyFiles": [
+        "AdminAnnouncements.tsx",
+        "AdminReports.tsx",
+        "AnnouncementCarousel.tsx"
+      ]
+    },
+    "src\\lib": {
+      "path": "src\\lib",
+      "purpose": "Library code",
+      "fileCount": 4,
+      "lastAccessed": 1776422507695,
+      "keyFiles": [
+        "clarity.ts",
+        "form-options.ts",
+        "seo.ts"
+      ]
+    },
+    "src\\pages": {
+      "path": "src\\pages",
+      "purpose": "Page components",
+      "fileCount": 9,
+      "lastAccessed": 1776422507696,
+      "keyFiles": [
+        "Admin.tsx",
+        "Auth.tsx",
+        "Companies.tsx"
+      ]
+    },
+    "supabase\\migrations": {
+      "path": "supabase\\migrations",
+      "purpose": "Database migrations",
+      "fileCount": 12,
+      "lastAccessed": 1776422507697,
+      "keyFiles": [
+        "20260207230937_6fde44f2-71c7-4a35-aee7-fd77aa70221a.sql",
+        "20260207232943_e6923fb0-1124-4b37-9587-a7cc3861eb5c.sql",
+        "20260208002853_a093b681-e484-406b-b1f2-865d888f099b.sql"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": ".env",
+      "accessCount": 2,
+      "lastAccessed": 1776423918421,
+      "type": "file"
+    },
+    {
+      "path": ".env.local",
+      "accessCount": 2,
+      "lastAccessed": 1776423918463,
+      "type": "file"
+    },
+    {
+      "path": "vite.config.ts",
+      "accessCount": 2,
+      "lastAccessed": 1776423928671,
+      "type": "file"
+    },
+    {
+      "path": "src",
+      "accessCount": 1,
+      "lastAccessed": 1776422524435,
+      "type": "directory"
+    },
+    {
+      "path": "src\\components\\TestBanner.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776422528370,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\Layout.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1776422528619,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 1,
+      "lastAccessed": 1776423862973,
+      "type": "file"
+    },
+    {
+      "path": "vercel.json",
+      "accessCount": 1,
+      "lastAccessed": 1776423863202,
+      "type": "file"
+    },
+    {
+      "path": "tsconfig.json",
+      "accessCount": 1,
+      "lastAccessed": 1776423877790,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 1,
+      "lastAccessed": 1776423919179,
+      "type": "directory"
+    },
+    {
+      "path": "Dockerfile",
+      "accessCount": 1,
+      "lastAccessed": 1776423944953,
+      "type": "file"
+    },
+    {
+      "path": "nginx.conf",
+      "accessCount": 1,
+      "lastAccessed": 1776423949411,
+      "type": "file"
+    },
+    {
+      "path": ".env.example",
+      "accessCount": 1,
+      "lastAccessed": 1776423953231,
+      "type": "file"
+    },
+    {
+      "path": ".dockerignore",
+      "accessCount": 1,
+      "lastAccessed": 1776423953793,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
