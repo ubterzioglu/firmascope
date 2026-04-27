@@ -4,6 +4,7 @@ import AnnouncementCarousel from "@/components/AnnouncementCarousel";
 import WhySection from "@/components/WhySection";
 import WhyFirmascope from "@/components/WhyFirmascope";
 import JsonLd from "@/components/JsonLd";
+import { homepageFaqItems } from "@/lib/homepage-faq";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -21,54 +22,12 @@ const actionItems = [
   { label: "Üye Ol", icon: UserPlus, color: "bg-alm-red", href: "/giris" },
 ];
 
-const homepageFaqItems = [
-  {
-    question: "firmascope nasıl çalışır?",
-    answer:
-      "firmascope, çalışanların şirket deneyimlerini anonim olarak paylaştığı bir platformdur. Değerlendirme, maaş ve mülakat bilgilerini güvenle paylaşabilirsiniz.",
-  },
-  {
-    question: "Kimliğim gerçekten gizli mi kalıyor?",
-    answer:
-      "Evet, yüzde 100 anonim. IP adresi, e-posta veya kişisel bilgiler asla şirketlerle paylaşılmaz. Gelişmiş şifreleme ile verileriniz korunur.",
-  },
-  {
-    question: "Şirket değerlendirmesi nasıl yapılır?",
-    answer:
-      "Bir şirket sayfasına gidip Değerlendirme Yaz butonuna tıklayın. Artıları, eksileri ve puanınızı paylaşın. Tamamen anonim kalırsınız.",
-  },
-  {
-    question: "Maaş bilgileri nasıl paylaşılır?",
-    answer:
-      "Çalıştığınız şirketin sayfasında Maaş Bilgisi Ekle butonunu kullanın. Pozisyon, deneyim yılı ve maaş tutarını girin.",
-  },
-  {
-    question: "Mülakat deneyimi nedir?",
-    answer:
-      "Başvurduğunuz şirketin mülakat sürecini, zorluk derecesini ve sonucunu paylaşarak diğer adaylara yol gösterirsiniz.",
-  },
-  {
-    question: "Şirketler yorumları silebilir mi?",
-    answer:
-      "Hayır. Şirketlerin yorumları silme veya düzenleme yetkisi yoktur. Tüm içerikler bağımsız olarak yönetilir.",
-  },
-  {
-    question: "Sahte yorumları nasıl engelliyorsunuz?",
-    answer:
-      "Gelişmiş doğrulama sistemimiz ve topluluk moderasyonu ile sahte içerikleri tespit edip kaldırıyoruz.",
-  },
-  {
-    question: "firmascope ücretsiz mi?",
-    answer:
-      "Evet, firmascope tamamen ücretsiz bir platformdur. Değerlendirme okuma, maaş bilgisi görüntüleme ve paylaşım yapmak için herhangi bir ücret alınmaz.",
-  },
-];
-
 const Index = () => {
   const [expanded, setExpanded] = useState(false);
 
   const meta = generateMeta({
-    title: "Türkiye'nin anonim şirket değerlendirme platformu",
+    title: "Anonim şirket değerlendirme platformu | firmascope",
+    appendTitleSuffix: false,
     description:
       "firmascope, Türkiye'deki şirketleri anonim olarak değerlendirmenizi sağlayan platformdur. Gerçek çalışan deneyimleri, maaş bilgisi ve mülakat süreçlerini güvenle paylaşabilirsiniz.",
     path: "/",
@@ -86,7 +45,9 @@ const Index = () => {
     "https://www.youtube.com",
   ]);
   const websiteJsonLd = generateJsonLd.website();
-  const faqJsonLd = generateJsonLd.faq(homepageFaqItems);
+  const faqJsonLd = generateJsonLd.faq(
+    homepageFaqItems.map((item) => ({ question: item.question, answer: item.answer }))
+  );
   const webPageJsonLd = generateJsonLd.webPage({
     type: "CollectionPage",
     name: meta.title,

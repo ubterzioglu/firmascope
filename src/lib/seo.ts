@@ -13,6 +13,7 @@ type MetaInput = {
   description: string;
   path?: string;
   canonical?: string;
+  appendTitleSuffix?: boolean;
   robots?: "index,follow" | "noindex,nofollow";
   keywords?: string[];
   image?: string;
@@ -21,7 +22,9 @@ type MetaInput = {
 
 export const generateMeta = (input: MetaInput) => {
   const canonical = input.canonical || `${seoConfig.siteUrl}${input.path || "/"}`;
-  const title = `${input.title} | ${seoConfig.titleSuffix}`;
+  const title = input.appendTitleSuffix === false
+    ? input.title
+    : `${input.title} | ${seoConfig.titleSuffix}`;
   const image = input.image || seoConfig.defaultImage;
   const robots = input.robots || "index,follow";
   const keywords = input.keywords?.join(", ");
