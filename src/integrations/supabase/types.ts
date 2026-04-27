@@ -801,6 +801,10 @@ export type Database = {
         }
         Returns: Database["public"]["Tables"]["companies"]["Row"]
       }
+      execute_company_import_sql: {
+        Args: { sql_text: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

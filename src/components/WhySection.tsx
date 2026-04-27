@@ -69,12 +69,18 @@ const WhySection = () => {
           <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
             {/* Image - top 50% */}
             <div className="relative aspect-[4/3] overflow-hidden">
-              <img
-                src={features[current].image}
-                alt={`${features[current].title} - anonim şirket değerlendirme ve maaş bilgisi`}
-                className="h-full w-full object-cover transition-transform duration-500"
-                loading="lazy"
-              />
+              <picture>
+                <source srcSet={`${features[current].image}&fm=avif`} type="image/avif" />
+                <source srcSet={`${features[current].image}&fm=webp`} type="image/webp" />
+                <img
+                  src={features[current].image}
+                  alt={`${features[current].title} - anonim şirket değerlendirme ve maaş bilgisi`}
+                  width={600}
+                  height={400}
+                  className="h-full w-full object-cover transition-transform duration-500"
+                  loading="lazy"
+                />
+              </picture>
             </div>
             {/* Text - bottom */}
             <div className="p-6 md:p-8">

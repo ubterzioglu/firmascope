@@ -1,6 +1,6 @@
 /**
  * LinkedIn verilerinden SQL INSERT dosyası oluşturur
- * Supabase Dashboard > SQL Editor'de çalıştırılabilir
+ * Admin panelindeki SQL upload alanında çalıştırılabilir
  * 
  * Kullanım: node scripts/generate-sql.cjs
  */
@@ -36,22 +36,17 @@ companies.forEach((c, i) => {
   
   sql += `
 INSERT INTO companies (
-  name, slug, initials, description, city, sector, size, status, 
-  website, logo_url, linkedin_url, source, scraped_at
+  name, slug, initials, description, city, sector, size, company_type, status
 ) VALUES (
   '${safeName}',
   '${c.slug}',
   '${c.initials}',
   '${safeDesc}',
-  '${c.city || 'İstanbul'}',
-  '${c.sector || 'Diğer'}',
+  '${c.city || 'Istanbul'}',
+  '${c.sector || 'Diger'}',
   '${c.size || '51-200'}',
-  'Aktif',
-  '${c.website || ''}',
-  '${c.logo_url || ''}',
-  '${c.linkedin_url || ''}',
-  'linkedin-apify',
-  '${c.scraped_at || new Date().toISOString()}'
+  'A.S.',
+  'Aktif'
 )
 ON CONFLICT (slug) DO NOTHING;
 `;
@@ -63,10 +58,10 @@ fs.writeFileSync(outputPath, sql);
 console.log('✅ SQL dosyası oluşturuldu:', outputPath);
 console.log(`📁 ${companies.length} şirket için INSERT komutları hazır`);
 console.log('\n📋 Kullanım:');
-console.log('   1. Supabase Dashboard > SQL Editor\'a git');
+console.log('   1. Admin panelinde Sirketler sekmesine git');
 console.log('   2. data/linkedin-import.sql dosyasını aç');
-console.log('   3. Tüm içeriği kopyala ve SQL Editor\'e yapıştır');
-console.log('   4. Çalıştır (Run)');
+console.log('   3. SQL dosyasını upload alanından yükle');
+console.log('   4. Çalıştır (SQL Dosyasini Calistir)');
 
 // Özet
 const sectors = {};

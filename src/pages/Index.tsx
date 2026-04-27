@@ -51,6 +51,7 @@ const Index = () => {
   const webPageJsonLd = generateJsonLd.webPage({
     type: "CollectionPage",
     name: meta.title,
+    headline: "Anonim Şirket Değerlendirme Platformu — firmascope",
     description: meta.description,
     path: "/",
     datePublished: "2025-01-01",
@@ -180,17 +181,17 @@ const Index = () => {
                 <section className="rounded-lg border border-border/80 bg-alm-blue/5 p-4">
                   <h3 className="text-base font-semibold text-foreground">Adaylar için kazanımlar</h3>
                   <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
-                    <li>Mülakat sürecinin gerçek zorluk seviyesini önceden görürsünüz.</li>
-                    <li>Rol bazlı maaş bantlarını karşılaştırıp pazarlık gücünüz artar.</li>
-                    <li>Kültür, yönetim stili ve ekip dengesi hakkında net sinyaller alırsınız.</li>
+                    <li>Mülakat sürecinin gerçek zorluk seviyesini önceden görebilir ve buna göre hazırlık yapabilirsiniz.</li>
+                    <li>Rol bazlı maaş bantlarını karşılaştırarak kendi deneyiminizi değerlendirebilir ve pazarlık gücünüzü artırabilirsiniz.</li>
+                    <li>Kültür, yönetim stili ve ekip dengesi hakkında net sinyaller alarak daha isabetli tercihler yapabilirsiniz.</li>
                   </ul>
                 </section>
                 <section className="rounded-lg border border-border/80 bg-alm-green/5 p-4">
                   <h3 className="text-base font-semibold text-foreground">Şirketler için kazanımlar</h3>
                   <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
-                    <li>Tekrarlayan şikayetleri erken fark edip iyileştirme yapabilirler.</li>
-                    <li>İşe alım markası açısından güven oluşturacak somut veri elde ederler.</li>
-                    <li>Yetkin adaylarla daha uyumlu beklenti yönetimi sağlarlar.</li>
+                    <li>Tekrarlayan şikayet kalıplarını erken fark edip hedefli iyileştirme adımları atabilirler.</li>
+                    <li>İşe alım markası açısından güven oluşturacak, çalışan geri bildirimlerine dayalı somut veri elde ederler.</li>
+                    <li>Yetkin adaylarla daha uyumlu beklenti yönetimi sağlayarak işe alım süreçlerini hızlandırırlar.</li>
                   </ul>
                 </section>
               </div>
@@ -214,6 +215,28 @@ const Index = () => {
         </section>
 
         <WhySection />
+
+        <section aria-labelledby="sources-title" className="py-10">
+          <div className="container mx-auto max-w-4xl px-4">
+            <div className="rounded-lg border border-border bg-card px-5 py-6 shadow-sm">
+              <h2 id="sources-title" className="text-center font-display text-2xl font-bold text-foreground">
+                Kaynaklar ve Ek Okuma
+              </h2>
+              <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+                <li>
+                  <a href="https://en.wikipedia.org/wiki/Employer_branding" target="_blank" rel="noopener">
+                    Employer branding kavramı ve şirket değerlendirmelerinin önemi — Wikipedia
+                  </a>
+                </li>
+                <li>
+                  <a href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data" target="_blank" rel="noopener">
+                    Yapılandırılmış veri rehberi — Google Search Central
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
       </article>
     </Layout>
   );

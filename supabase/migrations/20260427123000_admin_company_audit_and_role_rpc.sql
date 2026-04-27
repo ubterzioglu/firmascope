@@ -122,3 +122,125 @@ BEGIN
   RETURN created_company;
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION public.apply_company_import_metadata()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+DECLARE
+  import_source text := current_setting('app.company_import_source', true);
+BEGIN
+  IF import_source = 'sql_upload' THEN
+    NEW.provenance_tag := 'admin_manual';
+    NEW.created_via := 'sql_upload';
+    NEW.created_by_admin_user_id := auth.uid();
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS set_company_import_metadata ON public.companies;
+CREATE TRIGGER set_company_import_metadata
+  BEFORE INSERT ON public.companies
+  FOR EACH ROW
+  EXECUTE FUNCTION public.apply_company_import_metadata();
+
+CREATE OR REPLACE FUNCTION public.execute_company_import_sql(sql_text text)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  cleaned_sql text;
+  statements text[];
+  raw_statement text;
+  statement_text text;
+  values_segment text;
+  attempted_rows int;
+  inserted_rows int;
+  total_statements int := 0;
+  successful_rows int := 0;
+  skipped_rows int := 0;
+  error_details jsonb := '[]'::jsonb;
+BEGIN
+  IF NOT public.is_admin(auth.uid()) THEN
+    RAISE EXCEPTION 'Only admins can import companies.';
+  END IF;
+
+  IF coalesce(trim(sql_text), '') = '' THEN
+    RAISE EXCEPTION 'SQL file is empty.';
+  END IF;
+
+  cleaned_sql := regexp_replace(sql_text, E'--.*$', '', 'gm');
+  statements := regexp_split_to_array(cleaned_sql, E';\\s*');
+
+  FOREACH raw_statement IN ARRAY statements LOOP
+    statement_text := btrim(raw_statement);
+
+    IF statement_text = '' THEN
+      CONTINUE;
+    END IF;
+
+    total_statements := total_statements + 1;
+
+    IF statement_text ~* '\m(DROP|DELETE|ALTER|UPDATE|TRUNCATE|CREATE|GRANT|REVOKE)\M' THEN
+      error_details := error_details || jsonb_build_array(jsonb_build_object(
+        'statement_number', total_statements,
+        'message', 'Only INSERT INTO companies statements are allowed.'
+      ));
+      CONTINUE;
+    END IF;
+
+    IF statement_text !~* '^INSERT\s+INTO\s+(public\.)?companies\s*\(' THEN
+      error_details := error_details || jsonb_build_array(jsonb_build_object(
+        'statement_number', total_statements,
+        'message', 'Statement must start with INSERT INTO companies.'
+      ));
+      CONTINUE;
+    END IF;
+
+    IF statement_text !~* '\)\s*VALUES\s*\(' THEN
+      error_details := error_details || jsonb_build_array(jsonb_build_object(
+        'statement_number', total_statements,
+        'message', 'Statement must include a VALUES clause.'
+      ));
+      CONTINUE;
+    END IF;
+
+    values_segment := regexp_replace(statement_text, '(?is)^.*?\mVALUES\M\s*', '');
+    values_segment := regexp_replace(values_segment, '(?is)\s*ON\s+CONFLICT.*$', '');
+    attempted_rows := greatest(coalesce(array_length(regexp_split_to_array(values_segment, '\)\s*,\s*\('), 1), 0), 1);
+
+    BEGIN
+      PERFORM set_config('app.company_import_source', 'sql_upload', true);
+      EXECUTE statement_text;
+      GET DIAGNOSTICS inserted_rows = ROW_COUNT;
+
+      successful_rows := successful_rows + inserted_rows;
+      skipped_rows := skipped_rows + greatest(attempted_rows - inserted_rows, 0);
+    EXCEPTION
+      WHEN unique_violation THEN
+        skipped_rows := skipped_rows + attempted_rows;
+        error_details := error_details || jsonb_build_array(jsonb_build_object(
+          'statement_number', total_statements,
+          'message', 'Duplicate slug detected. Use ON CONFLICT (slug) DO NOTHING.'
+        ));
+      WHEN OTHERS THEN
+        error_details := error_details || jsonb_build_array(jsonb_build_object(
+          'statement_number', total_statements,
+          'message', SQLERRM
+        ));
+    END;
+  END LOOP;
+
+  RETURN jsonb_build_object(
+    'total_statements', total_statements,
+    'successful_rows', successful_rows,
+    'skipped_rows', skipped_rows,
+    'errors', error_details
+  );
+END;
+$$;

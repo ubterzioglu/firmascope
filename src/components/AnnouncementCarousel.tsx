@@ -64,12 +64,22 @@ const AnnouncementCarousel = () => {
               <div className="flex-shrink-0 w-[240px] h-[280px] rounded-xl overflow-hidden border border-border bg-card transition-shadow hover:shadow-lg group flex flex-col">
                 {/* Image - top half */}
                 <div className="h-[140px] flex-shrink-0 overflow-hidden">
-                  <img
-                    src={imageUrl}
-                    alt={`${item.title} - ${item.description || "firmascope duyurusu"}`}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                  />
+                  <picture>
+                    {imageUrl.includes("unsplash.com") && (
+                      <>
+                        <source srcSet={`${imageUrl}&fm=avif`} type="image/avif" />
+                        <source srcSet={`${imageUrl}&fm=webp`} type="image/webp" />
+                      </>
+                    )}
+                    <img
+                      src={imageUrl}
+                      alt={`${item.title} - ${item.description || "firmascope duyurusu"}`}
+                      width={400}
+                      height={200}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  </picture>
                 </div>
                 {/* Text - bottom half */}
                 <div className="p-4 flex-1 flex flex-col">

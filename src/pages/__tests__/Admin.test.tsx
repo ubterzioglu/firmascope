@@ -176,6 +176,22 @@ describe("Admin Page Authorization", () => {
     expect(screen.getByText("Before")).toBeInTheDocument();
   });
 
+  it("shows sql upload tools and admin import guidance in companies tab", async () => {
+    authContextValue.user = mockUser;
+    authContextValue.isAdmin = true;
+    const user = userEvent.setup();
+
+    renderAdmin();
+
+    await screen.findByText("Yönetim Paneli");
+    await user.click(screen.getByText("Şirketler"));
+
+    expect(await screen.findByText("SQL Dosyasi Yukle")).toBeInTheDocument();
+    expect(screen.getByText("Calisma Notu")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "SQL Dosyasini Calistir" })).toBeInTheDocument();
+    expect(screen.getByText(/300 sirket senin tarafindan 100-100-100 paylastirilacak/i)).toBeInTheDocument();
+  });
+
   it("shows admin role controls in users tab", async () => {
     authContextValue.user = mockUser;
     authContextValue.isAdmin = true;

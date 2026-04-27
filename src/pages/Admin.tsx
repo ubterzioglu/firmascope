@@ -81,6 +81,7 @@ const createdViaLabels: Record<string, string> = {
   legacy_import: "Legacy Import",
   admin_panel: "Admin Panel",
   suggestion_approval: "Oneri Onayi",
+  sql_upload: "SQL Upload",
 };
 
 const SUPER_ADMIN_EMAIL = "ubterzioglu@gmail.com";
@@ -121,6 +122,9 @@ const Admin = () => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [uploadingAssets, setUploadingAssets] = useState(false);
+  const [sqlImportFile, setSqlImportFile] = useState<File | null>(null);
+  const [sqlImporting, setSqlImporting] = useState(false);
+  const [sqlImportResult, setSqlImportResult] = useState<any>(null);
 
   // Review edit
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
@@ -363,6 +367,51 @@ const Admin = () => {
     setSavingCompany(false);
     toast({ title: "Başarılı", description: editingCompany ? "Şirket güncellendi." : "Şirket oluşturuldu." });
     setCompanyDialogOpen(false); fetchAll();
+  };
+
+  const handleSqlFileChange = (file: File | null) => {
+    setSqlImportResult(null);
+    setSqlImportFile(file);
+  };
+
+  const handleSqlImport = async () => {
+    if (!sqlImportFile) {
+      toast({ title: "Hata", description: "Lutfen bir SQL dosyasi secin.", variant: "destructive" });
+      return;
+    }
+
+    if (!sqlImportFile.name.toLowerCase().endsWith(".sql")) {
+      toast({ title: "Hata", description: "Yalnizca .sql uzantili dosyalar kabul edilir.", variant: "destructive" });
+      return;
+    }
+
+    setSqlImporting(true);
+    setSqlImportResult(null);
+
+    try {
+      const sqlText = await sqlImportFile.text();
+      const { data, error } = await supabase.rpc("execute_company_import_sql", {
+        sql_text: sqlText,
+      });
+
+      if (error) {
+        toast({ title: "Hata", description: error.message, variant: "destructive" });
+        return;
+      }
+
+      setSqlImportResult(data);
+      toast({ title: "Basarili", description: "SQL import tamamlandi." });
+      setSqlImportFile(null);
+      fetchAll();
+    } catch (error: any) {
+      toast({
+        title: "Hata",
+        description: error?.message || "SQL dosyasi okunurken hata olustu.",
+        variant: "destructive",
+      });
+    } finally {
+      setSqlImporting(false);
+    }
   };
 
   const handleDeleteReview = async (id: string) => {
@@ -653,6 +702,69 @@ const Admin = () => {
                   Yeni şirketler guvenli admin RPC uzerinden eklenir. Mevcut legacy 101 kayit `before` etiketi ile korunur.
                 </div>
                 <Button size="sm" onClick={openCompanyCreate}><Plus className="h-4 w-4 mr-1" /> SQL Destekli Sirket Ekle</Button>
+              </div>
+              <div className="mb-4 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+                <div className="rounded-xl border border-border bg-card p-4">
+                  <h3 className="text-sm font-semibold text-foreground">SQL Dosyasi Yukle</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Once 100 sirketlik listenizi deep search ile cikarin, sonra ornek formatta `.sql` dosyasi hazirlayip yukleyin.
+                    Logo ve banner zorunlu degil; sonradan eklenebilir.
+                  </p>
+                  <div className="mt-4 space-y-3">
+                    <div>
+                      <Label>SQL dosyasi</Label>
+                      <Input
+                        type="file"
+                        accept=".sql,text/sql"
+                        onChange={(e) => handleSqlFileChange(e.target.files?.[0] || null)}
+                      />
+                    </div>
+                    <Button
+                      onClick={handleSqlImport}
+                      disabled={!sqlImportFile || sqlImporting}
+                      className="w-full"
+                    >
+                      {sqlImporting ? "Yukleniyor..." : "SQL Dosyasini Calistir"}
+                    </Button>
+                  </div>
+                  {sqlImportResult && (
+                    <div className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm">
+                      <div className="grid gap-2 sm:grid-cols-3">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Statement</div>
+                          <div className="font-semibold text-foreground">{sqlImportResult.total_statements ?? 0}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Eklenen</div>
+                          <div className="font-semibold text-foreground">{sqlImportResult.successful_rows ?? 0}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Atlanan</div>
+                          <div className="font-semibold text-foreground">{sqlImportResult.skipped_rows ?? 0}</div>
+                        </div>
+                      </div>
+                      {Array.isArray(sqlImportResult.errors) && sqlImportResult.errors.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Hatalar</div>
+                          {sqlImportResult.errors.map((item: any, index: number) => (
+                            <div key={index} className="rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 text-xs text-foreground">
+                              Statement {item.statement_number || index + 1}: {item.message || "Bilinmeyen hata"}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div className="rounded-xl border border-border bg-card p-4">
+                  <h3 className="text-sm font-semibold text-foreground">Calisma Notu</h3>
+                  <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+                    <p>1. Ucunuz de deep search ile once kendi 100 sirketlik listenizi cikarin.</p>
+                    <p>2. 300 sirket senin tarafindan 100-100-100 paylastirilacak.</p>
+                    <p>3. Her admin kendi SQL dosyasini bu alandan yukleyecek.</p>
+                    <p>4. Mevcut sirketler placeholder kabul edilmeli; duplicate kontrolu SQL tarafinda korunuyor.</p>
+                  </div>
+                </div>
               </div>
               <div className="card-elevated overflow-hidden">
                 <Table>

@@ -61,6 +61,7 @@ export const generateJsonLd = {
   organization: (sameAs: string[] = []) => ({
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": `${seoConfig.siteUrl}/#organization`,
     name: seoConfig.siteName,
     url: seoConfig.siteUrl,
     logo: `${seoConfig.siteUrl}/favicon.svg`,
@@ -71,8 +72,13 @@ export const generateJsonLd = {
   website: () => ({
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${seoConfig.siteUrl}/#website`,
     name: seoConfig.siteName,
     url: seoConfig.siteUrl,
+    inLanguage: "tr-TR",
+    publisher: {
+      "@id": `${seoConfig.siteUrl}/#organization`,
+    },
     potentialAction: {
       "@type": "SearchAction",
       target: {
@@ -112,15 +118,25 @@ export const generateJsonLd = {
     description: string;
     path: string;
     type?: string;
+    headline?: string;
     datePublished?: string;
     dateModified?: string;
     speakableSelectors?: string[];
   }) => ({
     "@context": "https://schema.org",
     "@type": args.type || "WebPage",
+    "@id": `${seoConfig.siteUrl}${args.path}#webpage`,
     name: args.name,
+    headline: args.headline || args.name,
     description: args.description,
     url: `${seoConfig.siteUrl}${args.path}`,
+    inLanguage: "tr-TR",
+    isPartOf: {
+      "@id": `${seoConfig.siteUrl}/#website`,
+    },
+    about: {
+      "@id": `${seoConfig.siteUrl}/#organization`,
+    },
     datePublished: args.datePublished || "2025-01-01",
     dateModified: args.dateModified || new Date().toISOString().split("T")[0],
     ...(args.speakableSelectors
