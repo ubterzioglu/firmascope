@@ -7,7 +7,7 @@ import Admin from "@/pages/Admin";
 
 const mockUser = {
   id: "admin-123",
-  email: "admin@example.com",
+  email: "ubterzioglu@gmail.com",
   app_metadata: {},
   user_metadata: {},
   aud: "authenticated",
@@ -190,5 +190,19 @@ describe("Admin Page Authorization", () => {
     expect(screen.getByText("Editor User")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Admin Yap" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Admin Kaldir" })).toBeInTheDocument();
+  });
+
+  it("hides admin role controls for non-super-admin accounts", async () => {
+    authContextValue.user = { ...mockUser, email: "admin@example.com" };
+    authContextValue.isAdmin = true;
+    const user = userEvent.setup();
+
+    renderAdmin();
+
+    await screen.findByText("Yönetim Paneli");
+    await user.click(screen.getByText("Kullanıcılar"));
+
+    expect(await screen.findAllByText("Sadece super admin")).toHaveLength(2);
+    expect(screen.queryByRole("button", { name: "Admin Yap" })).not.toBeInTheDocument();
   });
 });

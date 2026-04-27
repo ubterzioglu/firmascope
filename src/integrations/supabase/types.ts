@@ -814,6 +814,7 @@ export type Database = {
         Args: { _company_id: string; _user_id: string }
         Returns: boolean
       }
+      is_super_admin: { Args: Record<PropertyKey, never>; Returns: boolean }
       set_user_role_admin: {
         Args: { _enabled?: boolean; _target_user_id: string }
         Returns: undefined

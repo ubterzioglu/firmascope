@@ -83,6 +83,8 @@ const createdViaLabels: Record<string, string> = {
   suggestion_approval: "Oneri Onayi",
 };
 
+const SUPER_ADMIN_EMAIL = "ubterzioglu@gmail.com";
+
 type AdminUser = {
   id: string;
   user_id: string;
@@ -96,6 +98,7 @@ const Admin = () => {
   const { user, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isSuperAdmin = user?.email?.toLowerCase() === SUPER_ADMIN_EMAIL;
 
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [claims, setClaims] = useState<any[]>([]);
@@ -241,6 +244,15 @@ const Admin = () => {
   };
 
   const handleSetAdminRole = async (targetUserId: string, enabled: boolean) => {
+    if (!isSuperAdmin) {
+      toast({
+        title: "Yetki yok",
+        description: "Admin ekleme ve cikarma sadece super admin hesabinda acik.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setRoleMutationUserId(targetUserId);
     const { error } = await supabase.rpc("set_user_role_admin", {
       _target_user_id: targetUserId,
@@ -1061,6 +1073,11 @@ const Admin = () => {
               <div className="mb-4 rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
                 Yeni birini admin yapmak icin once kullanicinin kayit olmus olmasi gerekir. Aksi halde `user_roles` kaydi baglanamaz.
               </div>
+              <div className="mb-4 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
+                Admin ekleme ve cikarma yetkisi sadece super admin hesabinda acik:
+                {" "}
+                <span className="font-medium text-foreground">{SUPER_ADMIN_EMAIL}</span>
+              </div>
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
@@ -1086,18 +1103,22 @@ const Admin = () => {
                         <TableCell className="font-mono text-xs text-muted-foreground">{u.user_id}</TableCell>
                         <TableCell className="text-muted-foreground text-xs">{new Date(u.created_at).toLocaleDateString("tr-TR")}</TableCell>
                         <TableCell className="text-right">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            disabled={roleMutationUserId === u.user_id}
-                            onClick={() => handleSetAdminRole(u.user_id, !u.is_admin)}
-                          >
-                            {roleMutationUserId === u.user_id
-                              ? "Kaydediliyor..."
-                              : u.is_admin
-                                ? "Admin Kaldir"
-                                : "Admin Yap"}
-                          </Button>
+                          {isSuperAdmin ? (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              disabled={roleMutationUserId === u.user_id}
+                              onClick={() => handleSetAdminRole(u.user_id, !u.is_admin)}
+                            >
+                              {roleMutationUserId === u.user_id
+                                ? "Kaydediliyor..."
+                                : u.is_admin
+                                  ? "Admin Kaldir"
+                                  : "Admin Yap"}
+                            </Button>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">Sadece super admin</span>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}

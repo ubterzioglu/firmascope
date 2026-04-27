@@ -9,6 +9,16 @@ SET provenance_tag = 'before',
 WHERE provenance_tag IS NULL
    OR created_via IS NULL;
 
+CREATE OR REPLACE FUNCTION public.is_super_admin()
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT lower(coalesce(auth.jwt() ->> 'email', '')) = 'ubterzioglu@gmail.com'
+$$;
+
 CREATE OR REPLACE FUNCTION public.set_user_role_admin(
   _target_user_id uuid,
   _enabled boolean DEFAULT true
@@ -19,8 +29,8 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  IF NOT public.is_admin(auth.uid()) THEN
-    RAISE EXCEPTION 'Only admins can manage admin roles.';
+  IF NOT public.is_super_admin() THEN
+    RAISE EXCEPTION 'Only the super admin can manage admin roles.';
   END IF;
 
   IF _enabled THEN
