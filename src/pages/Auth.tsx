@@ -55,7 +55,8 @@ const Auth = () => {
 
     try {
       if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const response = await supabase.auth.signInWithPassword({ email, password });
+        const error = response?.error ?? null;
         if (error) {
           if (error.message.includes("Invalid login")) {
             toast({ title: "Giriş başarısız", description: "E-posta veya şifre hatalı.", variant: "destructive" });
@@ -72,11 +73,12 @@ const Auth = () => {
         }
       } else {
         const redirectUrl = `${window.location.origin}/`;
-        const { error } = await supabase.auth.signUp({
+        const response = await supabase.auth.signUp({
           email,
           password,
           options: { emailRedirectTo: redirectUrl },
         });
+        const error = response?.error ?? null;
         if (error) {
           if (error.message.includes("already registered")) {
             toast({ title: "Kayıt başarısız", description: "Bu e-posta adresi zaten kayıtlı.", variant: "destructive" });
@@ -102,11 +104,12 @@ const Auth = () => {
 
     setResendLoading(true);
     try {
-      const { error } = await supabase.auth.resend({
+      const response = await supabase.auth.resend({
         type: "signup",
         email,
         options: { emailRedirectTo: `${window.location.origin}/` },
       });
+      const error = response?.error ?? null;
 
       if (error) {
         toast({ title: "Hata", description: error.message, variant: "destructive" });
@@ -122,12 +125,13 @@ const Auth = () => {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const response = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: window.location.origin,
         },
       });
+      const error = response?.error ?? null;
       if (error) {
         toast({ title: "Google ile giriş başarısız", description: error.message, variant: "destructive" });
       }
@@ -172,7 +176,6 @@ const Auth = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="ornek@email.com"
                       className="pl-10"
-                      required
                     />
                   </div>
                 </div>
@@ -218,7 +221,7 @@ const Auth = () => {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form noValidate onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">E-posta</Label>
                 <div className="relative">
@@ -230,7 +233,6 @@ const Auth = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="ornek@email.com"
                     className="pl-10"
-                    required
                   />
                 </div>
               </div>
@@ -245,7 +247,6 @@ const Auth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••"
                     className="pl-10 pr-10"
-                    required
                   />
                   <button
                     type="button"

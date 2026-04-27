@@ -106,7 +106,7 @@ describe("CompanyAdmin Page Authorization", () => {
 
     renderCompanyAdmin();
     await waitFor(() => {
-      expect(screen.getByText("Şirket Yönetimi")).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Şirket Yönetimi" })).toBeInTheDocument();
     });
   });
 

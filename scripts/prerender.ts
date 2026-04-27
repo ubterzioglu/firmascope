@@ -1,21 +1,10 @@
-import { execFile } from "node:child_process";
 import { promises as fs } from "node:fs";
 import http from "node:http";
 import path from "node:path";
-import { promisify } from "node:util";
+import { chromium } from "playwright-core";
 import { ROOT_DIR, loadLocalEnv } from "./lib/env";
 import { getRouteManifest } from "./lib/route-manifest";
-
-const execFileAsync = promisify(execFile);
 const DIST_DIR = path.join(ROOT_DIR, "dist");
-const EDGE_PATHS = [
-  process.env.PRERENDER_BROWSER_PATH,
-  "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
-  "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-  "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-  "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-].filter(Boolean) as string[];
-
 const MIME_TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",
   ".gif": "image/gif",
@@ -34,7 +23,15 @@ const MIME_TYPES: Record<string, string> = {
 };
 
 const resolveBrowserPath = async () => {
-  for (const browserPath of EDGE_PATHS) {
+  const candidatePaths = [
+    process.env.PRERENDER_BROWSER_PATH,
+    "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+  ].filter(Boolean) as string[];
+
+  for (const browserPath of candidatePaths) {
     try {
       await fs.access(browserPath);
       return browserPath;
@@ -114,30 +111,39 @@ const main = async () => {
   const browserPath = await resolveBrowserPath();
   const routeManifest = await getRouteManifest();
   const { server, port } = await createStaticServer();
+  const browser = await chromium.launch({
+    executablePath: browserPath,
+    headless: true,
+  });
 
   try {
-    for (const route of routeManifest.indexableRoutes) {
-      const url = `http://127.0.0.1:${port}${route}`;
-      console.log(`Prerendering ${route}`);
+    const concurrency = 4;
+    for (let index = 0; index < routeManifest.indexableRoutes.length; index += concurrency) {
+      const batch = routeManifest.indexableRoutes.slice(index, index + concurrency);
+      await Promise.all(
+        batch.map(async (route) => {
+          console.log(`Prerendering ${route}`);
+          const page = await browser.newPage();
 
-      const { stdout } = await execFileAsync(browserPath, [
-        "--headless=new",
-        "--disable-gpu",
-        "--no-first-run",
-        "--no-default-browser-check",
-        "--virtual-time-budget=20000",
-        "--dump-dom",
-        url,
-      ], {
-        windowsHide: true,
-        maxBuffer: 1024 * 1024 * 5,
-      });
+          try {
+            await page.goto(`http://127.0.0.1:${port}${route}`, {
+              waitUntil: "networkidle",
+              timeout: 30000,
+            });
+            await page.waitForTimeout(500);
 
-      await writePrerenderedHtml(route, stdout);
+            const html = await page.content();
+            await writePrerenderedHtml(route, html);
+          } finally {
+            await page.close();
+          }
+        })
+      );
     }
 
     console.log(`Prerender completed for ${routeManifest.indexableRoutes.length} routes.`);
   } finally {
+    await browser.close();
     server.close();
   }
 };

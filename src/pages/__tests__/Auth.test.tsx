@@ -31,6 +31,8 @@ let authContextValue: any = {
   signOut: vi.fn().mockResolvedValue(undefined),
 };
 
+const toastSpy = vi.fn();
+
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     auth: {
@@ -51,6 +53,10 @@ vi.mock("@/integrations/supabase/client", () => ({
 vi.mock("@/hooks/useAuth", () => ({
   useAuth: () => authContextValue,
   AuthProvider: ({ children }: { children: ReactNode }) => <>{children}</>,
+}));
+
+vi.mock("@/hooks/use-toast", () => ({
+  useToast: () => ({ toast: toastSpy }),
 }));
 
 vi.mock("react-helmet-async", () => ({
@@ -79,6 +85,23 @@ function renderAuth(route = "/giris") {
 describe("Auth Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    toastSpy.mockReset();
+    vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
+      data: { user: null, session: null },
+      error: null,
+    });
+    vi.mocked(supabase.auth.signUp).mockResolvedValue({
+      data: { user: null, session: null },
+      error: null,
+    });
+    vi.mocked(supabase.auth.signInWithOAuth).mockResolvedValue({
+      data: null,
+      error: null,
+    });
+    vi.mocked(supabase.auth.resend).mockResolvedValue({
+      data: null,
+      error: null,
+    });
     authContextValue = {
       user: null,
       session: null,
@@ -91,7 +114,7 @@ describe("Auth Page", () => {
   describe("Render Tests", () => {
     it("shows login form by default", () => {
       renderAuth();
-      expect(screen.getByText("Giriş Yap")).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Giriş Yap" })).toBeInTheDocument();
       expect(screen.getByLabelText(/e-posta/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/şifre/i)).toBeInTheDocument();
       expect(screen.getByText("Google ile devam et")).toBeInTheDocument();
@@ -100,8 +123,8 @@ describe("Auth Page", () => {
     it("switches to signup mode", async () => {
       const user = userEvent.setup();
       renderAuth();
-      await user.click(screen.getByText("Kayıt Ol"));
-      expect(screen.getByText("Kayıt Ol")).toBeInTheDocument();
+      await user.click(screen.getByRole("button", { name: "Kayıt Ol" }));
+      expect(screen.getByRole("heading", { name: "Kayıt Ol" })).toBeInTheDocument();
       expect(screen.getByText("Zaten hesabınız var mı?")).toBeInTheDocument();
     });
 
@@ -138,7 +161,10 @@ describe("Auth Page", () => {
       await user.type(screen.getByLabelText(/şifre/i), "password123");
       await user.click(screen.getByRole("button", { name: /giriş yap/i }));
 
-      expect(screen.getByText("Geçerli bir e-posta adresi girin")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Hata",
+        description: "Geçerli bir e-posta adresi girin",
+      }));
     });
 
     it("shows validation error for short password", async () => {
@@ -148,7 +174,10 @@ describe("Auth Page", () => {
       await user.type(screen.getByLabelText(/şifre/i), "12345");
       await user.click(screen.getByRole("button", { name: /giriş yap/i }));
 
-      expect(screen.getByText("Şifre en az 6 karakter olmalıdır")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Hata",
+        description: "Şifre en az 6 karakter olmalıdır",
+      }));
     });
 
     it("shows error toast for wrong password", async () => {
@@ -164,7 +193,10 @@ describe("Auth Page", () => {
       await user.click(screen.getByRole("button", { name: /giriş yap/i }));
 
       await waitFor(() => {
-        expect(screen.getByText("E-posta veya şifre hatalı.")).toBeInTheDocument();
+        expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+          title: "Giriş başarısız",
+          description: "E-posta veya şifre hatalı.",
+        }));
       });
     });
 
@@ -198,7 +230,10 @@ describe("Auth Page", () => {
       await user.click(screen.getByRole("button", { name: /giriş yap/i }));
 
       await waitFor(() => {
-        expect(screen.getByText("Some unknown error")).toBeInTheDocument();
+        expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+          title: "Hata",
+          description: "Some unknown error",
+        }));
       });
     });
 
@@ -240,7 +275,10 @@ describe("Auth Page", () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText("E-postanızı kontrol edin ve hesabınızı onaylayın.")).toBeInTheDocument();
+        expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+          title: "Kayıt başarılı!",
+          description: "E-postanızı kontrol edin ve hesabınızı onaylayın.",
+        }));
       });
     });
 
@@ -258,7 +296,10 @@ describe("Auth Page", () => {
       await user.click(screen.getByRole("button", { name: /kayıt ol/i }));
 
       await waitFor(() => {
-        expect(screen.getByText("Bu e-posta adresi zaten kayıtlı.")).toBeInTheDocument();
+        expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+          title: "Kayıt başarısız",
+          description: "Bu e-posta adresi zaten kayıtlı.",
+        }));
       });
     });
   });
@@ -291,7 +332,10 @@ describe("Auth Page", () => {
       await user.click(screen.getByText("Google ile devam et"));
 
       await waitFor(() => {
-        expect(screen.getByText("OAuth failed")).toBeInTheDocument();
+        expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+          title: "Google ile giriş başarısız",
+          description: "OAuth failed",
+        }));
       });
     });
   });
@@ -347,7 +391,10 @@ describe("Auth Page", () => {
       await user.type(emailInput, "invalid");
       await user.click(screen.getByRole("button", { name: /onay e-postasını tekrar gönder/i }));
 
-      expect(screen.getByText("Geçerli bir e-posta adresi girin")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Hata",
+        description: "Geçerli bir e-posta adresi girin",
+      }));
     });
 
     it("returns to login mode on button click", async () => {
@@ -390,10 +437,10 @@ describe("Auth Page", () => {
       const user = userEvent.setup();
       renderAuth();
 
-      await user.click(screen.getByText("Kayıt Ol"));
+      await user.click(screen.getByRole("button", { name: "Kayıt Ol" }));
       expect(screen.getByText("Zaten hesabınız var mı?")).toBeInTheDocument();
 
-      await user.click(screen.getByText("Giriş Yap"));
+      await user.click(screen.getByRole("button", { name: "Giriş Yap" }));
       expect(screen.getByText("Hesabınız yok mu?")).toBeInTheDocument();
     });
   });

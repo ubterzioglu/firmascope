@@ -21,6 +21,8 @@ let authContextValue: any = {
   signOut: vi.fn().mockResolvedValue(undefined),
 };
 
+const toastSpy = vi.fn();
+
 vi.mock("@/hooks/useAuth", () => ({
   useAuth: () => authContextValue,
   AuthProvider: ({ children }: { children: any }) => <>{children}</>,
@@ -52,6 +54,10 @@ vi.mock("@/integrations/supabase/client", () => ({
 
 import { supabase } from "@/integrations/supabase/client";
 
+vi.mock("@/hooks/use-toast", () => ({
+  useToast: () => ({ toast: toastSpy }),
+}));
+
 function renderReportButton() {
   return render(
     <MemoryRouter>
@@ -63,6 +69,7 @@ function renderReportButton() {
 describe("ReportButton", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    toastSpy.mockReset();
     authContextValue = {
       user: null,
       session: null,
@@ -78,9 +85,10 @@ describe("ReportButton", () => {
     const reportBtn = screen.getByTitle("İçeriği bildir");
     await user.click(reportBtn);
 
-    await waitFor(() => {
-      expect(screen.getByText("Giriş yapın")).toBeInTheDocument();
-    });
+    expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+      title: "Giriş yapın",
+      description: "Bildirim yapmak için giriş yapmanız gerekiyor.",
+    }));
   });
 
   it("opens dialog when authenticated user clicks report", async () => {
@@ -133,7 +141,10 @@ describe("ReportButton", () => {
     await user.click(submitBtn);
 
     await waitFor(() => {
-      expect(screen.getByText("İçerik raporunuz alındı. Teşekkürler!")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Bildirildi",
+        description: "İçerik raporunuz alındı. Teşekkürler!",
+      }));
     });
   });
 
@@ -158,7 +169,10 @@ describe("ReportButton", () => {
     await user.click(submitBtn);
 
     await waitFor(() => {
-      expect(screen.getByText("Limit aşıldı")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Limit aşıldı",
+        description: "Saatte en fazla 5 bildirim yapabilirsiniz.",
+      }));
     });
   });
 });

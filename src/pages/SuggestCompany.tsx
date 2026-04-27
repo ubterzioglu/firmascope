@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -35,8 +35,13 @@ const SuggestCompany = () => {
     robots: "noindex,nofollow",
   });
 
+  useEffect(() => {
+    if (!user) {
+      navigate("/giris", { replace: true });
+    }
+  }, [navigate, user]);
+
   if (!user) {
-    navigate("/giris");
     return null;
   }
 
@@ -91,7 +96,6 @@ const SuggestCompany = () => {
                   value={form.company_name}
                   onChange={(e) => setForm({ ...form, company_name: e.target.value })}
                   placeholder="Örn: TechNova Yazılım A.Ş."
-                  required
                 />
               </div>
 

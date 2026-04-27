@@ -26,8 +26,10 @@ vi.mock("@/integrations/supabase/client", () => ({
   },
 }));
 
+const toastSpy = vi.fn();
+
 vi.mock("@/hooks/use-toast", () => ({
-  useToast: () => ({ toast: vi.fn() }),
+  useToast: () => ({ toast: toastSpy }),
 }));
 
 import { supabase } from "@/integrations/supabase/client";
@@ -42,6 +44,7 @@ const defaultProps = {
 describe("ReviewForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    toastSpy.mockReset();
   });
 
   it("renders first step with context fields", () => {
@@ -55,7 +58,10 @@ describe("ReviewForm", () => {
     const user = userEvent.setup();
     render(<ReviewForm {...defaultProps} />);
     await user.click(screen.getByRole("button", { name: /devam/i }));
-    expect(screen.getByText("Eksik alan")).toBeInTheDocument();
+    expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+      title: "Eksik alan",
+      description: "Puan, tavsiye durumu ve ilişki tipi zorunludur.",
+    }));
   });
 
   it("advances to step 2 when required fields filled", async () => {
@@ -138,14 +144,17 @@ describe("ReviewForm", () => {
     await user.click(screen.getByRole("button", { name: /değerlendirmeyi gönder/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("Değerlendirme gönderilemedi.")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Hata",
+        description: "Değerlendirme gönderilemedi.",
+      }));
     });
   });
 
   it("calls onCancel when cancel clicked", async () => {
     const user = userEvent.setup();
     render(<ReviewForm {...defaultProps} />);
-    await user.click(screen.getByRole("button", { name: /iptal/i }));
+    await user.click(screen.getByRole("button", { name: "İptal" }));
     expect(defaultProps.onCancel).toHaveBeenCalled();
   });
 

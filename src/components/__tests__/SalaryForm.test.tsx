@@ -24,8 +24,10 @@ vi.mock("@/integrations/supabase/client", () => ({
   },
 }));
 
+const toastSpy = vi.fn();
+
 vi.mock("@/hooks/use-toast", () => ({
-  useToast: () => ({ toast: vi.fn() }),
+  useToast: () => ({ toast: toastSpy }),
 }));
 
 import { supabase } from "@/integrations/supabase/client";
@@ -40,6 +42,7 @@ const defaultProps = {
 describe("SalaryForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    toastSpy.mockReset();
   });
 
   it("renders step 1 with required fields", () => {
@@ -53,7 +56,10 @@ describe("SalaryForm", () => {
     const user = userEvent.setup();
     render(<SalaryForm {...defaultProps} />);
     await user.click(screen.getByRole("button", { name: /devam/i }));
-    expect(screen.getByText("Eksik alan")).toBeInTheDocument();
+    expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+      title: "Eksik alan",
+      description: "Tüm zorunlu alanları doldurun.",
+    }));
   });
 
   it("advances to step 2 when all required fields filled", async () => {
@@ -65,7 +71,7 @@ describe("SalaryForm", () => {
     await user.click(screen.getByText("Net"));
     await user.type(screen.getByPlaceholderText("3"), "5");
     await user.click(screen.getByText("Tam Zamanlı"));
-    await user.click(screen.getByText("Mid-Level"));
+    await user.click(screen.getByText("Mid"));
 
     await user.click(screen.getByRole("button", { name: /devam/i }));
 
@@ -85,7 +91,7 @@ describe("SalaryForm", () => {
     await user.click(screen.getByText("Net"));
     await user.type(screen.getByPlaceholderText("3"), "5");
     await user.click(screen.getByText("Tam Zamanlı"));
-    await user.click(screen.getByText("Mid-Level"));
+    await user.click(screen.getByText("Mid"));
     await user.click(screen.getByRole("button", { name: /devam/i }));
 
     await waitFor(() => {
@@ -110,7 +116,7 @@ describe("SalaryForm", () => {
     await user.click(screen.getByText("Net"));
     await user.type(screen.getByPlaceholderText("3"), "5");
     await user.click(screen.getByText("Tam Zamanlı"));
-    await user.click(screen.getByText("Mid-Level"));
+    await user.click(screen.getByText("Mid"));
     await user.click(screen.getByRole("button", { name: /devam/i }));
 
     await waitFor(() => {
@@ -120,14 +126,17 @@ describe("SalaryForm", () => {
     await user.click(screen.getByRole("button", { name: /maaş bilgisini gönder/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("Maaş bilgisi gönderilemedi.")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Hata",
+        description: "Maaş bilgisi gönderilemedi.",
+      }));
     });
   });
 
   it("calls onCancel when cancel clicked", async () => {
     const user = userEvent.setup();
     render(<SalaryForm {...defaultProps} />);
-    await user.click(screen.getByRole("button", { name: /iptal/i }));
+    await user.click(screen.getByRole("button", { name: "İptal" }));
     expect(defaultProps.onCancel).toHaveBeenCalled();
   });
 
@@ -140,7 +149,7 @@ describe("SalaryForm", () => {
     await user.click(screen.getByText("Net"));
     await user.type(screen.getByPlaceholderText("3"), "5");
     await user.click(screen.getByText("Tam Zamanlı"));
-    await user.click(screen.getByText("Mid-Level"));
+    await user.click(screen.getByText("Mid"));
     await user.click(screen.getByRole("button", { name: /devam/i }));
 
     await waitFor(() => {

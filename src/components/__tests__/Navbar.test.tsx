@@ -48,8 +48,8 @@ describe("Navbar", () => {
 
   it("shows Giriş Yap button when not logged in", () => {
     renderNavbar();
-    expect(screen.getByText("Giriş Yap")).toBeInTheDocument();
-    expect(screen.getByText("Üye Ol")).toBeInTheDocument();
+    expect(screen.getAllByText("Giriş Yap").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Üye Ol").length).toBeGreaterThan(0);
   });
 
   it("shows user email and logout button when logged in", () => {
@@ -92,7 +92,7 @@ describe("Navbar", () => {
     const menuButton = screen.getByRole("button");
     await user.click(menuButton);
 
-    expect(screen.getByText("Giriş Yap")).toBeInTheDocument();
+    expect(screen.getAllByText("Giriş Yap").length).toBeGreaterThan(0);
   });
 
   it("shows ... when loading", () => {

@@ -24,8 +24,10 @@ vi.mock("@/integrations/supabase/client", () => ({
   },
 }));
 
+const toastSpy = vi.fn();
+
 vi.mock("@/hooks/use-toast", () => ({
-  useToast: () => ({ toast: vi.fn() }),
+  useToast: () => ({ toast: toastSpy }),
 }));
 
 import { supabase } from "@/integrations/supabase/client";
@@ -40,6 +42,7 @@ const defaultProps = {
 describe("InterviewForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    toastSpy.mockReset();
   });
 
   it("renders step 1 with required fields", () => {
@@ -53,7 +56,10 @@ describe("InterviewForm", () => {
     const user = userEvent.setup();
     render(<InterviewForm {...defaultProps} />);
     await user.click(screen.getByRole("button", { name: /devam/i }));
-    expect(screen.getByText("Eksik alan")).toBeInTheDocument();
+    expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+      title: "Eksik alan",
+      description: "Pozisyon, zorluk ve sonuç zorunludur.",
+    }));
   });
 
   it("advances to step 2 when required fields filled", async () => {
@@ -111,7 +117,7 @@ describe("InterviewForm", () => {
 
     await user.type(screen.getByPlaceholderText("Frontend Developer"), "Backend Dev");
     await user.click(screen.getByText("Orta"));
-    await user.click(screen.getByText("Süreçte"));
+    await user.click(screen.getByText("Beklemede"));
     await user.click(screen.getByRole("button", { name: /devam/i }));
 
     await waitFor(() => {
@@ -133,7 +139,7 @@ describe("InterviewForm", () => {
 
     await user.type(screen.getByPlaceholderText("Frontend Developer"), "Backend Dev");
     await user.click(screen.getByText("Orta"));
-    await user.click(screen.getByText("Süreçte"));
+    await user.click(screen.getByText("Beklemede"));
     await user.click(screen.getByRole("button", { name: /devam/i }));
 
     await waitFor(() => {
@@ -143,14 +149,17 @@ describe("InterviewForm", () => {
     await user.click(screen.getByRole("button", { name: /mülakat bilgisini gönder/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("Mülakat deneyimi gönderilemedi.")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Hata",
+        description: "Mülakat deneyimi gönderilemedi.",
+      }));
     });
   });
 
   it("calls onCancel when cancel clicked", async () => {
     const user = userEvent.setup();
     render(<InterviewForm {...defaultProps} />);
-    await user.click(screen.getByRole("button", { name: /iptal/i }));
+    await user.click(screen.getByRole("button", { name: "İptal" }));
     expect(defaultProps.onCancel).toHaveBeenCalled();
   });
 });

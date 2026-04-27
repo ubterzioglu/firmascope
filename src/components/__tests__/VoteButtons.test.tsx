@@ -21,9 +21,15 @@ let authContextValue: any = {
   signOut: vi.fn().mockResolvedValue(undefined),
 };
 
+const toastSpy = vi.fn();
+
 vi.mock("@/hooks/useAuth", () => ({
   useAuth: () => authContextValue,
   AuthProvider: ({ children }: { children: any }) => <>{children}</>,
+}));
+
+vi.mock("@/hooks/use-toast", () => ({
+  useToast: () => ({ toast: toastSpy }),
 }));
 
 const { createChainableMock } = vi.hoisted(() => {
@@ -64,6 +70,7 @@ function renderVoteButtons() {
 describe("VoteButtons", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    toastSpy.mockReset();
     authContextValue = {
       user: null,
       session: null,
@@ -80,7 +87,10 @@ describe("VoteButtons", () => {
     await user.click(upvoteBtn);
 
     await waitFor(() => {
-      expect(screen.getByText("Giriş yapın")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Giriş yapın",
+        description: "Oy vermek için giriş yapmanız gerekiyor.",
+      }));
     });
   });
 

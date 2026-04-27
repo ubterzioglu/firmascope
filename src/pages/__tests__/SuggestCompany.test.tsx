@@ -21,9 +21,15 @@ let authContextValue: any = {
   signOut: vi.fn().mockResolvedValue(undefined),
 };
 
+const toastSpy = vi.fn();
+
 vi.mock("@/hooks/useAuth", () => ({
   useAuth: () => authContextValue,
   AuthProvider: ({ children }: { children: any }) => <>{children}</>,
+}));
+
+vi.mock("@/hooks/use-toast", () => ({
+  useToast: () => ({ toast: toastSpy }),
 }));
 
 const { createChainableMock } = vi.hoisted(() => {
@@ -83,6 +89,7 @@ function renderSuggestCompany() {
 describe("SuggestCompany Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    toastSpy.mockReset();
     authContextValue = {
       user: null,
       session: null,
@@ -94,7 +101,9 @@ describe("SuggestCompany Page", () => {
 
   it("redirects to /giris when not logged in", () => {
     renderSuggestCompany();
-    expect(screen.getByText("Login Page")).toBeInTheDocument();
+    return waitFor(() => {
+      expect(screen.getByText("Login Page")).toBeInTheDocument();
+    });
   });
 
   it("renders form when logged in", () => {
@@ -113,7 +122,10 @@ describe("SuggestCompany Page", () => {
     await user.click(submitBtn);
 
     await waitFor(() => {
-      expect(screen.getByText("Şirket adı zorunludur.")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Hata",
+        description: "Şirket adı zorunludur.",
+      }));
     });
   });
 
@@ -130,7 +142,11 @@ describe("SuggestCompany Page", () => {
     await user.click(screen.getByRole("button", { name: /öneriyi gönder/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("Şirket öneriniz incelemeye gönderildi.")).toBeInTheDocument();
+      expect(screen.getByText("Companies Page")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Başarılı!",
+        description: "Şirket öneriniz incelemeye gönderildi.",
+      }));
     });
   });
 
@@ -147,7 +163,10 @@ describe("SuggestCompany Page", () => {
     await user.click(screen.getByRole("button", { name: /öneriyi gönder/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("Öneri gönderilemedi. Tekrar deneyin.")).toBeInTheDocument();
+      expect(toastSpy).toHaveBeenCalledWith(expect.objectContaining({
+        title: "Hata",
+        description: "Öneri gönderilemedi. Tekrar deneyin.",
+      }));
     });
   });
 });
