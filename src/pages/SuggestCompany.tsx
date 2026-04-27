@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Building2, Send } from "lucide-react";
-import { Helmet } from "react-helmet-async";
 import { generateMeta } from "@/lib/seo";
 import Breadcrumb from "@/components/Breadcrumb";
+import SeoHead from "@/components/SeoHead";
 
 const sectors = ["Teknoloji", "Finans", "Sağlık", "Enerji", "Lojistik", "Otomotiv", "Medya", "İnşaat", "Eğitim", "Diğer"];
 const cities = ["İstanbul", "Ankara", "İzmir", "Bursa", "Antalya", "Adana", "Konya", "Diğer"];
@@ -32,6 +32,7 @@ const SuggestCompany = () => {
     title: "Şirket öner",
     description: "Listede olmayan bir şirketi firmascope ekibine önererek platforma katkıda bulunun.",
     path: "/sirket-oner",
+    robots: "noindex,nofollow",
   });
 
   if (!user) {
@@ -68,12 +69,7 @@ const SuggestCompany = () => {
 
   return (
     <Layout>
-      <Helmet>
-        <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
-        <meta name="robots" content={meta.robots} />
-        <link rel="canonical" href={meta.canonical} />
-      </Helmet>
+      <SeoHead meta={meta} path="/sirket-oner" />
 
       <section className="py-10">
         <div className="container mx-auto max-w-lg px-4">

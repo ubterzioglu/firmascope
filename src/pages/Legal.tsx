@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
-import { Helmet } from "react-helmet-async";
 import { generateMeta } from "@/lib/seo";
 import Breadcrumb from "@/components/Breadcrumb";
+import SeoHead from "@/components/SeoHead";
 
 const sections = [
   {
@@ -64,12 +64,7 @@ const Legal = () => {
 
   return (
     <Layout>
-      <Helmet>
-        <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
-        <meta name="robots" content={meta.robots} />
-        <link rel="canonical" href={meta.canonical} />
-      </Helmet>
+      <SeoHead meta={meta} path="/yasal" />
 
       <section className="py-12">
         <div className="container mx-auto max-w-2xl px-4">

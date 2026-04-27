@@ -15,6 +15,7 @@ import Admin from "./pages/Admin";
 import CompanyAdmin from "./pages/CompanyAdmin";
 import SuggestCompany from "./pages/SuggestCompany";
 import NotFound from "./pages/NotFound";
+import TaxonomyPage from "./pages/TaxonomyPage";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/sirketler" element={<Companies />} />
             <Route path="/sirket/:slug" element={<CompanyDetail />} />
+            <Route path="/sektor/:slug" element={<TaxonomyPage mode="sector" />} />
+            <Route path="/sehir/:slug" element={<TaxonomyPage mode="city" />} />
             <Route path="/yasal" element={<Legal />} />
             <Route path="/giris" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />

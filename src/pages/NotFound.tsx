@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Search, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { generateMeta } from "@/lib/seo";
+import SeoHead from "@/components/SeoHead";
 
 const NotFound = () => {
   const location = useLocation();
@@ -11,8 +13,16 @@ const NotFound = () => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
   }, [location.pathname]);
 
+  const meta = generateMeta({
+    title: "Sayfa bulunamadi",
+    description: "Aradığınız sayfa bulunamadı.",
+    path: location.pathname,
+    robots: "noindex,nofollow",
+  });
+
   return (
     <Layout>
+      <SeoHead meta={meta} path={location.pathname} />
       <section className="flex flex-1 items-center justify-center py-20">
         <div className="container mx-auto px-4 text-center">
           {/* Big 404 */}

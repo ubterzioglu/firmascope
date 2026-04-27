@@ -5,12 +5,12 @@ import WhySection from "@/components/WhySection";
 import WhyFirmascope from "@/components/WhyFirmascope";
 import JsonLd from "@/components/JsonLd";
 import { homepageFaqItems } from "@/lib/homepage-faq";
+import SeoHead from "@/components/SeoHead";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Search, Lightbulb, Star, Users, DollarSign, UserPlus } from "lucide-react";
-import { Helmet } from "react-helmet-async";
 import { generateJsonLd, generateMeta, seoConfig } from "@/lib/seo";
 
 const actionItems = [
@@ -64,24 +64,7 @@ const Index = () => {
 
   return (
     <Layout>
-      <Helmet>
-        <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
-        <meta name="robots" content={meta.robots} />
-        {meta.keywords && <meta name="keywords" content={meta.keywords} />}
-        <link rel="canonical" href={meta.canonical} />
-
-        <meta property="og:title" content={meta.openGraph.title} />
-        <meta property="og:description" content={meta.openGraph.description} />
-        <meta property="og:type" content={meta.openGraph.type} />
-        <meta property="og:url" content={meta.openGraph.url} />
-        <meta property="og:image" content={meta.openGraph.image} />
-
-        <meta name="twitter:card" content={meta.twitter.card} />
-        <meta name="twitter:title" content={meta.twitter.title} />
-        <meta name="twitter:description" content={meta.twitter.description} />
-        <meta name="twitter:image" content={meta.twitter.image} />
-      </Helmet>
+      <SeoHead meta={meta} path="/" />
 
       <JsonLd data={organizationJsonLd} />
       <JsonLd data={websiteJsonLd} />

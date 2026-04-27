@@ -9,8 +9,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { Mail, Lock, Eye, EyeOff, RefreshCw } from "lucide-react";
-import { Helmet } from "react-helmet-async";
 import { generateMeta } from "@/lib/seo";
+import SeoHead from "@/components/SeoHead";
 
 const emailSchema = z.string().email("Geçerli bir e-posta adresi girin");
 const passwordSchema = z.string().min(6, "Şifre en az 6 karakter olmalıdır");
@@ -138,12 +138,7 @@ const Auth = () => {
 
   return (
     <Layout>
-      <Helmet>
-        <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
-        <meta name="robots" content={meta.robots} />
-        <link rel="canonical" href={meta.canonical} />
-      </Helmet>
+      <SeoHead meta={meta} path="/giris" />
 
       <section className="relative z-10 flex min-h-[calc(100vh-200px)] items-center justify-center py-12">
         <div className="w-full max-w-md mx-auto px-4">

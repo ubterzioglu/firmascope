@@ -1,7 +1,9 @@
+import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
+
 export const seoConfig = {
-  siteName: "firmascope",
-  siteUrl: "https://www.firmascope.com",
-  defaultImage: "https://www.firmascope.com/og-image.png",
+  siteName: SITE_NAME,
+  siteUrl: SITE_URL,
+  defaultImage: DEFAULT_OG_IMAGE,
   twitterHandle: "@firmascope",
   titleSuffix: "firmascope — Anonim Şirket Değerlendirme",
   defaultDescription:

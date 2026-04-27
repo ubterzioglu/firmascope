@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import { useParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MapPin, Building2, Users, Globe, Briefcase, MessageSquare, Banknote, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -14,9 +15,15 @@ import ReportButton from "@/components/ReportButton";
 import SalaryGateOverlay from "@/components/SalaryGateOverlay";
 import { useToast } from "@/hooks/use-toast";
 import Breadcrumb from "@/components/Breadcrumb";
-import { Helmet } from "react-helmet-async";
 import { generateJsonLd, generateMeta, seoConfig } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
+import SeoHead from "@/components/SeoHead";
+import {
+  buildCompanySeoContent,
+  parseExternalLinksJson,
+  parseFaqItemsJson,
+  type CompanySeoRenderableProfile,
+} from "@/lib/company-seo";
 
 interface Company {
   id: string;
@@ -94,6 +101,14 @@ interface InterviewPublic {
   created_at: string;
 }
 
+interface RelatedCompany {
+  id: string;
+  name: string;
+  slug: string;
+  sector: string | null;
+  city: string | null;
+}
+
 const sectorBanners: Record<string, string> = {
   "Eğitim": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&h=300&fit=crop",
   "Finans": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=300&fit=crop",
@@ -119,6 +134,8 @@ const CompanyDetail = () => {
   const [reviews, setReviews] = useState<ReviewPublic[]>([]);
   const [salaries, setSalaries] = useState<SalaryPublic[]>([]);
   const [interviews, setInterviews] = useState<InterviewPublic[]>([]);
+  const [seoProfile, setSeoProfile] = useState<CompanySeoRenderableProfile | null>(null);
+  const [relatedCompanies, setRelatedCompanies] = useState<RelatedCompany[]>([]);
   const [loading, setLoading] = useState(true);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showSalaryForm, setShowSalaryForm] = useState(false);
@@ -154,15 +171,37 @@ const CompanyDetail = () => {
 
     setCompany(compData as Company);
 
-    const [revRes, salRes, intRes] = await Promise.all([
+    const [revRes, salRes, intRes, seoRes, relatedRes] = await Promise.all([
       supabase.from("reviews_public" as any).select("*").eq("company_id", compData.id).order("created_at", { ascending: false }),
       supabase.from("salaries_public" as any).select("*").eq("company_id", compData.id).order("created_at", { ascending: false }),
       supabase.from("interviews_public" as any).select("*").eq("company_id", compData.id).order("created_at", { ascending: false }),
+      supabase
+        .from("company_seo_profiles")
+        .select("intro_summary,culture_summary,salary_summary,interview_summary,pros_summary,cons_summary,candidate_takeaway,faq_items_json,external_links_json,keywords_json,word_count,generation_status,source_snapshot_json")
+        .eq("company_id", compData.id)
+        .maybeSingle(),
+      compData.sector
+        ? supabase
+            .from("companies")
+            .select("id,name,slug,sector,city")
+            .eq("status", "Aktif")
+            .eq("sector", compData.sector)
+            .neq("id", compData.id)
+            .limit(4)
+        : supabase
+            .from("companies")
+            .select("id,name,slug,sector,city")
+            .eq("status", "Aktif")
+            .eq("city", compData.city)
+            .neq("id", compData.id)
+            .limit(4),
     ]);
 
     setReviews((revRes.data as unknown as ReviewPublic[]) || []);
     setSalaries((salRes.data as unknown as SalaryPublic[]) || []);
     setInterviews((intRes.data as unknown as InterviewPublic[]) || []);
+    setSeoProfile((seoRes.data as CompanySeoRenderableProfile | null) || null);
+    setRelatedCompanies((relatedRes.data as RelatedCompany[]) || []);
     setLoading(false);
   };
 
@@ -193,8 +232,18 @@ const CompanyDetail = () => {
   const bannerUrl = company.banner_url || sectorBanners[company.sector || ""] || defaultBanner;
   const avgRating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
   const recommendRate = reviews.length > 0 ? Math.round((reviews.filter((r) => r.recommends).length / reviews.length) * 100) : 0;
+  const generatedSeo = buildCompanySeoContent({ company, reviews, salaries, interviews });
+  const faqItems = seoProfile?.faq_items_json ? parseFaqItemsJson(seoProfile.faq_items_json) : generatedSeo.faqItems;
+  const externalLinks = seoProfile?.external_links_json ? parseExternalLinksJson(seoProfile.external_links_json) : generatedSeo.externalLinks;
+  const introSummary = seoProfile?.intro_summary || generatedSeo.introSummary;
+  const cultureSummary = seoProfile?.culture_summary || generatedSeo.cultureSummary;
+  const salarySummary = seoProfile?.salary_summary || generatedSeo.salarySummary;
+  const interviewSummary = seoProfile?.interview_summary || generatedSeo.interviewSummary;
+  const prosSummary = seoProfile?.pros_summary || generatedSeo.prosSummary;
+  const consSummary = seoProfile?.cons_summary || generatedSeo.consSummary;
+  const candidateTakeaway = seoProfile?.candidate_takeaway || generatedSeo.candidateTakeaway;
   const meta = generateMeta({
-    title: `${company.name} yorumları, maaş bilgisi ve mülakat deneyimleri`,
+    title: `${company.name} Yorumları, Maaş ve Mülakat Süreci`,
     description:
       company.description ||
       `${company.name} şirketi hakkında anonim yorumları, maaş bilgilerini ve mülakat deneyimlerini inceleyin.`,
@@ -202,9 +251,7 @@ const CompanyDetail = () => {
     image: company.banner_url || seoConfig.defaultImage,
     type: "article",
     keywords: [
-      `${company.name} yorumlari`,
-      `${company.name} maaş`,
-      `${company.name} mülakat`,
+      ...generatedSeo.keywords,
     ],
   });
 
@@ -252,7 +299,7 @@ const CompanyDetail = () => {
         }
       : undefined,
     aggregateRating:
-      reviews.length > 0
+      reviews.length >= 2
         ? {
             "@type": "AggregateRating",
             ratingValue: Number(avgRating.toFixed(1)),
@@ -275,6 +322,39 @@ const CompanyDetail = () => {
     })),
   };
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `${company.name} Yorumları, Maaş ve Mülakat Süreci`,
+    description: meta.description,
+    datePublished: company.created_at || "2026-01-01",
+    dateModified: new Date().toISOString().split("T")[0],
+    mainEntityOfPage: `${seoConfig.siteUrl}/sirket/${company.slug}`,
+    author: {
+      "@type": "Organization",
+      name: "firmascope",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "firmascope",
+      logo: {
+        "@type": "ImageObject",
+        url: `${seoConfig.siteUrl}/favicon.svg`,
+      },
+    },
+  };
+
+  const pageJsonLd = generateJsonLd.webPage({
+    type: "WebPage",
+    name: meta.title,
+    headline: `${company.name} Yorumları, Maaş ve Mülakat Süreci`,
+    description: meta.description,
+    path: `/sirket/${company.slug}`,
+    datePublished: company.created_at?.split("T")[0],
+    dateModified: new Date().toISOString().split("T")[0],
+    speakableSelectors: [".company-seo-summary", ".candidate-takeaway"],
+  });
+
   const renderStars = (rating: number) => (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((s) => (
@@ -285,20 +365,12 @@ const CompanyDetail = () => {
 
   return (
     <Layout>
-      <Helmet>
-        <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
-        <meta name="robots" content={meta.robots} />
-        {meta.keywords && <meta name="keywords" content={meta.keywords} />}
-        <link rel="canonical" href={meta.canonical} />
-        <meta property="og:title" content={meta.openGraph.title} />
-        <meta property="og:description" content={meta.openGraph.description} />
-        <meta property="og:type" content={meta.openGraph.type} />
-        <meta property="og:url" content={meta.openGraph.url} />
-        <meta property="og:image" content={meta.openGraph.image} />
-      </Helmet>
+      <SeoHead meta={meta} path={`/sirket/${company.slug}`} />
       <JsonLd data={breadcrumbJsonLd} />
       <JsonLd data={companyJsonLd} />
+      <JsonLd data={articleJsonLd} />
+      <JsonLd data={pageJsonLd} />
+      {faqItems.length > 0 && <JsonLd data={generateJsonLd.faq(faqItems)} />}
 
       {/* Banner */}
       <div className="relative">
@@ -318,7 +390,10 @@ const CompanyDetail = () => {
               )}
             </div>
             <div className="z-10 -ml-4 rounded-r-xl bg-alm-orange px-6 pl-8 py-3 shadow-md">
-              <h1 className="font-display text-lg font-bold text-primary-foreground md:text-2xl">{company.name}</h1>
+              <p className="text-xs font-medium uppercase tracking-wide text-primary-foreground/80">{company.name}</p>
+              <h1 className="font-display text-lg font-bold text-primary-foreground md:text-2xl">
+                {company.name} Yorumları, Maaş ve Mülakat Süreci
+              </h1>
             </div>
           </div>
         </div>
@@ -389,39 +464,99 @@ const CompanyDetail = () => {
           <div className="space-y-6">
             {/* Overview */}
             {activeTab === 0 && (
-              <div className="card-elevated p-6">
-                <h3 className="font-display text-lg font-bold text-foreground">Şirket Bilgileri</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{company.description}</p>
-                <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                    {company.name}, {company.city} merkezli {(company.sector || "").toLowerCase()} alanında faaliyet göstermektedir.
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                    Şirket bünyesinde {company.size} çalışan bulunmaktadır.
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                    firmascope üzerinde {reviews.length} değerlendirme ve {salaries.length} maaş bilgisi paylaşılmıştır.
-                  </li>
-                  {reviews.length > 0 && (
-                    <>
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                        Ortalama puan: {avgRating.toFixed(1)} / 5
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                        Çalışanların %{recommendRate}'i bu şirketi tavsiye etmektedir.
-                      </li>
-                    </>
+              <div className="space-y-6">
+                <div className="card-elevated p-6">
+                  <h2 className="font-display text-lg font-bold text-foreground">Şirket Özeti</h2>
+                  {introSummary && <p className="company-seo-summary mt-3 text-sm leading-7 text-muted-foreground">{introSummary}</p>}
+                  {!introSummary && <p className="mt-2 text-sm text-muted-foreground">{company.description}</p>}
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  {cultureSummary && (
+                    <section className="card-elevated p-6">
+                      <h2 className="font-display text-lg font-bold text-foreground">Bu şirket nasıl?</h2>
+                      <p className="mt-3 text-sm leading-7 text-muted-foreground">{cultureSummary}</p>
+                    </section>
                   )}
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                    {interviews.length} mülakat deneyimi paylaşılmıştır.
-                  </li>
-                </ul>
+                  {salarySummary && (
+                    <section className="card-elevated p-6">
+                      <h2 className="font-display text-lg font-bold text-foreground">Maaşlar nasıl?</h2>
+                      <p className="mt-3 text-sm leading-7 text-muted-foreground">{salarySummary}</p>
+                    </section>
+                  )}
+                  {interviewSummary && (
+                    <section className="card-elevated p-6">
+                      <h2 className="font-display text-lg font-bold text-foreground">Mülakat süreci</h2>
+                      <p className="mt-3 text-sm leading-7 text-muted-foreground">{interviewSummary}</p>
+                    </section>
+                  )}
+                  {candidateTakeaway && (
+                    <section className="card-elevated p-6">
+                      <h2 className="font-display text-lg font-bold text-foreground">Adaylar için çıkarımlar</h2>
+                      <p className="candidate-takeaway mt-3 text-sm leading-7 text-muted-foreground">{candidateTakeaway}</p>
+                    </section>
+                  )}
+                  {prosSummary && (
+                    <section className="card-elevated p-6">
+                      <h2 className="font-display text-lg font-bold text-foreground">Artılar</h2>
+                      <p className="mt-3 text-sm leading-7 text-muted-foreground">{prosSummary}</p>
+                    </section>
+                  )}
+                  {consSummary && (
+                    <section className="card-elevated p-6">
+                      <h2 className="font-display text-lg font-bold text-foreground">Eksiler</h2>
+                      <p className="mt-3 text-sm leading-7 text-muted-foreground">{consSummary}</p>
+                    </section>
+                  )}
+                </div>
+
+                <div className="card-elevated p-6">
+                  <h2 className="font-display text-lg font-bold text-foreground">Şirket Bilgileri</h2>
+                  <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                      {company.name}, {company.city} merkezli {(company.sector || "").toLowerCase()} alanında faaliyet göstermektedir.
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                      Şirket bünyesinde {company.size} çalışan bulunmaktadır.
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                      firmascope üzerinde {reviews.length} değerlendirme ve {salaries.length} maaş bilgisi paylaşılmıştır.
+                    </li>
+                    {reviews.length >= 2 && (
+                      <>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                          Ortalama puan: {avgRating.toFixed(1)} / 5
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                          Çalışanların %{recommendRate}'i bu şirketi tavsiye etmektedir.
+                        </li>
+                      </>
+                    )}
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                      {interviews.length} mülakat deneyimi paylaşılmıştır.
+                    </li>
+                  </ul>
+                </div>
+
+                {faqItems.length > 0 && (
+                  <div className="card-elevated p-6">
+                    <h2 className="font-display text-lg font-bold text-foreground">Sık sorulan sorular</h2>
+                    <div className="mt-4 space-y-4">
+                      {faqItems.map((item) => (
+                        <section key={item.question} className="rounded-xl border border-border/70 bg-background/80 p-4">
+                          <h3 className="font-semibold text-foreground">{item.question}</h3>
+                          <p className="mt-2 text-sm leading-7 text-muted-foreground">{item.answer}</p>
+                        </section>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -590,6 +725,45 @@ const CompanyDetail = () => {
             <Button className="w-full rounded-xl font-semibold text-sm h-12 bg-amber text-amber-foreground hover:bg-amber/90" onClick={() => requireAuth(() => { setActiveTab(3); setShowInterviewForm(true); })}>
               Mülakat Bilgisi Ekle
             </Button>
+
+            {externalLinks.length > 0 && (
+              <div className="card-elevated p-5">
+                <h2 className="font-display text-base font-bold text-foreground">Kaynaklar ve dış referanslar</h2>
+                <div className="mt-3 space-y-2">
+                  {externalLinks.map((link) => (
+                    <a
+                      key={link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block rounded-xl border border-border/70 px-3 py-2 text-sm text-primary transition-colors hover:bg-primary/5"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {relatedCompanies.length > 0 && (
+              <div className="card-elevated p-5">
+                <h2 className="font-display text-base font-bold text-foreground">Benzer profil şirketler</h2>
+                <div className="mt-3 space-y-3">
+                  {relatedCompanies.map((relatedCompany) => (
+                    <Link
+                      key={relatedCompany.id}
+                      to={`/sirket/${relatedCompany.slug}`}
+                      className="block rounded-xl border border-border/70 px-3 py-3 transition-colors hover:bg-primary/5"
+                    >
+                      <div className="font-semibold text-foreground">{relatedCompany.name}</div>
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        {[relatedCompany.sector, relatedCompany.city].filter(Boolean).join(" · ")}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -107,6 +107,80 @@ export type Database = {
         }
         Relationships: []
       }
+      company_seo_profiles: {
+        Row: {
+          candidate_takeaway: string | null
+          company_id: string
+          cons_summary: string | null
+          created_at: string
+          culture_summary: string | null
+          external_links_json: Json
+          faq_items_json: Json
+          generated_at: string | null
+          generation_status: string
+          id: string
+          interview_summary: string | null
+          intro_summary: string | null
+          keywords_json: Json
+          prompt_version: string
+          pros_summary: string | null
+          salary_summary: string | null
+          source_snapshot_json: Json
+          updated_at: string
+          word_count: number
+        }
+        Insert: {
+          candidate_takeaway?: string | null
+          company_id: string
+          cons_summary?: string | null
+          created_at?: string
+          culture_summary?: string | null
+          external_links_json?: Json
+          faq_items_json?: Json
+          generated_at?: string | null
+          generation_status?: string
+          id?: string
+          interview_summary?: string | null
+          intro_summary?: string | null
+          keywords_json?: Json
+          prompt_version?: string
+          pros_summary?: string | null
+          salary_summary?: string | null
+          source_snapshot_json?: Json
+          updated_at?: string
+          word_count?: number
+        }
+        Update: {
+          candidate_takeaway?: string | null
+          company_id?: string
+          cons_summary?: string | null
+          created_at?: string
+          culture_summary?: string | null
+          external_links_json?: Json
+          faq_items_json?: Json
+          generated_at?: string | null
+          generation_status?: string
+          id?: string
+          interview_summary?: string | null
+          intro_summary?: string | null
+          keywords_json?: Json
+          prompt_version?: string
+          pros_summary?: string | null
+          salary_summary?: string | null
+          source_snapshot_json?: Json
+          updated_at?: string
+          word_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_seo_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_admins: {
         Row: {
           company_id: string
