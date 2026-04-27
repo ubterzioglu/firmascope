@@ -52,12 +52,15 @@ export type Database = {
           banner_url: string | null
           city: string | null
           company_type: string | null
+          created_by_admin_user_id: string | null
+          created_via: string
           created_at: string
           description: string | null
           id: string
           initials: string
           logo_url: string | null
           name: string
+          provenance_tag: string
           sector: string | null
           size: string | null
           slug: string
@@ -68,12 +71,15 @@ export type Database = {
           banner_url?: string | null
           city?: string | null
           company_type?: string | null
+          created_by_admin_user_id?: string | null
+          created_via?: string
           created_at?: string
           description?: string | null
           id?: string
           initials?: string
           logo_url?: string | null
           name: string
+          provenance_tag?: string
           sector?: string | null
           size?: string | null
           slug: string
@@ -84,12 +90,15 @@ export type Database = {
           banner_url?: string | null
           city?: string | null
           company_type?: string | null
+          created_by_admin_user_id?: string | null
+          created_via?: string
           created_at?: string
           description?: string | null
           id?: string
           initials?: string
           logo_url?: string | null
           name?: string
+          provenance_tag?: string
           sector?: string | null
           size?: string | null
           slug?: string
@@ -775,6 +784,23 @@ export type Database = {
       }
     }
     Functions: {
+      create_company_admin: {
+        Args: {
+          p_banner_url?: string
+          p_city?: string
+          p_company_type?: string
+          p_created_via?: string
+          p_description?: string
+          p_initials?: string
+          p_logo_url?: string
+          p_name: string
+          p_provenance_tag?: string
+          p_sector?: string
+          p_size?: string
+          p_slug: string
+        }
+        Returns: Database["public"]["Tables"]["companies"]["Row"]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -787,6 +813,10 @@ export type Database = {
       is_company_admin: {
         Args: { _company_id: string; _user_id: string }
         Returns: boolean
+      }
+      set_user_role_admin: {
+        Args: { _enabled?: boolean; _target_user_id: string }
+        Returns: undefined
       }
     }
     Enums: {

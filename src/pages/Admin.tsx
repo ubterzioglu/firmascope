@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,6 +65,33 @@ const statusLabels: Record<string, string> = {
   rejected: "Reddedildi",
 };
 
+const provenanceLabels: Record<string, string> = {
+  before: "Before",
+  admin_manual: "Admin",
+  suggestion_approval: "Oneri",
+};
+
+const provenanceColors: Record<string, string> = {
+  before: "bg-muted text-muted-foreground border-border",
+  admin_manual: "bg-alm-blue/15 text-primary border-primary/20",
+  suggestion_approval: "bg-alm-green/15 text-foreground border-alm-green/30",
+};
+
+const createdViaLabels: Record<string, string> = {
+  legacy_import: "Legacy Import",
+  admin_panel: "Admin Panel",
+  suggestion_approval: "Oneri Onayi",
+};
+
+type AdminUser = {
+  id: string;
+  user_id: string;
+  display_name: string | null;
+  created_at: string;
+  is_admin?: boolean;
+  is_company_admin?: boolean;
+};
+
 const Admin = () => {
   const { user, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -72,11 +100,13 @@ const Admin = () => {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [claims, setClaims] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
   const [salaries, setSalaries] = useState<any[]>([]);
   const [interviews, setInterviews] = useState<any[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [savingCompany, setSavingCompany] = useState(false);
+  const [roleMutationUserId, setRoleMutationUserId] = useState<string | null>(null);
 
   // Company form
   const [companyDialogOpen, setCompanyDialogOpen] = useState(false);
@@ -138,19 +168,29 @@ const Admin = () => {
 
   const fetchAll = async () => {
     setLoadingData(true);
-    const [sugRes, claimRes, compRes, userRes, revRes, salRes, intRes] = await Promise.all([
+    const [sugRes, claimRes, compRes, userRes, roleRes, revRes, salRes, intRes] = await Promise.all([
       supabase.from("company_suggestions").select("*").order("created_at", { ascending: false }),
       supabase.from("company_claims").select("*, companies(name)").order("created_at", { ascending: false }),
       supabase.from("companies").select("*").order("name"),
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+      supabase.from("user_roles").select("user_id, role"),
       supabase.from("reviews").select("*, companies(name)").order("created_at", { ascending: false }),
       supabase.from("salaries").select("*, companies(name)").order("created_at", { ascending: false }),
       supabase.from("interviews").select("*, companies(name)").order("created_at", { ascending: false }),
     ]);
+    const roles = roleRes.data || [];
+    const adminIds = new Set(roles.filter((role: any) => role.role === "admin").map((role: any) => role.user_id));
+    const companyAdminIds = new Set(roles.filter((role: any) => role.role === "company_admin").map((role: any) => role.user_id));
+    const userRows = (userRes.data || []).map((profile: any) => ({
+      ...profile,
+      is_admin: adminIds.has(profile.user_id),
+      is_company_admin: companyAdminIds.has(profile.user_id),
+    }));
+
     setSuggestions(sugRes.data || []);
     setClaims(claimRes.data || []);
     setCompanies(compRes.data || []);
-    setUsers(userRes.data || []);
+    setUsers(userRows);
     setReviews(revRes.data || []);
     setSalaries(salRes.data || []);
     setInterviews(intRes.data || []);
@@ -170,9 +210,15 @@ const Admin = () => {
   const handleCreateFromSuggestion = async (suggestion: any) => {
     const slug = slugify(String(suggestion.company_name || ""));
     const initials = suggestion.company_name.split(" ").filter((w: string) => w.length > 0).slice(0, 2).map((w: string) => w[0].toUpperCase()).join("");
-    const { error } = await supabase.from("companies").insert({
-      name: suggestion.company_name, slug, initials,
-      sector: suggestion.sector, city: suggestion.city, description: suggestion.description,
+    const { error } = await supabase.rpc("create_company_admin", {
+      p_name: suggestion.company_name,
+      p_slug: slug,
+      p_initials: initials,
+      p_sector: suggestion.sector,
+      p_city: suggestion.city,
+      p_description: suggestion.description,
+      p_provenance_tag: "admin_manual",
+      p_created_via: "suggestion_approval",
     });
     if (error) {
       toast({ title: "Hata", description: error.message, variant: "destructive" });
@@ -192,6 +238,32 @@ const Admin = () => {
     }
     toast({ title: "Başarılı", description: `Talep ${statusLabels[status].toLowerCase()}.` });
     fetchAll();
+  };
+
+  const handleSetAdminRole = async (targetUserId: string, enabled: boolean) => {
+    setRoleMutationUserId(targetUserId);
+    const { error } = await supabase.rpc("set_user_role_admin", {
+      _target_user_id: targetUserId,
+      _enabled: enabled,
+    });
+    setRoleMutationUserId(null);
+
+    if (error) {
+      toast({ title: "Hata", description: error.message, variant: "destructive" });
+      return;
+    }
+
+    toast({
+      title: "Basarili",
+      description: enabled ? "Kullanici admin yapildi." : "Admin rolu kaldirildi.",
+    });
+    fetchAll();
+  };
+
+  const getUserDisplayName = (targetUserId: string | null | undefined) => {
+    if (!targetUserId) return "-";
+    const profile = users.find((candidate) => candidate.user_id === targetUserId);
+    return profile?.display_name || targetUserId.slice(0, 8);
   };
 
   const openCompanyCreate = () => {
@@ -226,6 +298,7 @@ const Admin = () => {
     if (!companyForm.name.trim() || !companyForm.slug.trim()) {
       toast({ title: "Hata", description: "Ad ve slug zorunludur.", variant: "destructive" }); return;
     }
+    setSavingCompany(true);
     const initials = companyForm.initials || companyForm.name.split(" ").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
     const payload = {
       ...companyForm, initials,
@@ -241,9 +314,26 @@ const Admin = () => {
     if (editingCompany) {
       ({ data: saved, error } = await supabase.from("companies").update(payload).eq("id", editingCompany.id).select("*").single());
     } else {
-      ({ data: saved, error } = await supabase.from("companies").insert(payload).select("*").single());
+      ({ data: saved, error } = await supabase.rpc("create_company_admin", {
+        p_name: payload.name,
+        p_slug: payload.slug,
+        p_initials: payload.initials,
+        p_sector: payload.sector,
+        p_city: payload.city,
+        p_size: payload.size,
+        p_company_type: payload.company_type,
+        p_description: payload.description,
+        p_logo_url: payload.logo_url,
+        p_banner_url: payload.banner_url,
+        p_provenance_tag: "admin_manual",
+        p_created_via: "admin_panel",
+      }));
     }
-    if (error) { toast({ title: "Hata", description: error.message, variant: "destructive" }); return; }
+    if (error) {
+      setSavingCompany(false);
+      toast({ title: "Hata", description: error.message, variant: "destructive" });
+      return;
+    }
     const companyId = saved?.id || editingCompany?.id;
     if (companyId && (logoFile || bannerFile)) {
       setUploadingAssets(true);
@@ -258,6 +348,7 @@ const Admin = () => {
         toast({ title: "Gorsel yukleme hatasi", description: e?.message || "Bilinmeyen hata", variant: "destructive" });
       } finally { setUploadingAssets(false); }
     }
+    setSavingCompany(false);
     toast({ title: "Başarılı", description: editingCompany ? "Şirket güncellendi." : "Şirket oluşturuldu." });
     setCompanyDialogOpen(false); fetchAll();
   };
@@ -545,8 +636,11 @@ const Admin = () => {
             </TabsContent>
 
             <TabsContent value="companies">
-              <div className="flex justify-end mb-4">
-                <Button size="sm" onClick={openCompanyCreate}><Plus className="h-4 w-4 mr-1" /> Şirket Ekle</Button>
+              <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Yeni şirketler guvenli admin RPC uzerinden eklenir. Mevcut legacy 101 kayit `before` etiketi ile korunur.
+                </div>
+                <Button size="sm" onClick={openCompanyCreate}><Plus className="h-4 w-4 mr-1" /> SQL Destekli Sirket Ekle</Button>
               </div>
               <div className="card-elevated overflow-hidden">
                 <Table>
@@ -558,6 +652,8 @@ const Admin = () => {
                       <TableHead>Şehir</TableHead>
                       <TableHead>Tür</TableHead>
                       <TableHead>Durum</TableHead>
+                      <TableHead>Kaynak</TableHead>
+                      <TableHead>Ekleyen Admin</TableHead>
                       <TableHead className="text-right">İşlem</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -570,6 +666,19 @@ const Admin = () => {
                         <TableCell>{c.city || "-"}</TableCell>
                         <TableCell>{c.company_type || "-"}</TableCell>
                         <TableCell><Badge variant="outline">{c.status || "Aktif"}</Badge></TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            <Badge className={provenanceColors[c.provenance_tag] || ""} variant="outline">
+                              {provenanceLabels[c.provenance_tag] || c.provenance_tag || "-"}
+                            </Badge>
+                            <Badge variant="outline">
+                              {createdViaLabels[c.created_via] || c.created_via || "-"}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-xs text-muted-foreground">
+                          {getUserDisplayName(c.created_by_admin_user_id)}
+                        </TableCell>
                         <TableCell className="text-right">
                           <Button size="sm" variant="ghost" onClick={() => openCompanyEdit(c)}><Pencil className="h-3.5 w-3.5" /></Button>
                         </TableCell>
@@ -579,13 +688,19 @@ const Admin = () => {
                 </Table>
               </div>
               <Dialog open={companyDialogOpen} onOpenChange={setCompanyDialogOpen}>
-                <DialogContent>
+                <DialogContent className="max-h-[85vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>{editingCompany ? "Şirket Düzenle" : "Yeni Şirket"}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-3 mt-2">
+                    {!editingCompany && (
+                      <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+                        Bu form veriyi backend tarafinda kontrollu SQL insert ile olusturur. Ayni slug varsa kayit yapilmaz.
+                      </div>
+                    )}
                     <div><Label>Ad *</Label><Input value={companyForm.name} onChange={(e) => setCompanyForm({ ...companyForm, name: e.target.value, slug: slugify(e.target.value) })} /></div>
                     <div><Label>Slug *</Label><Input value={companyForm.slug} onChange={(e) => setCompanyForm({ ...companyForm, slug: e.target.value })} /></div>
+                    <div><Label>Kisaltma</Label><Input value={companyForm.initials} onChange={(e) => setCompanyForm({ ...companyForm, initials: e.target.value })} placeholder="FS" /></div>
                     <div className="grid grid-cols-2 gap-3">
                       <div><Label>Sektör</Label><Input value={companyForm.sector} onChange={(e) => setCompanyForm({ ...companyForm, sector: e.target.value })} /></div>
                       <div><Label>Şehir</Label><Input value={companyForm.city} onChange={(e) => setCompanyForm({ ...companyForm, city: e.target.value })} /></div>
@@ -594,13 +709,17 @@ const Admin = () => {
                       <div><Label>Büyüklük</Label><Input value={companyForm.size} onChange={(e) => setCompanyForm({ ...companyForm, size: e.target.value })} placeholder="51-200" /></div>
                       <div><Label>Tür</Label><Input value={companyForm.company_type} onChange={(e) => setCompanyForm({ ...companyForm, company_type: e.target.value })} /></div>
                     </div>
-                    <div><Label>Açıklama</Label><Input value={companyForm.description} onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })} /></div>
+                    <div><Label>Açıklama</Label><Textarea value={companyForm.description} onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })} rows={4} /></div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div><Label>Logo URL</Label><Input value={companyForm.logo_url} onChange={(e) => setCompanyForm({ ...companyForm, logo_url: e.target.value })} placeholder="https://..." /></div>
+                      <div><Label>Banner URL</Label><Input value={companyForm.banner_url} onChange={(e) => setCompanyForm({ ...companyForm, banner_url: e.target.value })} placeholder="https://..." /></div>
+                    </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div><Label>Logo (opsiyonel)</Label><Input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} /></div>
                       <div><Label>Banner (opsiyonel)</Label><Input type="file" accept="image/*" onChange={(e) => setBannerFile(e.target.files?.[0] || null)} /></div>
                     </div>
-                    <Button onClick={handleCompanySave} className="w-full" disabled={uploadingAssets}>
-                      {uploadingAssets ? "Yükleniyor..." : (editingCompany ? "Güncelle" : "Oluştur")}
+                    <Button onClick={handleCompanySave} className="w-full" disabled={uploadingAssets || savingCompany}>
+                      {uploadingAssets || savingCompany ? "Yükleniyor..." : (editingCompany ? "Güncelle" : "Oluştur")}
                     </Button>
                   </div>
                 </DialogContent>
@@ -939,19 +1058,47 @@ const Admin = () => {
             </TabsContent>
 
             <TabsContent value="users">
+              <div className="mb-4 rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+                Yeni birini admin yapmak icin once kullanicinin kayit olmus olmasi gerekir. Aksi halde `user_roles` kaydi baglanamaz.
+              </div>
               <div className="card-elevated overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>İsim</TableHead>
+                      <TableHead>Rol</TableHead>
+                      <TableHead>Kullanıcı ID</TableHead>
                       <TableHead>Kayıt Tarihi</TableHead>
+                      <TableHead className="text-right">İşlem</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {users.map((u) => (
                       <TableRow key={u.id}>
                         <TableCell className="font-medium">{u.display_name || "-"}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {u.is_admin && <Badge variant="outline" className="border-primary/20 bg-primary/10 text-primary">admin</Badge>}
+                            {u.is_company_admin && <Badge variant="outline">company_admin</Badge>}
+                            {!u.is_admin && !u.is_company_admin && <Badge variant="outline">user</Badge>}
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">{u.user_id}</TableCell>
                         <TableCell className="text-muted-foreground text-xs">{new Date(u.created_at).toLocaleDateString("tr-TR")}</TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={roleMutationUserId === u.user_id}
+                            onClick={() => handleSetAdminRole(u.user_id, !u.is_admin)}
+                          >
+                            {roleMutationUserId === u.user_id
+                              ? "Kaydediliyor..."
+                              : u.is_admin
+                                ? "Admin Kaldir"
+                                : "Admin Yap"}
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
