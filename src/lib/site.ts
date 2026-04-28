@@ -1,6 +1,6 @@
 export const SITE_NAME = "firmascope";
 export const SITE_URL = "https://firmascope.com";
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/firmascope_og.png`;
 export const DEFAULT_LOCALE = "tr_TR";
 
 export const INDEXABLE_STATIC_ROUTES = ["/", "/sirketler"] as const;
