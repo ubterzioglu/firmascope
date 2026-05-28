@@ -8,7 +8,15 @@ const Footer = () => {
           <Link to="/" className="font-display text-sm font-bold text-foreground">
             firmascope
           </Link>
-          <div className="flex flex-wrap items-center gap-4">
+          <Link to="/yasal" className="font-display text-sm font-bold text-foreground hover:text-foreground/80 transition-colors">
+            yasal bilgiler
+          </Link>
+        </div>
+        <div className="mt-4 border-t border-border pt-4 text-center">
+          <span className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} firmascope. tüm hakları saklıdır.
+          </span>
+          <div className="mt-3">
             <a
               href="https://www.spindorai.com/seo/istanbul-seo"
               target="_blank"
@@ -17,15 +25,7 @@ const Footer = () => {
             >
               İstanbul Seo Ajansı
             </a>
-            <Link to="/yasal" className="font-display text-sm font-bold text-foreground hover:text-foreground/80 transition-colors">
-              yasal bilgiler
-            </Link>
           </div>
-        </div>
-        <div className="mt-4 border-t border-border pt-4 text-center">
-          <span className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} firmascope. tüm hakları saklıdır.
-          </span>
         </div>
       </div>
     </footer>
