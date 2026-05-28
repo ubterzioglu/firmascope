@@ -16,12 +16,13 @@ const Footer = () => {
           <span className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} firmascope. tüm hakları saklıdır.
           </span>
-          <div className="mt-3">
+          <div className="mt-3 text-xs text-muted-foreground">
+            <span>powered by </span>
             <a
               href="https://www.spindorai.com/seo/istanbul-seo"
               target="_blank"
               rel="noreferrer"
-              className="font-display text-sm font-bold text-foreground transition-colors hover:text-foreground/80"
+              className="font-display font-bold text-foreground transition-colors hover:text-foreground/80"
             >
               İstanbul Seo Ajansı
             </a>
