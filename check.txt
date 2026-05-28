@@ -1,0 +1,270 @@
+2026-May-28 10:51:52.018845 Docker 29.3.0 with BuildKit and Buildx detected on deployment server (localhost).
+2026-May-28 10:51:52.024328 Starting deployment of ubterzioglu/firmascope:main to localhost.
+2026-May-28 10:51:52.166454 Preparing container with helper image: ghcr.io/coollabsio/coolify-helper:1.0.12
+2026-May-28 10:51:52.253500 [DEBUG] [CMD]: docker stop -t 30 fconet6fy6eovz7p80ssc511
+2026-May-28 10:51:52.253500 [DEBUG] Error response from daemon: No such container: fconet6fy6eovz7p80ssc511
+2026-May-28 10:51:52.358340 [DEBUG] [CMD]: docker run -d --network coolify --name fconet6fy6eovz7p80ssc511  --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/coollabsio/coolify-helper:1.0.12
+2026-May-28 10:51:52.358340 [DEBUG] a15c34549d9188455b480d34e04b61c4b3e8c0029d53ba40725f2ecc88b022e0
+2026-May-28 10:51:53.890355 [DEBUG] [CMD]: docker exec fconet6fy6eovz7p80ssc511 bash -c 'GIT_SSH_COMMAND="ssh -o ConnectTimeout=30 -p 22 -o Port=22 -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git ls-remote https://x-access-token:<REDACTED>@github.com/ubterzioglu/firmascope.git refs/heads/main'
+2026-May-28 10:51:53.890355 [DEBUG] 681f5c34d08188a3e271628a880a3440539e1278	refs/heads/main
+2026-May-28 10:51:54.177374 ----------------------------------------
+2026-May-28 10:51:54.181795 Importing ubterzioglu/firmascope:main (commit sha 681f5c34d08188a3e271628a880a3440539e1278) to /artifacts/fconet6fy6eovz7p80ssc511.
+2026-May-28 10:51:54.308084 [DEBUG] [CMD]: docker exec fconet6fy6eovz7p80ssc511 bash -c 'git clone --depth=1 --recurse-submodules --shallow-submodules -b '\''main'\'' '\''https://x-access-token:<REDACTED>@github.com/ubterzioglu/firmascope.git'\'' '\''/artifacts/fconet6fy6eovz7p80ssc511'\'' && cd '\''/artifacts/fconet6fy6eovz7p80ssc511'\'' && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git fetch --depth=1 origin '\''681f5c34d08188a3e271628a880a3440539e1278'\'' && git -c advice.detachedHead=false checkout '\''681f5c34d08188a3e271628a880a3440539e1278'\'' >/dev/null 2>&1 && cd '\''/artifacts/fconet6fy6eovz7p80ssc511'\'' && if [ -f .gitmodules ]; then git submodule sync && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git submodule update --init --recursive --depth=1; fi && cd '\''/artifacts/fconet6fy6eovz7p80ssc511'\'' && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git lfs pull'
+2026-May-28 10:51:54.308084 [DEBUG] Cloning into '/artifacts/fconet6fy6eovz7p80ssc511'...
+2026-May-28 10:54:29.480692 [DEBUG] From https://github.com/ubterzioglu/firmascope
+2026-May-28 10:<REDACTED>@firmascope.com
+2026-May-28 10:54:31.285239 [DEBUG] ARG SUPABASE_URL=https://jhgtjldygapeztuoetng.supabase.co
+2026-May-28 10:<REDACTED>@firmascope.com
+2026-May-28 10:54:31.285239 [DEBUG] ARG SUPABASE_URL=https://jhgtjldygapeztuoetng.supabase.co
+2026-May-28 10:<REDACTED>@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+2026-May-28 10:54:33.252832 [DEBUG] #5 resolve docker.io/library/nginx:alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+2026-May-28 10:54:33.353795 [DEBUG] #5 ...
+2026-May-28 10:54:33.353795 [DEBUG] 
+2026-May-28 10:54:33.353795 [DEBUG] #6 [builder 1/6] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293
+2026-May-28 10:54:33.353795 [DEBUG] #6 resolve docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 done
+2026-May-28 10:54:33.353795 [DEBUG] #6 sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 7.67kB / 7.67kB done
+2026-May-28 10:54:33.353795 [DEBUG] #6 sha256:afdf98210b07b586eb71fa22ba2e432e058e4cd1304d31ed60888755b8c865fb 1.72kB / 1.72kB done
+2026-May-28 10:54:33.353795 [DEBUG] #6 sha256:11cedc39e663e7c5d5cb9cc77a461a0d2adc25537b94e6831a6108f09cb2001b 6.52kB / 6.52kB done
+2026-May-28 10:54:33.353795 [DEBUG] #6 DONE 0.1s
+2026-May-28 10:54:33.353795 [DEBUG] 
+2026-May-28 10:54:33.353795 [DEBUG] #7 [internal] load build context
+2026-May-28 10:54:33.353795 [DEBUG] #7 transferring context: 7.74MB 0.1s done
+2026-May-28 10:54:33.353795 [DEBUG] #7 DONE 0.1s
+2026-May-28 10:54:33.353795 [DEBUG] 
+2026-May-28 10:54:33.353795 [DEBUG] #8 [builder 2/6] WORKDIR /app
+2026-May-28 10:54:33.353795 [DEBUG] #8 DONE 0.0s
+2026-May-28 10:54:33.353795 [DEBUG] 
+2026-May-28 10:54:33.353795 [DEBUG] #5 [stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+2026-May-28 10:54:33.353795 [DEBUG] #5 resolve docker.io/library/nginx:alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a done
+2026-May-28 10:54:33.455420 [DEBUG] #5 ...
+2026-May-28 10:54:33.455420 [DEBUG] 
+2026-May-28 10:54:33.455420 [DEBUG] #9 [builder 3/6] COPY package*.json ./
+2026-May-28 10:54:33.455420 [DEBUG] #9 DONE 0.0s
+2026-May-28 10:54:33.455420 [DEBUG] 
+2026-May-28 10:54:33.455420 [DEBUG] #5 [stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+2026-May-28 10:54:33.455420 [DEBUG] #5 sha256:abaae85d1626e429b3f1209aea369c0af9562cc06b5e075c006e0f699bba35f2 1.88MB / 1.88MB 0.2s done
+2026-May-28 10:54:33.455420 [DEBUG] #5 sha256:43f834d60d8af3f133c7e76a202d28cd62cc026a561edca72ee752ef01bfaacd 0B / 628B 0.2s
+2026-May-28 10:54:33.455420 [DEBUG] #5 sha256:31db9045b34376493fd4fb695d8a8d03bbfffaf6297fcde82d0f925ce2dd329a 2.50kB / 2.50kB done
+2026-May-28 10:54:33.455420 [DEBUG] #5 sha256:de1b677d8c003ce9e558f3a0cd4dec3c035f424ecddd68063043a593ad572257 0B / 957B 0.2s
+2026-May-28 10:54:33.455420 [DEBUG] #5 sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a 10.33kB / 10.33kB done
+2026-May-28 10:54:33.455420 [DEBUG] #5 sha256:da954fb959a34e2195e6bf622e6396bf338f99e0fe6d8e641b302d9aaa1f0645 12.41kB / 12.41kB done
+2026-May-28 10:54:33.455420 [DEBUG] #5 extracting sha256:abaae85d1626e429b3f1209aea369c0af9562cc06b5e075c006e0f699bba35f2
+2026-May-28 10:54:33.455420 [DEBUG] #5 sha256:94d083cf706ab544ec7e9bcaba5c164db87b3d3a56176bf2fca440d535c16b0d 0B / 405B 0.2s
+2026-May-28 10:54:33.628824 [DEBUG] #5 sha256:43f834d60d8af3f133c7e76a202d28cd62cc026a561edca72ee752ef01bfaacd 628B / 628B 0.3s done
+2026-May-28 10:54:33.628824 [DEBUG] #5 extracting sha256:abaae85d1626e429b3f1209aea369c0af9562cc06b5e075c006e0f699bba35f2 0.0s done
+2026-May-28 10:54:33.628824 [DEBUG] #5 sha256:e654dbbbb9e15a1fa035d24728aeeb60bc655f4ebd4d6215a496b77a7d104697 0B / 1.21kB 0.3s
+2026-May-28 10:54:33.628824 [DEBUG] #5 extracting sha256:43f834d60d8af3f133c7e76a202d28cd62cc026a561edca72ee752ef01bfaacd
+2026-May-28 10:54:33.746099 [DEBUG] #5 sha256:de1b677d8c003ce9e558f3a0cd4dec3c035f424ecddd68063043a593ad572257 957B / 957B 0.4s done
+2026-May-28 10:54:33.746099 [DEBUG] #5 extracting sha256:43f834d60d8af3f133c7e76a202d28cd62cc026a561edca72ee752ef01bfaacd done
+2026-May-28 10:54:33.746099 [DEBUG] #5 extracting sha256:de1b677d8c003ce9e558f3a0cd4dec3c035f424ecddd68063043a593ad572257 done
+2026-May-28 10:54:33.746099 [DEBUG] #5 sha256:a5008f4a4b257356728e2feaf2b5b9e2054c0c577d324e76abbf14470b5f1cfd 0B / 1.40kB 0.4s
+2026-May-28 10:54:33.746099 [DEBUG] #5 extracting sha256:94d083cf706ab544ec7e9bcaba5c164db87b3d3a56176bf2fca440d535c16b0d done
+2026-May-28 10:54:33.746099 [DEBUG] #5 extracting sha256:e654dbbbb9e15a1fa035d24728aeeb60bc655f4ebd4d6215a496b77a7d104697
+2026-May-28 10:54:33.857262 [DEBUG] #5 sha256:94d083cf706ab544ec7e9bcaba5c164db87b3d3a56176bf2fca440d535c16b0d 405B / 405B 0.4s done
+2026-May-28 10:54:33.857262 [DEBUG] #5 sha256:e654dbbbb9e15a1fa035d24728aeeb60bc655f4ebd4d6215a496b77a7d104697 1.21kB / 1.21kB 0.5s done
+2026-May-28 10:54:33.857262 [DEBUG] #5 sha256:a5008f4a4b257356728e2feaf2b5b9e2054c0c577d324e76abbf14470b5f1cfd 1.40kB / 1.40kB 0.5s done
+2026-May-28 10:54:33.857262 [DEBUG] #5 extracting sha256:e654dbbbb9e15a1fa035d24728aeeb60bc655f4ebd4d6215a496b77a7d104697 done
+2026-May-28 10:54:33.857262 [DEBUG] #5 sha256:fbaed3f7fcbe6a0d591ac8601934f1f05252cee42741fde9e950dce55580af18 3.15MB / 20.28MB 0.6s
+2026-May-28 10:54:33.857262 [DEBUG] #5 extracting sha256:a5008f4a4b257356728e2feaf2b5b9e2054c0c577d324e76abbf14470b5f1cfd done
+2026-May-28 10:54:34.026420 [DEBUG] #5 sha256:fbaed3f7fcbe6a0d591ac8601934f1f05252cee42741fde9e950dce55580af18 20.28MB / 20.28MB 0.6s done
+2026-May-28 10:54:34.026420 [DEBUG] #5 extracting sha256:fbaed3f7fcbe6a0d591ac8601934f1f05252cee42741fde9e950dce55580af18 0.1s
+2026-May-28 10:54:34.255389 [DEBUG] #5 extracting sha256:fbaed3f7fcbe6a0d591ac8601934f1f05252cee42741fde9e950dce55580af18 0.3s done
+2026-May-28 10:54:34.502524 [DEBUG] #5 DONE 1.1s
+2026-May-28 10:54:34.502524 [DEBUG] 
+2026-May-28 10:54:34.502524 [DEBUG] #10 [builder 4/6] RUN npm ci
+2026-May-28 10:54:34.887028 [DEBUG] #10 1.517 npm warn deprecated whatwg-encoding@2.0.0: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+2026-May-28 10:54:36.203885 [DEBUG] #10 2.833 npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+2026-May-28 10:54:36.454852 [DEBUG] #10 3.084 npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+2026-May-28 10:54:42.175043 [DEBUG] #10 8.805
+2026-May-28 10:54:42.175043 [DEBUG] #10 8.805 added 516 packages, and audited 517 packages in 9s
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.805
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.805 100 packages are looking for funding
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.805   run `npm fund` for details
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.836
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.836 18 vulnerabilities (1 low, 8 moderate, 9 high)
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.836
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.836 To address all issues, run:
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.836   npm audit fix
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.836
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.836 Run `npm audit` for details.
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.837 npm notice
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.837 npm notice New major version of npm available! 10.8.2 -> 11.16.0
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.837 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.16.0
+2026-May-28 10:<REDACTED>@11.16.0
+2026-May-28 10:54:42.358342 [DEBUG] #10 8.837 npm notice
+2026-May-28 10:54:43.169476 [DEBUG] #10 DONE 9.8s
+2026-May-28 10:54:43.374240 [DEBUG] #11 [builder 5/6] COPY . .
+2026-May-28 10:54:43.374240 [DEBUG] #11 DONE 0.1s
+2026-May-28 10:54:43.374240 [DEBUG] 
+2026-May-28 10:54:43.374240 [DEBUG] #12 [builder 6/6] RUN npm run build
+2026-May-28 10:54:43.393420 [DEBUG] #12 0.170
+2026-May-28 10:54:43.393420 [DEBUG] #12 0.170 > vite_react_shadcn_ts@0.0.0 build
+2026-May-28 10:54:43.393420 [DEBUG] #12 0.170 > tsx scripts/generate-company-seo.ts && tsx scripts/generate-sitemap.ts && vite build && tsx scripts/prerender.ts
+2026-May-28 10:54:43.393420 [DEBUG] #12 0.170
+2026-May-28 10:54:43.774367 [DEBUG] #12 0.551 Skipping company SEO generation: SUPABASE_SERVICE_ROLE_KEY is missing.
+2026-May-28 10:54:44.487795 [DEBUG] #12 1.264 Sitemap generated: /app/public/sitemap.xml (238 URLs)
+2026-May-28 10:54:44.756120 [DEBUG] #12 1.533 vite v5.4.19 building for production...
+2026-May-28 10:54:44.951375 [DEBUG] #12 1.577 transforming...
+2026-May-28 10:54:45.297983 [DEBUG] #12 2.074 Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+2026-May-28 10:54:45.297983 [DEBUG] #12 2.074   npx update-browserslist-db@latest
+2026-May-28 10:54:45.297983 [DEBUG] #12 2.074   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+2026-May-28 10:<REDACTED>@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+2026-May-28 10:54:50.009941 #5 resolve docker.io/library/nginx:alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+2026-May-28 10:54:50.009941 #5 ...
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 #6 [builder 1/6] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293
+2026-May-28 10:54:50.009941 #6 resolve docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 done
+2026-May-28 10:54:50.009941 #6 sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 7.67kB / 7.67kB done
+2026-May-28 10:54:50.009941 #6 sha256:afdf98210b07b586eb71fa22ba2e432e058e4cd1304d31ed60888755b8c865fb 1.72kB / 1.72kB done
+2026-May-28 10:54:50.009941 #6 sha256:11cedc39e663e7c5d5cb9cc77a461a0d2adc25537b94e6831a6108f09cb2001b 6.52kB / 6.52kB done
+2026-May-28 10:54:50.009941 #6 DONE 0.1s
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 #7 [internal] load build context
+2026-May-28 10:54:50.009941 #7 transferring context: 7.74MB 0.1s done
+2026-May-28 10:54:50.009941 #7 DONE 0.1s
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 #8 [builder 2/6] WORKDIR /app
+2026-May-28 10:54:50.009941 #8 DONE 0.0s
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 #5 [stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+2026-May-28 10:54:50.009941 #5 resolve docker.io/library/nginx:alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a done
+2026-May-28 10:54:50.009941 #5 ...
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 #9 [builder 3/6] COPY package*.json ./
+2026-May-28 10:54:50.009941 #9 DONE 0.0s
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 #5 [stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+2026-May-28 10:54:50.009941 #5 sha256:abaae85d1626e429b3f1209aea369c0af9562cc06b5e075c006e0f699bba35f2 1.88MB / 1.88MB 0.2s done
+2026-May-28 10:54:50.009941 #5 sha256:43f834d60d8af3f133c7e76a202d28cd62cc026a561edca72ee752ef01bfaacd 0B / 628B 0.2s
+2026-May-28 10:54:50.009941 #5 sha256:31db9045b34376493fd4fb695d8a8d03bbfffaf6297fcde82d0f925ce2dd329a 2.50kB / 2.50kB done
+2026-May-28 10:54:50.009941 #5 sha256:de1b677d8c003ce9e558f3a0cd4dec3c035f424ecddd68063043a593ad572257 0B / 957B 0.2s
+2026-May-28 10:54:50.009941 #5 sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a 10.33kB / 10.33kB done
+2026-May-28 10:54:50.009941 #5 sha256:da954fb959a34e2195e6bf622e6396bf338f99e0fe6d8e641b302d9aaa1f0645 12.41kB / 12.41kB done
+2026-May-28 10:54:50.009941 #5 extracting sha256:abaae85d1626e429b3f1209aea369c0af9562cc06b5e075c006e0f699bba35f2
+2026-May-28 10:54:50.009941 #5 sha256:94d083cf706ab544ec7e9bcaba5c164db87b3d3a56176bf2fca440d535c16b0d 0B / 405B 0.2s
+2026-May-28 10:54:50.009941 #5 sha256:43f834d60d8af3f133c7e76a202d28cd62cc026a561edca72ee752ef01bfaacd 628B / 628B 0.3s done
+2026-May-28 10:54:50.009941 #5 extracting sha256:abaae85d1626e429b3f1209aea369c0af9562cc06b5e075c006e0f699bba35f2 0.0s done
+2026-May-28 10:54:50.009941 #5 sha256:e654dbbbb9e15a1fa035d24728aeeb60bc655f4ebd4d6215a496b77a7d104697 0B / 1.21kB 0.3s
+2026-May-28 10:54:50.009941 #5 extracting sha256:43f834d60d8af3f133c7e76a202d28cd62cc026a561edca72ee752ef01bfaacd
+2026-May-28 10:54:50.009941 #5 sha256:de1b677d8c003ce9e558f3a0cd4dec3c035f424ecddd68063043a593ad572257 957B / 957B 0.4s done
+2026-May-28 10:54:50.009941 #5 extracting sha256:43f834d60d8af3f133c7e76a202d28cd62cc026a561edca72ee752ef01bfaacd done
+2026-May-28 10:54:50.009941 #5 extracting sha256:de1b677d8c003ce9e558f3a0cd4dec3c035f424ecddd68063043a593ad572257 done
+2026-May-28 10:54:50.009941 #5 sha256:a5008f4a4b257356728e2feaf2b5b9e2054c0c577d324e76abbf14470b5f1cfd 0B / 1.40kB 0.4s
+2026-May-28 10:54:50.009941 #5 extracting sha256:94d083cf706ab544ec7e9bcaba5c164db87b3d3a56176bf2fca440d535c16b0d done
+2026-May-28 10:54:50.009941 #5 extracting sha256:e654dbbbb9e15a1fa035d24728aeeb60bc655f4ebd4d6215a496b77a7d104697
+2026-May-28 10:54:50.009941 #5 sha256:94d083cf706ab544ec7e9bcaba5c164db87b3d3a56176bf2fca440d535c16b0d 405B / 405B 0.4s done
+2026-May-28 10:54:50.009941 #5 sha256:e654dbbbb9e15a1fa035d24728aeeb60bc655f4ebd4d6215a496b77a7d104697 1.21kB / 1.21kB 0.5s done
+2026-May-28 10:54:50.009941 #5 sha256:a5008f4a4b257356728e2feaf2b5b9e2054c0c577d324e76abbf14470b5f1cfd 1.40kB / 1.40kB 0.5s done
+2026-May-28 10:54:50.009941 #5 extracting sha256:e654dbbbb9e15a1fa035d24728aeeb60bc655f4ebd4d6215a496b77a7d104697 done
+2026-May-28 10:54:50.009941 #5 sha256:fbaed3f7fcbe6a0d591ac8601934f1f05252cee42741fde9e950dce55580af18 3.15MB / 20.28MB 0.6s
+2026-May-28 10:54:50.009941 #5 extracting sha256:a5008f4a4b257356728e2feaf2b5b9e2054c0c577d324e76abbf14470b5f1cfd done
+2026-May-28 10:54:50.009941 #5 sha256:fbaed3f7fcbe6a0d591ac8601934f1f05252cee42741fde9e950dce55580af18 20.28MB / 20.28MB 0.6s done
+2026-May-28 10:54:50.009941 #5 extracting sha256:fbaed3f7fcbe6a0d591ac8601934f1f05252cee42741fde9e950dce55580af18 0.1s
+2026-May-28 10:54:50.009941 #5 extracting sha256:fbaed3f7fcbe6a0d591ac8601934f1f05252cee42741fde9e950dce55580af18 0.3s done
+2026-May-28 10:54:50.009941 #5 DONE 1.1s
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 #10 [builder 4/6] RUN npm ci
+2026-May-28 10:54:50.009941 #10 1.517 npm warn deprecated whatwg-encoding@2.0.0: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+2026-May-28 10:54:50.009941 #10 2.833 npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+2026-May-28 10:54:50.009941 #10 3.084 npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+2026-May-28 10:54:50.009941 #10 8.805
+2026-May-28 10:54:50.009941 #10 8.805 added 516 packages, and audited 517 packages in 9s
+2026-May-28 10:54:50.009941 #10 8.805
+2026-May-28 10:54:50.009941 #10 8.805 100 packages are looking for funding
+2026-May-28 10:54:50.009941 #10 8.805   run `npm fund` for details
+2026-May-28 10:54:50.009941 #10 8.836
+2026-May-28 10:54:50.009941 #10 8.836 18 vulnerabilities (1 low, 8 moderate, 9 high)
+2026-May-28 10:54:50.009941 #10 8.836
+2026-May-28 10:54:50.009941 #10 8.836 To address all issues, run:
+2026-May-28 10:54:50.009941 #10 8.836   npm audit fix
+2026-May-28 10:54:50.009941 #10 8.836
+2026-May-28 10:54:50.009941 #10 8.836 Run `npm audit` for details.
+2026-May-28 10:54:50.009941 #10 8.837 npm notice
+2026-May-28 10:54:50.009941 #10 8.837 npm notice New major version of npm available! 10.8.2 -> 11.16.0
+2026-May-28 10:54:50.009941 #10 8.837 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.16.0
+2026-May-28 10:<REDACTED>@11.16.0
+2026-May-28 10:54:50.009941 #10 8.837 npm notice
+2026-May-28 10:54:50.009941 #10 DONE 9.8s
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 #11 [builder 5/6] COPY . .
+2026-May-28 10:54:50.009941 #11 DONE 0.1s
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 #12 [builder 6/6] RUN npm run build
+2026-May-28 10:54:50.009941 #12 0.170
+2026-May-28 10:54:50.009941 #12 0.170 > vite_react_shadcn_ts@0.0.0 build
+2026-May-28 10:54:50.009941 #12 0.170 > tsx scripts/generate-company-seo.ts && tsx scripts/generate-sitemap.ts && vite build && tsx scripts/prerender.ts
+2026-May-28 10:54:50.009941 #12 0.170
+2026-May-28 10:54:50.009941 #12 0.551 Skipping company SEO generation: SUPABASE_SERVICE_ROLE_KEY is missing.
+2026-May-28 10:54:50.009941 #12 1.264 Sitemap generated: /app/public/sitemap.xml (238 URLs)
+2026-May-28 10:54:50.009941 #12 1.533 vite v5.4.19 building for production...
+2026-May-28 10:54:50.009941 #12 1.577 transforming...
+2026-May-28 10:54:50.009941 #12 2.074 Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+2026-May-28 10:54:50.009941 #12 2.074   npx update-browserslist-db@latest
+2026-May-28 10:54:50.009941 #12 2.074   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+2026-May-28 10:54:50.009941 #12 5.413 ✓ 1819 modules transformed.
+2026-May-28 10:54:50.009941 #12 5.727 rendering chunks...
+2026-May-28 10:54:50.009941 #12 5.735 computing gzip size...
+2026-May-28 10:54:50.009941 #12 5.752 dist/index.html                   1.57 kB │ gzip:   0.72 kB
+2026-May-28 10:54:50.009941 #12 5.752 dist/assets/index-CtdVO8dJ.css   81.03 kB │ gzip:  13.98 kB
+2026-May-28 10:54:50.009941 #12 5.752 dist/assets/index-DH3p2YRC.js   825.85 kB │ gzip: 236.89 kB
+2026-May-28 10:54:50.009941 #12 5.752
+2026-May-28 10:54:50.009941 #12 5.752 (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-May-28 10:54:50.009941 #12 5.752 - Using dynamic import() to code-split the application
+2026-May-28 10:54:50.009941 #12 5.752 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-May-28 10:54:50.009941 #12 5.752 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2026-May-28 10:54:50.009941 #12 5.752 ✓ built in 4.20s
+2026-May-28 10:54:50.009941 #12 6.548 Prerender failed: Error: No supported browser binary found for prerendering.
+2026-May-28 10:54:50.009941 #12 6.548     at resolveBrowserPath (/app/scripts/prerender.ts:43:9)
+2026-May-28 10:54:50.009941 #12 6.548     at async main (/app/scripts/prerender.ts:111:23)
+2026-May-28 10:54:50.009941 #12 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+2026-May-28 10:54:50.009941 ------
+2026-May-28 10:54:50.009941 > [builder 6/6] RUN npm run build:
+2026-May-28 10:54:50.009941 5.752 dist/assets/index-DH3p2YRC.js   825.85 kB │ gzip: 236.89 kB
+2026-May-28 10:54:50.009941 5.752
+2026-May-28 10:54:50.009941 5.752 (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-May-28 10:54:50.009941 5.752 - Using dynamic import() to code-split the application
+2026-May-28 10:54:50.009941 5.752 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-May-28 10:54:50.009941 5.752 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2026-May-28 10:54:50.009941 5.752 ✓ built in 4.20s
+2026-May-28 10:54:50.009941 6.548 Prerender failed: Error: No supported browser binary found for prerendering.
+2026-May-28 10:54:50.009941 6.548     at resolveBrowserPath (/app/scripts/prerender.ts:43:9)
+2026-May-28 10:54:50.009941 6.548     at async main (/app/scripts/prerender.ts:111:23)
+2026-May-28 10:54:50.009941 ------
+2026-May-28 10:54:50.009941 
+2026-May-28 10:54:50.009941 12 warnings found (use docker --debug to expand):
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "VITE_SUPABASE_PUBLISHABLE_KEY") (line 4)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "SUPABASE_PUBLISHABLE_KEY") (line 11)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "VITE_SUPABASE_ANON_KEY") (line 13)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "VITE_SUPABASE_PUBLISHABLE_KEY") (line 29)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ENV "VITE_SUPABASE_ANON_KEY") (line 33)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ENV "VITE_SUPABASE_PUBLISHABLE_KEY") (line 33)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "VITE_SUPABASE_PUBLISHABLE_KEY") (line 45)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "VITE_SUPABASE_ANON_KEY") (line 54)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "SUPABASE_ANON_KEY") (line 12)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "VITE_SUPABASE_ANON_KEY") (line 28)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "SUPABASE_PUBLISHABLE_KEY") (line 52)
+2026-May-28 10:54:50.009941 - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "SUPABASE_ANON_KEY") (line 53)
+2026-May-28 10:54:50.009941 Dockerfile:40
+2026-May-28 10:54:50.009941 --------------------
+2026-May-28 10:54:50.009941 38 |
+2026-May-28 10:54:50.009941 39 |     COPY . .
+2026-May-28 10:54:50.009941 40 | >>> RUN npm run build
+2026-May-28 10:54:50.009941 41 |
+2026-May-28 10:54:50.009941 42 |     # ---- Serve Stage ----
+2026-May-28 10:54:50.009941 --------------------
+2026-May-28 10:54:50.009941 ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+2026-May-28 10:54:50.009941 exit status 1
+2026-May-28 10:54:50.014682 [DEBUG] Error type: App\Exceptions\DeploymentException
+2026-May-28 10:54:50.019442 [DEBUG] Error code: 0
+2026-May-28 10:54:50.024124 [DEBUG] Location: /var/www/html/app/Traits/ExecuteRemoteCommand.php:237
+2026-May-28 10:54:50.028809 [DEBUG] Stack trace (first 5 lines):
+2026-May-28 10:54:50.033378 [DEBUG] #0 /var/www/html/app/Traits/ExecuteRemoteCommand.php(105): App\Jobs\ApplicationDeploymentJob->executeCommandWithProcess()
+2026-May-28 10:54:50.038162 [DEBUG] #1 /var/www/html/vendor/laravel/framework/src/Illuminate/Collections/Traits/EnumeratesValues.php(275): App\Jobs\ApplicationDeploymentJob->{closure:App\Traits\ExecuteRemoteCommand::execute_remote_command():72}()
+2026-May-28 10:54:50.042795 [DEBUG] #2 /var/www/html/app/Traits/ExecuteRemoteCommand.php(72): Illuminate\Support\Collection->each()
+2026-May-28 10:54:50.047430 [DEBUG] #3 /var/www/html/app/Jobs/ApplicationDeploymentJob.php(3243): App\Jobs\ApplicationDeploymentJob->execute_remote_command()
+2026-May-28 10:54:50.052053 [DEBUG] #4 /var/www/html/app/Jobs/ApplicationDeploymentJob.php(881): App\Jobs\ApplicationDeploymentJob->build_image()
+2026-May-28 10:54:50.056738 ========================================
+2026-May-28 10:54:50.061314 Deployment failed. Removing the new version of your application.
+2026-May-28 10:54:50.374331 Gracefully shutting down build container: fconet6fy6eovz7p80ssc511
+2026-May-28 10:54:50.628836 [DEBUG] [CMD]: docker stop -t 30 fconet6fy6eovz7p80ssc511
+2026-May-28 10:54:50.628836 [DEBUG] fconet6fy6eovz7p80ssc511

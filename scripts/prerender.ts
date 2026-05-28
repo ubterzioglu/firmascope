@@ -5,6 +5,7 @@ import { chromium } from "playwright-core";
 import { ROOT_DIR, loadLocalEnv } from "./lib/env";
 import { getRouteManifest } from "./lib/route-manifest";
 const DIST_DIR = path.join(ROOT_DIR, "dist");
+const isPrerenderRequired = process.env.PRERENDER_REQUIRED === "true";
 const MIME_TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",
   ".gif": "image/gif",
@@ -25,6 +26,10 @@ const MIME_TYPES: Record<string, string> = {
 const resolveBrowserPath = async () => {
   const candidatePaths = [
     process.env.PRERENDER_BROWSER_PATH,
+    "/usr/bin/chromium-browser",
+    "/usr/bin/chromium",
+    "/usr/bin/google-chrome",
+    "/usr/bin/google-chrome-stable",
     "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
     "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
     "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -108,7 +113,20 @@ const writePrerenderedHtml = async (route: string, html: string) => {
 const main = async () => {
   loadLocalEnv();
 
-  const browserPath = await resolveBrowserPath();
+  let browserPath: string;
+  try {
+    browserPath = await resolveBrowserPath();
+  } catch (error) {
+    if (isPrerenderRequired) {
+      throw error;
+    }
+
+    console.warn(
+      "Skipping prerender: no supported browser binary found. Set PRERENDER_REQUIRED=true to fail instead."
+    );
+    return;
+  }
+
   const routeManifest = await getRouteManifest();
   const { server, port } = await createStaticServer();
   const browser = await chromium.launch({
