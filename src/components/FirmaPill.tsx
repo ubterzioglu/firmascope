@@ -2,11 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, Lightbulb, Star, Users, DollarSign, UserPlus, LogOut, Shield, Home, Scale, Building2 } from "lucide-react";
+import { Search, Lightbulb, Star, Users, DollarSign, UserPlus, LogOut, Shield, Home, Scale, Building2, Rss, UserCircle } from "lucide-react";
 
 const menuItems = [
   { label: "Ana Sayfa", icon: Home, color: "bg-alm-blue", href: "/" },
   { label: "Şirket Ara", icon: Search, color: "bg-alm-green", href: "/sirketler" },
+  { label: "Akış", icon: Rss, color: "bg-alm-teal", href: "/akis" },
   { label: "Şirket Öner", icon: Lightbulb, color: "bg-alm-orange", href: "/sirket-oner" },
   { label: "Değerlendirme Ekle", icon: Star, color: "bg-alm-yellow", href: "/sirketler" },
   { label: "Mülakat Bilgisi", icon: Users, color: "bg-alm-blue", href: "/sirketler" },
@@ -78,6 +79,21 @@ const FirmaPill = () => {
             <div className="my-1 h-px bg-border" />
 
             {/* Auth items */}
+            {user && (
+              <Link
+                to="/profil"
+                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground transition-all hover:bg-muted group opacity-0"
+                style={{
+                  animation: `fadeSlideUp 0.3s ease-out ${menuItems.length * 0.05}s forwards`,
+                }}
+              >
+                <span className="bg-alm-blue flex h-8 w-8 items-center justify-center rounded-lg text-white transition-transform group-hover:scale-110">
+                  <UserCircle className="h-4 w-4" />
+                </span>
+                Profilim
+              </Link>
+            )}
+
             {isAdmin && (
               <Link
                 to="/admin"

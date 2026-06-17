@@ -40,6 +40,7 @@ const targetTypeLabels: Record<string, string> = {
   review: "Yorum",
   salary: "Maaş",
   interview: "Mülakat",
+  post: "Gönderi",
 };
 
 const AdminReports = () => {

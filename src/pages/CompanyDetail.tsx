@@ -13,6 +13,9 @@ import InterviewForm from "@/components/InterviewForm";
 import VoteButtons from "@/components/VoteButtons";
 import ReportButton from "@/components/ReportButton";
 import SalaryGateOverlay from "@/components/SalaryGateOverlay";
+import CompanySocials from "@/components/CompanySocials";
+import { computeSalaryStats } from "@/lib/salary-stats";
+import { computeReviewHighlights } from "@/lib/review-highlights";
 import { useToast } from "@/hooks/use-toast";
 import Breadcrumb from "@/components/Breadcrumb";
 import { generateJsonLd, generateMeta, seoConfig } from "@/lib/seo";
@@ -38,6 +41,11 @@ interface Company {
   description: string | null;
   logo_url: string | null;
   banner_url: string | null;
+  website_url: string | null;
+  linkedin_url: string | null;
+  twitter_url: string | null;
+  instagram_url: string | null;
+  facebook_url: string | null;
 }
 
 interface ReviewPublic {
@@ -232,6 +240,8 @@ const CompanyDetail = () => {
   const bannerUrl = company.banner_url || sectorBanners[company.sector || ""] || defaultBanner;
   const avgRating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
   const recommendRate = reviews.length > 0 ? Math.round((reviews.filter((r) => r.recommends).length / reviews.length) * 100) : 0;
+  const salaryStats = computeSalaryStats(salaries);
+  const reviewHighlights = computeReviewHighlights(reviews);
   const generatedSeo = buildCompanySeoContent({ company, reviews, salaries, interviews });
   const faqItems = seoProfile?.faq_items_json ? parseFaqItemsJson(seoProfile.faq_items_json) : generatedSeo.faqItems;
   const externalLinks = seoProfile?.external_links_json ? parseExternalLinksJson(seoProfile.external_links_json) : generatedSeo.externalLinks;
@@ -544,6 +554,44 @@ const CompanyDetail = () => {
                   </ul>
                 </div>
 
+                {(reviewHighlights.topBenefits.length > 0 || reviewHighlights.weakDimensions.length > 0) && (
+                  <div className="grid gap-6 md:grid-cols-2">
+                    {reviewHighlights.topBenefits.length > 0 && (
+                      <section className="card-elevated p-6">
+                        <h2 className="font-display text-lg font-bold text-foreground">✅ Öne çıkan artılar</h2>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {reviewHighlights.topBenefits.map((item) => (
+                            <span key={item.label} className="rounded-full border border-alm-green/30 bg-alm-green/10 px-3 py-1 text-xs font-medium text-foreground">
+                              {item.label} <span className="text-muted-foreground">({item.count})</span>
+                            </span>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+                    {reviewHighlights.weakDimensions.length > 0 && (
+                      <section className="card-elevated p-6">
+                        <h2 className="font-display text-lg font-bold text-foreground">🚩 Dikkat edilmesi gerekenler</h2>
+                        <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                          {reviewHighlights.weakDimensions.map((dim) => (
+                            <li key={dim.label} className="flex items-center justify-between gap-2">
+                              <span>{dim.label}</span>
+                              <span className="font-semibold text-alm-orange">{dim.avg.toFixed(1)} / 5</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    )}
+                  </div>
+                )}
+
+                <CompanySocials
+                  websiteUrl={company.website_url}
+                  linkedinUrl={company.linkedin_url}
+                  twitterUrl={company.twitter_url}
+                  instagramUrl={company.instagram_url}
+                  facebookUrl={company.facebook_url}
+                />
+
                 {faqItems.length > 0 && (
                   <div className="card-elevated p-6">
                     <h2 className="font-display text-lg font-bold text-foreground">Sık sorulan sorular</h2>
@@ -629,6 +677,37 @@ const CompanyDetail = () => {
                     <Button className="w-full max-w-sm rounded-xl font-semibold text-sm h-11 bg-alm-orange text-primary-foreground hover:bg-alm-orange/90" onClick={() => requireAuth(() => setShowSalaryForm(true))}>
                       Maaş Bilgisi Ekle
                     </Button>
+                    {salaryStats.length > 0 && (
+                      <div className="card-elevated p-5">
+                        <h3 className="font-display text-base font-bold text-foreground">Pozisyona göre maaş aralıkları</h3>
+                        <div className="mt-3 space-y-3">
+                          {salaryStats.map((stat) => (
+                            <div key={`${stat.jobTitle}-${stat.city ?? ""}`} className="rounded-xl border border-border/70 p-3">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="text-sm font-semibold text-foreground">
+                                  {stat.jobTitle}{stat.city ? ` · ${stat.city}` : ""}
+                                </span>
+                                <span className="text-xs text-muted-foreground">{stat.count} bildirim</span>
+                              </div>
+                              <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Min</div>
+                                  <div className="text-sm font-semibold text-foreground">{stat.min.toLocaleString("tr-TR")} {stat.currency}</div>
+                                </div>
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Ortalama</div>
+                                  <div className="text-sm font-bold text-alm-green">{stat.avg.toLocaleString("tr-TR")} {stat.currency}</div>
+                                </div>
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Max</div>
+                                  <div className="text-sm font-semibold text-foreground">{stat.max.toLocaleString("tr-TR")} {stat.currency}</div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {salaries.map((s) => (
                       <div key={s.id} className="card-elevated p-5">
                         <div className="flex items-center justify-between">
