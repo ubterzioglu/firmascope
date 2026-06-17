@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1776422507724,
-  "projectRoot": "C:\\temp_private\\firmascope",
+  "lastScanned": 1781693351295,
+  "projectRoot": "c:\\temp_private\\firmascope",
   "techStack": {
     "languages": [
       {
@@ -53,7 +53,7 @@
     "devCommand": "bun dev",
     "scripts": {
       "dev": "vite",
-      "build": "tsx scripts/generate-sitemap.ts && vite build",
+      "build": "tsx scripts/generate-company-seo.ts && tsx scripts/generate-sitemap.ts && vite build && tsx scripts/prerender.ts",
       "build:dev": "vite build --mode development",
       "lint": "eslint .",
       "preview": "vite preview",
@@ -86,7 +86,7 @@
       "path": "0docu",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1776422507644,
+      "lastAccessed": 1781693351231,
       "keyFiles": [
         "status.md"
       ]
@@ -94,72 +94,80 @@
     "data": {
       "path": "data",
       "purpose": "Data files",
-      "fileCount": 4,
-      "lastAccessed": 1776422507644,
+      "fileCount": 6,
+      "lastAccessed": 1781693351232,
       "keyFiles": [
+        "company-import-batch-examples.sql",
+        "company-import-single-examples.sql",
         "linkedin-companies-100.json",
         "linkedin-companies-simple.json",
-        "linkedin-import.sql",
-        "linkedin-turkey-100.json"
+        "linkedin-import.sql"
       ]
     },
     "dist": {
       "path": "dist",
       "purpose": "Distribution/build output",
-      "fileCount": 7,
-      "lastAccessed": 1776422507688,
+      "fileCount": 8,
+      "lastAccessed": 1781693351233,
       "keyFiles": [
         "favicon.ico",
         "favicon.svg",
+        "firmascope_og.png",
         "index.html",
-        "og-image.png",
-        "placeholder.svg"
+        "og-image.png"
       ]
     },
     "docu": {
       "path": "docu",
       "purpose": null,
-      "fileCount": 10,
-      "lastAccessed": 1776422507689,
+      "fileCount": 11,
+      "lastAccessed": 1781693351270,
       "keyFiles": [
+        "ADMIN_COMPANY_IMPORT_GUIDE.md",
         "APIFY_LINKEDIN_GUIDE.md",
         "CENK_BRIEFING.md",
         "HANDOVER.md",
-        "LINKEDIN_SCRAPE_RESULTS.md",
-        "MIGRATION_TO_SUPABASE.md"
+        "LINKEDIN_SCRAPE_RESULTS.md"
       ]
     },
     "public": {
       "path": "public",
       "purpose": "Public files",
-      "fileCount": 6,
-      "lastAccessed": 1776422507689,
+      "fileCount": 7,
+      "lastAccessed": 1781693351271,
       "keyFiles": [
         "favicon.ico",
         "favicon.svg",
+        "firmascope_og.png",
         "og-image.png",
-        "placeholder.svg",
-        "robots.txt"
+        "placeholder.svg"
       ]
     },
     "scripts": {
       "path": "scripts",
       "purpose": "Build/utility scripts",
-      "fileCount": 12,
-      "lastAccessed": 1776422507690,
+      "fileCount": 14,
+      "lastAccessed": 1781693351271,
       "keyFiles": [
         "check-data.cjs",
         "check-run.cjs",
         "debug-api.cjs",
-        "generate-sitemap.ts",
-        "generate-sql.cjs"
+        "generate-company-seo.ts",
+        "generate-sitemap.ts"
       ]
+    },
+    "services": {
+      "path": "services",
+      "purpose": "Business logic services",
+      "fileCount": 0,
+      "lastAccessed": 1781693351271,
+      "keyFiles": []
     },
     "src": {
       "path": "src",
       "purpose": "Source code",
       "fileCount": 5,
-      "lastAccessed": 1776422507690,
+      "lastAccessed": 1781693351271,
       "keyFiles": [
         "App.css",
         "App.tsx",
@@ -172,7 +180,7 @@
       "path": "supabase",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1776422507690,
+      "lastAccessed": 1781693351272,
       "keyFiles": [
         "config.toml"
       ]
@@ -181,17 +189,28 @@
       "path": "dist\\assets",
       "purpose": "Static assets",
       "fileCount": 2,
-      "lastAccessed": 1776422507692,
+      "lastAccessed": 1781693351272,
       "keyFiles": [
-        "index-CBGInzdm.js",
-        "index-Dr9MAiZ-.css"
+        "index-CtdVO8dJ.css",
+        "index-DH3p2YRC.js"
+      ]
+    },
+    "scripts\\lib": {
+      "path": "scripts\\lib",
+      "purpose": "Library code",
+      "fileCount": 3,
+      "lastAccessed": 1781693351273,
+      "keyFiles": [
+        "env.ts",
+        "route-manifest.ts",
+        "supabase.ts"
       ]
     },
     "src\\assets": {
       "path": "src\\assets",
       "purpose": "Static assets",
       "fileCount": 3,
-      "lastAccessed": 1776422507694,
+      "lastAccessed": 1781693351274,
       "keyFiles": [
         "hero-keyhole.jpg",
         "hero.jpg",
@@ -201,8 +220,8 @@
     "src\\components": {
       "path": "src\\components",
       "purpose": "UI components",
-      "fileCount": 23,
-      "lastAccessed": 1776422507695,
+      "fileCount": 25,
+      "lastAccessed": 1781693351275,
       "keyFiles": [
         "AdminAnnouncements.tsx",
         "AdminReports.tsx",
@@ -212,19 +231,19 @@
     "src\\lib": {
       "path": "src\\lib",
       "purpose": "Library code",
-      "fileCount": 4,
-      "lastAccessed": 1776422507695,
+      "fileCount": 7,
+      "lastAccessed": 1781693351275,
       "keyFiles": [
         "clarity.ts",
-        "form-options.ts",
-        "seo.ts"
+        "company-seo.ts",
+        "form-options.ts"
       ]
     },
     "src\\pages": {
       "path": "src\\pages",
       "purpose": "Page components",
-      "fileCount": 9,
-      "lastAccessed": 1776422507696,
+      "fileCount": 10,
+      "lastAccessed": 1781693351276,
       "keyFiles": [
         "Admin.tsx",
         "Auth.tsx",
@@ -234,8 +253,8 @@
     "supabase\\migrations": {
       "path": "supabase\\migrations",
       "purpose": "Database migrations",
-      "fileCount": 12,
-      "lastAccessed": 1776422507697,
+      "fileCount": 15,
+      "lastAccessed": 1781693351276,
       "keyFiles": [
         "20260207230937_6fde44f2-71c7-4a35-aee7-fd77aa70221a.sql",
         "20260207232943_e6923fb0-1124-4b37-9587-a7cc3861eb5c.sql",
@@ -245,88 +264,304 @@
   },
   "hotPaths": [
     {
-      "path": ".env",
-      "accessCount": 2,
-      "lastAccessed": 1776423918421,
+      "path": "src\\pages\\Admin.tsx",
+      "accessCount": 22,
+      "lastAccessed": 1781726635028,
       "type": "file"
     },
     {
-      "path": ".env.local",
-      "accessCount": 2,
-      "lastAccessed": 1776423918463,
+      "path": "src\\integrations\\supabase\\types.ts",
+      "accessCount": 19,
+      "lastAccessed": 1781727589131,
       "type": "file"
     },
     {
-      "path": "vite.config.ts",
-      "accessCount": 2,
-      "lastAccessed": 1776423928671,
+      "path": "src\\pages\\CompanyDetail.tsx",
+      "accessCount": 12,
+      "lastAccessed": 1781725369621,
+      "type": "file"
+    },
+    {
+      "path": "src\\App.tsx",
+      "accessCount": 12,
+      "lastAccessed": 1781727710036,
       "type": "file"
     },
     {
       "path": "src",
-      "accessCount": 1,
-      "lastAccessed": 1776422524435,
+      "accessCount": 8,
+      "lastAccessed": 1781727004637,
       "type": "directory"
     },
     {
-      "path": "src\\components\\TestBanner.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776422528370,
+      "path": "src\\lib\\form-options.ts",
+      "accessCount": 6,
+      "lastAccessed": 1781725398297,
       "type": "file"
     },
     {
-      "path": "src\\components\\Layout.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1776422528619,
+      "path": "src\\hooks\\useAuth.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1781725815179,
       "type": "file"
     },
     {
-      "path": "package.json",
-      "accessCount": 1,
-      "lastAccessed": 1776423862973,
-      "type": "file"
-    },
-    {
-      "path": "vercel.json",
-      "accessCount": 1,
-      "lastAccessed": 1776423863202,
-      "type": "file"
-    },
-    {
-      "path": "tsconfig.json",
-      "accessCount": 1,
-      "lastAccessed": 1776423877790,
+      "path": "supabase\\migrations\\20260208003732_22349738-44f4-4632-9dd2-c214b4a4efe8.sql",
+      "accessCount": 5,
+      "lastAccessed": 1781725349677,
       "type": "file"
     },
     {
       "path": "",
-      "accessCount": 1,
-      "lastAccessed": 1776423919179,
+      "accessCount": 5,
+      "lastAccessed": 1781725364063,
       "type": "directory"
     },
     {
-      "path": "Dockerfile",
-      "accessCount": 1,
-      "lastAccessed": 1776423944953,
+      "path": "supabase\\migrations",
+      "accessCount": 5,
+      "lastAccessed": 1781725883279,
+      "type": "directory"
+    },
+    {
+      "path": "src\\components\\FirmaPill.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1781694786212,
       "type": "file"
     },
     {
-      "path": "nginx.conf",
-      "accessCount": 1,
-      "lastAccessed": 1776423949411,
+      "path": "src\\components\\AdminReports.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1781725363850,
       "type": "file"
     },
     {
-      "path": ".env.example",
-      "accessCount": 1,
-      "lastAccessed": 1776423953231,
+      "path": "src\\components\\ReviewForm.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1781725367848,
       "type": "file"
     },
     {
-      "path": ".dockerignore",
-      "accessCount": 1,
-      "lastAccessed": 1776423953793,
+      "path": "supabase\\migrations\\20260501000000_new_era_expansion.sql",
+      "accessCount": 4,
+      "lastAccessed": 1781725865324,
       "type": "file"
+    },
+    {
+      "path": "src\\integrations\\supabase\\client.ts",
+      "accessCount": 4,
+      "lastAccessed": 1781725865378,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260427123000_admin_company_audit_and_role_rpc.sql",
+      "accessCount": 4,
+      "lastAccessed": 1781725876269,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260207230937_6fde44f2-71c7-4a35-aee7-fd77aa70221a.sql",
+      "accessCount": 4,
+      "lastAccessed": 1781725889494,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\InterviewForm.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1781725360849,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260208005000_f2e2af74-cfd4-4863-9594-d6d244b33480.sql",
+      "accessCount": 3,
+      "lastAccessed": 1781725364169,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260414120000_form_enrichment.sql",
+      "accessCount": 3,
+      "lastAccessed": 1781725364202,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260427190000_company_seo_profiles.sql",
+      "accessCount": 3,
+      "lastAccessed": 1781725379846,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\SalaryForm.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1781725380755,
+      "type": "file"
+    },
+    {
+      "path": "src\\pages\\Auth.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1781725410969,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\Layout.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1781726635153,
+      "type": "file"
+    },
+    {
+      "path": "supabase/migrations",
+      "accessCount": 2,
+      "lastAccessed": 1781693545609,
+      "type": "directory"
+    },
+    {
+      "path": "src\\hooks\\useSalaryGate.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1781693682538,
+      "type": "file"
+    },
+    {
+      "path": "src\\pages\\SuggestCompany.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1781693682632,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\ReportButton.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1781694821170,
+      "type": "file"
+    },
+    {
+      "path": "src\\pages\\CompanyAdmin.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1781725339842,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\AdminAnnouncements.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1781725339888,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260208002853_a093b681-e484-406b-b1f2-865d888f099b.sql",
+      "accessCount": 2,
+      "lastAccessed": 1781725354155,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260208004907_e536da67-31d5-4d5d-a9f3-e63218302331.sql",
+      "accessCount": 2,
+      "lastAccessed": 1781725357983,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260207232943_e6923fb0-1124-4b37-9587-a7cc3861eb5c.sql",
+      "accessCount": 2,
+      "lastAccessed": 1781725363778,
+      "type": "file"
+    },
+    {
+      "path": "src\\components",
+      "accessCount": 2,
+      "lastAccessed": 1781725372404,
+      "type": "directory"
+    },
+    {
+      "path": "supabase\\migrations\\20260208132500_allow_admin_select_profiles.sql",
+      "accessCount": 2,
+      "lastAccessed": 1781725380043,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260428130000_instagram_publish_logs.sql",
+      "accessCount": 2,
+      "lastAccessed": 1781725391223,
+      "type": "file"
+    },
+    {
+      "path": "src\\pages\\Companies.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1781725405255,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260208153000_remote_sync.sql",
+      "accessCount": 2,
+      "lastAccessed": 1781725406206,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\Navbar.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1781726681074,
+      "type": "file"
+    },
+    {
+      "path": "new_era.md",
+      "accessCount": 1,
+      "lastAccessed": 1781693457232,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260208081132_81682766-5eb4-45fd-9eb9-495c166075a8.sql",
+      "accessCount": 1,
+      "lastAccessed": 1781693487345,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260208082214_2aa37e5d-f41c-43af-b57e-1c3f5828938c.sql",
+      "accessCount": 1,
+      "lastAccessed": 1781693488140,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\migrations\\20260208082223_977aea10-2b91-4a2b-93e1-837ed8bce807.sql",
+      "accessCount": 1,
+      "lastAccessed": 1781693488988,
+      "type": "file"
+    },
+    {
+      "path": "src\\pages\\Index.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1781693502135,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\SalaryGateOverlay.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1781693525840,
+      "type": "file"
+    },
+    {
+      "path": "supabase\\config.toml",
+      "accessCount": 1,
+      "lastAccessed": 1781693533757,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\use-toast.ts",
+      "accessCount": 1,
+      "lastAccessed": 1781693545874,
+      "type": "file"
+    },
+    {
+      "path": "src\\pages\\TaxonomyPage.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1781693553634,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks",
+      "accessCount": 1,
+      "lastAccessed": 1781693559404,
+      "type": "directory"
+    },
+    {
+      "path": "supabase",
+      "accessCount": 1,
+      "lastAccessed": 1781693683788,
+      "type": "directory"
     }
   ],
   "userDirectives": []
