@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"node /c/tmp/shot-footer.mjs\",\"description\":\"Run screenshot script from project dir\"}",
+  "error": "Exit code 1\nnode:internal/modules/package_json_reader:301\r\n  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);\r\n        ^\r\n\r\nError [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright-core' imported from C:\\tmp\\shot-footer.mjs\r\n    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)\r\n    at packageResolve (node:internal/modules/esm/resolve:769:81)\r\n    at moduleResolve (node:internal/modules/esm/resolve:860:18)\r\n    at defaultResolve (node:inter...",
+  "timestamp": "2026-06-17T21:09:48.794Z",
+  "retry_count": 2
+}

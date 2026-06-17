@@ -13,19 +13,35 @@ const Footer = () => {
           </Link>
         </div>
         <div className="mt-4 border-t border-border pt-4 text-center">
-          <span className="text-xs text-muted-foreground">
+          <span className="text-[10px] text-muted-foreground">
             © {new Date().getFullYear()} firmascope. tüm hakları saklıdır.
           </span>
-          <div className="mt-3 text-xs text-muted-foreground">
-            <span>powered by </span>
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
             <a
-              href="https://www.spindorai.com/seo/istanbul-seo"
-              target="_blank"
-              rel="noreferrer"
-              className="font-display font-bold text-foreground transition-colors hover:text-foreground/80"
+              href="https://chatio.com.tr/"
+              rel="dofollow"
+              className="transition-colors hover:text-foreground/80"
             >
-              İstanbul Seo Ajansı
+              Canlı Destek Yazılımı
             </a>
+            <a
+              href="https://www.spindorai.com/seo/en-iyi-seo-ajansi"
+              rel="dofollow"
+              className="transition-colors hover:text-foreground/80"
+            >
+              Seo Ajansı
+            </a>
+            <span>
+              powered by{" "}
+              <a
+                href="https://www.spindorai.com/seo/istanbul-seo"
+                target="_blank"
+                rel="noreferrer"
+                className="font-display font-bold text-foreground transition-colors hover:text-foreground/80"
+              >
+                Spindora
+              </a>
+            </span>
           </div>
         </div>
       </div>

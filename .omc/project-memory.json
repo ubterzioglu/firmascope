@@ -276,15 +276,15 @@
       "type": "file"
     },
     {
-      "path": "src\\pages\\CompanyDetail.tsx",
-      "accessCount": 12,
-      "lastAccessed": 1781725369621,
+      "path": "src\\App.tsx",
+      "accessCount": 13,
+      "lastAccessed": 1781730473161,
       "type": "file"
     },
     {
-      "path": "src\\App.tsx",
+      "path": "src\\pages\\CompanyDetail.tsx",
       "accessCount": 12,
-      "lastAccessed": 1781727710036,
+      "lastAccessed": 1781725369621,
       "type": "file"
     },
     {
@@ -306,22 +306,22 @@
       "type": "file"
     },
     {
+      "path": "supabase\\migrations",
+      "accessCount": 6,
+      "lastAccessed": 1781730146957,
+      "type": "directory"
+    },
+    {
+      "path": "",
+      "accessCount": 6,
+      "lastAccessed": 1781730150099,
+      "type": "directory"
+    },
+    {
       "path": "supabase\\migrations\\20260208003732_22349738-44f4-4632-9dd2-c214b4a4efe8.sql",
       "accessCount": 5,
       "lastAccessed": 1781725349677,
       "type": "file"
-    },
-    {
-      "path": "",
-      "accessCount": 5,
-      "lastAccessed": 1781725364063,
-      "type": "directory"
-    },
-    {
-      "path": "supabase\\migrations",
-      "accessCount": 5,
-      "lastAccessed": 1781725883279,
-      "type": "directory"
     },
     {
       "path": "src\\components\\FirmaPill.tsx",
