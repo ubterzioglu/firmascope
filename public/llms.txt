@@ -1,0 +1,31 @@
+# firmascope
+
+> firmascope, Türkiye'deki şirketleri anonim olarak değerlendiren topluluk tabanlı bir platformdur. Çalışanlar ve adaylar; şirket yorumları, maaş bilgileri ve mülakat deneyimlerini anonim olarak paylaşır ve inceler. Amaç, iş kararlarını veriye dayalı ve daha bilinçli hale getirmektir.
+
+## Hakkında
+
+- firmascope nedir: Çalışanların ve adayların şirketler hakkında anonim değerlendirme, maaş bilgisi ve mülakat deneyimi paylaştığı, Türkiye odaklı bir şirket şeffaflık platformu.
+- İçerik dili: Türkçe (tr-TR).
+- Anonimlik: Kullanıcı kimliği gizli kalır; kişisel bilgiler şirketlerle paylaşılmaz.
+- Ücret: Platform ücretsizdir.
+
+## Ana Sayfalar
+
+- [Ana Sayfa](https://firmascope.com/): Platform tanıtımı ve sık sorulan sorular.
+- [Şirketler](https://firmascope.com/sirketler): Tüm aktif şirketlerin listelendiği ve filtrelenebildiği dizin.
+
+## İçerik Türleri
+
+- Şirket profilleri: `https://firmascope.com/sirket/{slug}` — her şirket için yorum özetleri, ortalama puan, pozisyon bazlı maaş aralıkları, mülakat süreci özeti ve sık sorulan sorular.
+- Sektör sayfaları: `https://firmascope.com/sektor/{slug}` — aynı sektördeki şirketlerin karşılaştırmalı listesi.
+- Şehir sayfaları: `https://firmascope.com/sehir/{slug}` — aynı şehirdeki şirketlerin karşılaştırmalı listesi.
+
+## Veri Kaynağı ve Güvenilirlik
+
+- Tüm içerik, doğrulanmış topluluk katkılarına (anonim yorum, maaş girdisi, mülakat kaydı) dayanır.
+- İstatistikler (ortalama puan, tavsiye oranı, maaş aralıkları) yalnızca paylaşılan gerçek verilerden hesaplanır.
+- Yapay zeka tarafından üretilen özetler yalnızca mevcut topluluk verisine dayanır; uydurma rakam içermez.
+
+## Sitemap
+
+- [sitemap.xml](https://firmascope.com/sitemap.xml)

@@ -59,6 +59,184 @@ type BreadcrumbEntry = {
   item: string;
 };
 
+type CompanyProfileReview = {
+  rating: number;
+  title: string | null;
+  body: string;
+  datePublished: string | null;
+};
+
+type CompanyProfileArgs = {
+  name: string;
+  slug: string;
+  description: string | null;
+  city: string | null;
+  sector: string | null;
+  logoUrl: string | null;
+  bannerUrl: string | null;
+  path: string;
+  headline: string;
+  metaDescription: string;
+  datePublished: string;
+  dateModified: string;
+  reviewCount: number;
+  averageRating: number | null;
+  reviews: CompanyProfileReview[];
+  speakableSelectors?: string[];
+};
+
+type OccupationSalaryStat = {
+  jobTitle: string;
+  city: string | null;
+  currency: string;
+  min: number;
+  avg: number;
+  max: number;
+  count: number;
+};
+
+const ANONYMOUS_REVIEW_AUTHOR = "Anonim Çalışan";
+
+/**
+ * Single linked @graph for a company profile page. Replaces the previously
+ * separate Organization + Article + WebPage blocks so the Organization node is
+ * declared once and Review/AggregateRating reference it by @id.
+ */
+const buildCompanyProfileJsonLd = (args: CompanyProfileArgs) => {
+  const pageUrl = `${seoConfig.siteUrl}${args.path}`;
+  const orgId = `${pageUrl}#organization`;
+
+  const organizationNode: Record<string, unknown> = {
+    "@type": "Organization",
+    "@id": orgId,
+    name: args.name,
+    description: args.description || `${args.name} şirket profili`,
+    url: pageUrl,
+  };
+  if (args.logoUrl) organizationNode.logo = args.logoUrl;
+  if (args.bannerUrl) organizationNode.image = args.bannerUrl;
+  if (args.city) {
+    organizationNode.address = {
+      "@type": "PostalAddress",
+      addressLocality: args.city,
+      addressCountry: "TR",
+    };
+  }
+  if (args.sector) organizationNode.knowsAbout = args.sector;
+
+  if (args.averageRating !== null && args.reviewCount >= 2) {
+    organizationNode.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: Number(args.averageRating.toFixed(1)),
+      reviewCount: args.reviewCount,
+      bestRating: 5,
+      worstRating: 1,
+    };
+  }
+
+  const reviewNodes = args.reviews
+    .filter((review) => review.body.length > 0)
+    .map((review) => ({
+      "@type": "Review",
+      itemReviewed: { "@id": orgId },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: review.rating,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      author: { "@type": "Person", name: ANONYMOUS_REVIEW_AUTHOR },
+      reviewBody: review.body,
+      ...(review.datePublished ? { datePublished: review.datePublished } : {}),
+      ...(review.title ? { name: review.title } : {}),
+    }));
+  if (reviewNodes.length > 0) {
+    organizationNode.review = reviewNodes;
+  }
+
+  const webPageNode: Record<string, unknown> = {
+    "@type": "WebPage",
+    "@id": `${pageUrl}#webpage`,
+    name: args.headline,
+    headline: args.headline,
+    description: args.metaDescription,
+    url: pageUrl,
+    inLanguage: "tr-TR",
+    isPartOf: { "@id": `${seoConfig.siteUrl}/#website` },
+    about: { "@id": orgId },
+    datePublished: args.datePublished,
+    dateModified: args.dateModified,
+    ...(args.speakableSelectors
+      ? {
+          speakable: {
+            "@type": "SpeakableSpecification",
+            cssSelector: args.speakableSelectors,
+          },
+        }
+      : {}),
+  };
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [organizationNode, webPageNode],
+  };
+};
+
+/**
+ * ItemList of schema.org Occupation nodes carrying salary distributions.
+ * Maps the available min/avg/max to a MonetaryAmountDistribution
+ * (avg→median, min→percentile10, max→percentile90).
+ */
+const buildOccupationSalariesJsonLd = (companyName: string, stats: OccupationSalaryStat[]) => ({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: `${companyName} pozisyon bazlı maaş aralıkları`,
+  itemListElement: stats.map((stat, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    item: {
+      "@type": "Occupation",
+      name: stat.jobTitle,
+      ...(stat.city
+        ? { occupationLocation: { "@type": "City", name: stat.city } }
+        : {}),
+      estimatedSalary: {
+        "@type": "MonetaryAmountDistribution",
+        name: "base",
+        currency: stat.currency,
+        median: stat.avg,
+        percentile10: stat.min,
+        percentile90: stat.max,
+        duration: "P1M",
+      },
+    },
+  })),
+});
+
+const buildCollectionPageJsonLd = (args: {
+  name: string;
+  description: string;
+  path: string;
+  speakableSelectors?: string[];
+}) => ({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${seoConfig.siteUrl}${args.path}#webpage`,
+  name: args.name,
+  description: args.description,
+  url: `${seoConfig.siteUrl}${args.path}`,
+  inLanguage: "tr-TR",
+  isPartOf: { "@id": `${seoConfig.siteUrl}/#website` },
+  ...(args.speakableSelectors
+    ? {
+        speakable: {
+          "@type": "SpeakableSpecification",
+          cssSelector: args.speakableSelectors,
+        },
+      }
+    : {}),
+});
+
 export const generateJsonLd = {
   organization: (sameAs: string[] = []) => ({
     "@context": "https://schema.org",
@@ -191,4 +369,10 @@ export const generateJsonLd = {
       url: item.url,
     })),
   }),
+
+  companyProfile: buildCompanyProfileJsonLd,
+
+  occupationSalaries: buildOccupationSalariesJsonLd,
+
+  collectionPage: buildCollectionPageJsonLd,
 };

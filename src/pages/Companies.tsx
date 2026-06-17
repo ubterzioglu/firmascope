@@ -82,23 +82,25 @@ const Companies = () => {
     { name: "Şirketler", item: `${seoConfig.siteUrl}/sirketler` },
   ]);
 
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Türkiye'de şirket değerlendirmeleri",
-    itemListElement: filtered.slice(0, 20).map((company, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      url: `${seoConfig.siteUrl}/sirket/${company.slug}`,
+  const collectionPageJsonLd = generateJsonLd.collectionPage({
+    name: meta.title,
+    description: meta.description,
+    path: "/sirketler",
+  });
+
+  const itemListJsonLd = generateJsonLd.itemList(
+    filtered.slice(0, 20).map((company) => ({
       name: company.name,
-    })),
-  };
+      url: `${seoConfig.siteUrl}/sirket/${company.slug}`,
+    }))
+  );
 
   return (
     <Layout>
       <SeoHead meta={meta} path="/sirketler" />
 
       <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={collectionPageJsonLd} />
       <JsonLd data={itemListJsonLd} />
 
       <section className="py-10">

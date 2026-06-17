@@ -19,10 +19,12 @@ import { computeReviewHighlights } from "@/lib/review-highlights";
 import { useToast } from "@/hooks/use-toast";
 import Breadcrumb from "@/components/Breadcrumb";
 import { generateJsonLd, generateMeta, seoConfig } from "@/lib/seo";
+import { slugifyTaxonomyValue } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
 import SeoHead from "@/components/SeoHead";
 import {
   buildCompanySeoContent,
+  latestContentDate,
   parseExternalLinksJson,
   parseFaqItemsJson,
   type CompanySeoRenderableProfile,
@@ -39,6 +41,7 @@ interface Company {
   company_type: string | null;
   status: string | null;
   description: string | null;
+  created_at: string | null;
   logo_url: string | null;
   banner_url: string | null;
   website_url: string | null;
@@ -293,77 +296,36 @@ const CompanyDetail = () => {
     { name: company.name, item: `${seoConfig.siteUrl}/sirket/${company.slug}` },
   ]);
 
-  const companyJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
+  const headline = `${company.name} Yorumları, Maaş ve Mülakat Süreci`;
+  const dateModified = latestContentDate(company, reviews, salaries, interviews);
+  const datePublished = company.created_at?.split("T")[0] || "2026-01-01";
+
+  const companyProfileJsonLd = generateJsonLd.companyProfile({
     name: company.name,
-    description: company.description || `${company.name} şirket profili`,
-    url: `${seoConfig.siteUrl}/sirket/${company.slug}`,
-    logo: company.logo_url || undefined,
-    image: company.banner_url || undefined,
-    address: company.city
-      ? {
-          "@type": "PostalAddress",
-          addressLocality: company.city,
-          addressCountry: "TR",
-        }
-      : undefined,
-    aggregateRating:
-      reviews.length >= 2
-        ? {
-            "@type": "AggregateRating",
-            ratingValue: Number(avgRating.toFixed(1)),
-            reviewCount: reviews.length,
-            bestRating: 5,
-            worstRating: 1,
-          }
-        : undefined,
-    review: reviews.slice(0, 5).map((review) => ({
-      "@type": "Review",
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: review.rating,
-        bestRating: 5,
-        worstRating: 1,
-      },
-      reviewBody: `${review.pros || ""} ${review.cons || ""}`.trim(),
-      datePublished: review.created_at,
-      name: review.title,
-    })),
-  };
-
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: `${company.name} Yorumları, Maaş ve Mülakat Süreci`,
-    description: meta.description,
-    datePublished: company.created_at || "2026-01-01",
-    dateModified: new Date().toISOString().split("T")[0],
-    mainEntityOfPage: `${seoConfig.siteUrl}/sirket/${company.slug}`,
-    author: {
-      "@type": "Organization",
-      name: "firmascope",
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "firmascope",
-      logo: {
-        "@type": "ImageObject",
-        url: `${seoConfig.siteUrl}/favicon.svg`,
-      },
-    },
-  };
-
-  const pageJsonLd = generateJsonLd.webPage({
-    type: "WebPage",
-    name: meta.title,
-    headline: `${company.name} Yorumları, Maaş ve Mülakat Süreci`,
-    description: meta.description,
+    slug: company.slug,
+    description: company.description,
+    city: company.city,
+    sector: company.sector,
+    logoUrl: company.logo_url,
+    bannerUrl: company.banner_url,
     path: `/sirket/${company.slug}`,
-    datePublished: company.created_at?.split("T")[0],
-    dateModified: new Date().toISOString().split("T")[0],
+    headline,
+    metaDescription: meta.description,
+    datePublished,
+    dateModified,
+    reviewCount: reviews.length,
+    averageRating: reviews.length > 0 ? avgRating : null,
+    reviews: reviews.slice(0, 5).map((review) => ({
+      rating: review.rating,
+      title: review.title,
+      body: `${review.pros || ""} ${review.cons || ""}`.trim(),
+      datePublished: review.created_at,
+    })),
     speakableSelectors: [".company-seo-summary", ".candidate-takeaway"],
   });
+
+  const occupationSalariesJsonLd =
+    salaryStats.length > 0 ? generateJsonLd.occupationSalaries(company.name, salaryStats) : null;
 
   const renderStars = (rating: number) => (
     <div className="flex items-center gap-0.5">
@@ -377,9 +339,8 @@ const CompanyDetail = () => {
     <Layout>
       <SeoHead meta={meta} path={`/sirket/${company.slug}`} />
       <JsonLd data={breadcrumbJsonLd} />
-      <JsonLd data={companyJsonLd} />
-      <JsonLd data={articleJsonLd} />
-      <JsonLd data={pageJsonLd} />
+      <JsonLd data={companyProfileJsonLd} />
+      {occupationSalariesJsonLd && <JsonLd data={occupationSalariesJsonLd} />}
       {faqItems.length > 0 && <JsonLd data={generateJsonLd.faq(faqItems)} />}
 
       {/* Banner */}
@@ -820,6 +781,30 @@ const CompanyDetail = () => {
                       {link.label}
                     </a>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {(company.sector || company.city) && (
+              <div className="card-elevated p-5">
+                <h2 className="font-display text-base font-bold text-foreground">Keşfet</h2>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {company.sector && (
+                    <Link
+                      to={`/sektor/${slugifyTaxonomyValue(company.sector)}`}
+                      className="rounded-full border border-border/70 px-3 py-1.5 text-sm text-primary transition-colors hover:bg-primary/5"
+                    >
+                      {company.sector} sektörü
+                    </Link>
+                  )}
+                  {company.city && (
+                    <Link
+                      to={`/sehir/${slugifyTaxonomyValue(company.city)}`}
+                      className="rounded-full border border-border/70 px-3 py-1.5 text-sm text-primary transition-colors hover:bg-primary/5"
+                    >
+                      {company.city} şirketleri
+                    </Link>
+                  )}
                 </div>
               </div>
             )}

@@ -106,6 +106,12 @@ const TaxonomyPage = ({ mode }: { mode: TaxonomyMode }) => {
     { name: activeLabel, item: `${seoConfig.siteUrl}${taxonomyCopy[mode].pathPrefix}/${slug}` },
   ]);
 
+  const collectionPageJsonLd = generateJsonLd.collectionPage({
+    name: meta.title,
+    description: meta.description,
+    path: `${taxonomyCopy[mode].pathPrefix}/${slug || ""}`,
+  });
+
   const itemListJsonLd = generateJsonLd.itemList(
     matchingCompanies.slice(0, 20).map((company) => ({
       name: company.name,
@@ -128,6 +134,7 @@ const TaxonomyPage = ({ mode }: { mode: TaxonomyMode }) => {
     <Layout>
       <SeoHead meta={meta} path={`${taxonomyCopy[mode].pathPrefix}/${slug || ""}`} />
       <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={collectionPageJsonLd} />
       <JsonLd data={itemListJsonLd} />
       <JsonLd data={faqJsonLd} />
 
