@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface ReportButtonProps {
   targetId: string;
-  targetType: "review" | "salary" | "interview";
+  targetType: "review" | "salary" | "interview" | "post";
 }
 
 const REPORT_REASONS = [

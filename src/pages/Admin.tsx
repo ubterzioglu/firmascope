@@ -19,9 +19,10 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Check, X, Shield, Building2, Users, Lightbulb, FileCheck, Megaphone, Plus, Pencil, Trash2, Star, Banknote, UserCheck, Flag } from "lucide-react";
+import { Check, X, Shield, Building2, Users, Lightbulb, FileCheck, Megaphone, Plus, Pencil, Trash2, Star, Banknote, UserCheck, Flag, MessageSquare } from "lucide-react";
 import AdminAnnouncements from "@/components/AdminAnnouncements";
 import AdminReports from "@/components/AdminReports";
+import AdminPosts from "@/components/AdminPosts";
 import { Helmet } from "react-helmet-async";
 import { generateMeta } from "@/lib/seo";
 import {
@@ -118,6 +119,7 @@ const Admin = () => {
   const [companyForm, setCompanyForm] = useState({
     name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.S.", description: "",
     logo_url: "", banner_url: "",
+    website_url: "", linkedin_url: "", twitter_url: "", instagram_url: "", facebook_url: "",
   });
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
@@ -284,7 +286,7 @@ const Admin = () => {
 
   const openCompanyCreate = () => {
     setEditingCompany(null);
-    setCompanyForm({ name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.S.", description: "", logo_url: "", banner_url: "" });
+    setCompanyForm({ name: "", slug: "", initials: "", sector: "", city: "", size: "", company_type: "A.S.", description: "", logo_url: "", banner_url: "", website_url: "", linkedin_url: "", twitter_url: "", instagram_url: "", facebook_url: "" });
     setLogoFile(null); setBannerFile(null); setCompanyDialogOpen(true);
   };
 
@@ -295,6 +297,9 @@ const Admin = () => {
       sector: c.sector || "", city: c.city || "", size: c.size || "",
       company_type: c.company_type || "A.S.", description: c.description || "",
       logo_url: c.logo_url || "", banner_url: c.banner_url || "",
+      website_url: c.website_url || "", linkedin_url: c.linkedin_url || "",
+      twitter_url: c.twitter_url || "", instagram_url: c.instagram_url || "",
+      facebook_url: c.facebook_url || "",
     });
     setLogoFile(null); setBannerFile(null); setCompanyDialogOpen(true);
   };
@@ -325,6 +330,11 @@ const Admin = () => {
       company_type: companyForm.company_type?.trim() || null,
       logo_url: companyForm.logo_url?.trim() || null,
       banner_url: companyForm.banner_url?.trim() || null,
+      website_url: companyForm.website_url?.trim() || null,
+      linkedin_url: companyForm.linkedin_url?.trim() || null,
+      twitter_url: companyForm.twitter_url?.trim() || null,
+      instagram_url: companyForm.instagram_url?.trim() || null,
+      facebook_url: companyForm.facebook_url?.trim() || null,
     };
     let saved: any = null; let error: any = null;
     if (editingCompany) {
@@ -351,6 +361,17 @@ const Admin = () => {
       return;
     }
     const companyId = saved?.id || editingCompany?.id;
+    // create_company_admin RPC does not accept social links; persist them on create via a follow-up update.
+    if (companyId && !editingCompany) {
+      const { error: socialErr } = await supabase.from("companies").update({
+        website_url: payload.website_url,
+        linkedin_url: payload.linkedin_url,
+        twitter_url: payload.twitter_url,
+        instagram_url: payload.instagram_url,
+        facebook_url: payload.facebook_url,
+      }).eq("id", companyId);
+      if (socialErr) toast({ title: "Sosyal link kaydedilemedi", description: socialErr.message, variant: "destructive" });
+    }
     if (companyId && (logoFile || bannerFile)) {
       setUploadingAssets(true);
       try {
@@ -611,6 +632,7 @@ const Admin = () => {
               <TabsTrigger value="salaries"><Banknote className="h-3.5 w-3.5 mr-1" />Maaşlar</TabsTrigger>
               <TabsTrigger value="interviews"><UserCheck className="h-3.5 w-3.5 mr-1" />Mülakatlar</TabsTrigger>
               <TabsTrigger value="users"><Users className="h-3.5 w-3.5 mr-1" />Kullanıcılar</TabsTrigger>
+              <TabsTrigger value="posts"><MessageSquare className="h-3.5 w-3.5 mr-1" />Gönderiler</TabsTrigger>
               <TabsTrigger value="reports"><Flag className="h-3.5 w-3.5 mr-1" />Raporlar</TabsTrigger>
             </TabsList>
 
@@ -841,6 +863,13 @@ const Admin = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <div><Label>Logo (opsiyonel)</Label><Input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} /></div>
                       <div><Label>Banner (opsiyonel)</Label><Input type="file" accept="image/*" onChange={(e) => setBannerFile(e.target.files?.[0] || null)} /></div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div><Label>Web Sitesi</Label><Input value={companyForm.website_url} onChange={(e) => setCompanyForm({ ...companyForm, website_url: e.target.value })} placeholder="https://..." /></div>
+                      <div><Label>LinkedIn</Label><Input value={companyForm.linkedin_url} onChange={(e) => setCompanyForm({ ...companyForm, linkedin_url: e.target.value })} placeholder="https://linkedin.com/company/..." /></div>
+                      <div><Label>Twitter / X</Label><Input value={companyForm.twitter_url} onChange={(e) => setCompanyForm({ ...companyForm, twitter_url: e.target.value })} placeholder="https://x.com/..." /></div>
+                      <div><Label>Instagram</Label><Input value={companyForm.instagram_url} onChange={(e) => setCompanyForm({ ...companyForm, instagram_url: e.target.value })} placeholder="https://instagram.com/..." /></div>
+                      <div><Label>Facebook</Label><Input value={companyForm.facebook_url} onChange={(e) => setCompanyForm({ ...companyForm, facebook_url: e.target.value })} placeholder="https://facebook.com/..." /></div>
                     </div>
                     <Button onClick={handleCompanySave} className="w-full" disabled={uploadingAssets || savingCompany}>
                       {uploadingAssets || savingCompany ? "Yükleniyor..." : (editingCompany ? "Güncelle" : "Oluştur")}
@@ -1238,6 +1267,8 @@ const Admin = () => {
                 </Table>
               </div>
             </TabsContent>
+
+            <TabsContent value="posts"><AdminPosts /></TabsContent>
 
             <TabsContent value="reports"><AdminReports /></TabsContent>
           </Tabs>

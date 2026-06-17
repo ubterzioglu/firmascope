@@ -16,6 +16,8 @@ import CompanyAdmin from "./pages/CompanyAdmin";
 import SuggestCompany from "./pages/SuggestCompany";
 import NotFound from "./pages/NotFound";
 import TaxonomyPage from "./pages/TaxonomyPage";
+import Profile from "./pages/Profile";
+import Feed from "./pages/Feed";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +41,8 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/sirket-yonetimi" element={<CompanyAdmin />} />
             <Route path="/sirket-oner" element={<SuggestCompany />} />
+            <Route path="/profil" element={<Profile />} />
+            <Route path="/akis" element={<Feed />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

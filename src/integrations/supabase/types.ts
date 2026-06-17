@@ -56,8 +56,11 @@ export type Database = {
           created_via: string
           created_at: string
           description: string | null
+          facebook_url: string | null
           id: string
           initials: string
+          instagram_url: string | null
+          linkedin_url: string | null
           logo_url: string | null
           name: string
           provenance_tag: string
@@ -65,7 +68,9 @@ export type Database = {
           size: string | null
           slug: string
           status: string | null
+          twitter_url: string | null
           updated_at: string
+          website_url: string | null
         }
         Insert: {
           banner_url?: string | null
@@ -75,8 +80,11 @@ export type Database = {
           created_via?: string
           created_at?: string
           description?: string | null
+          facebook_url?: string | null
           id?: string
           initials?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
           logo_url?: string | null
           name: string
           provenance_tag?: string
@@ -84,7 +92,9 @@ export type Database = {
           size?: string | null
           slug: string
           status?: string | null
+          twitter_url?: string | null
           updated_at?: string
+          website_url?: string | null
         }
         Update: {
           banner_url?: string | null
@@ -94,8 +104,11 @@ export type Database = {
           created_via?: string
           created_at?: string
           description?: string | null
+          facebook_url?: string | null
           id?: string
           initials?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
           logo_url?: string | null
           name?: string
           provenance_tag?: string
@@ -103,7 +116,9 @@ export type Database = {
           size?: string | null
           slug?: string
           status?: string | null
+          twitter_url?: string | null
           updated_at?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -361,27 +376,88 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
           created_at: string
           display_name: string | null
           id: string
+          linkedin_url: string | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          linkedin_url?: string | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          linkedin_url?: string | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      posts: {
+        Row: {
+          company_id: string | null
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          position: string | null
+          post_type: string
           updated_at: string
           user_id: string
         }
         Insert: {
-          avatar_url?: string | null
+          company_id?: string | null
+          content: string
           created_at?: string
-          display_name?: string | null
           id?: string
+          image_url?: string | null
+          position?: string | null
+          post_type?: string
           updated_at?: string
           user_id: string
         }
         Update: {
-          avatar_url?: string | null
+          company_id?: string | null
+          content?: string
           created_at?: string
-          display_name?: string | null
           id?: string
+          image_url?: string | null
+          position?: string | null
+          post_type?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      posts_public: {
+        Row: {
+          author_avatar_url: string | null
+          author_display_name: string | null
+          company_id: string | null
+          company_name: string | null
+          company_slug: string | null
+          content: string | null
+          created_at: string | null
+          id: string | null
+          image_url: string | null
+          position: string | null
+          post_type: string | null
         }
         Relationships: []
       }
@@ -885,6 +961,17 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      get_salary_stats: {
+        Args: { p_company_id: string }
+        Returns: {
+          avg_amount: number
+          job_title: string
+          location_city: string
+          max_amount: number
+          min_amount: number
+          sample_count: number
+        }[]
       }
       has_submitted_salary: { Args: { p_user_id: string }; Returns: boolean }
       is_admin: { Args: { _user_id: string }; Returns: boolean }

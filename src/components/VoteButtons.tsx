@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 
 interface VoteButtonsProps {
   targetId: string;
-  targetType: "review" | "salary" | "interview";
+  targetType: "review" | "salary" | "interview" | "post";
 }
 
 interface VoteCounts {
