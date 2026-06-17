@@ -55,7 +55,7 @@ const Index = () => {
     description: meta.description,
     path: "/",
     datePublished: "2025-01-01",
-    dateModified: "2026-04-13",
+    dateModified: new Date().toISOString().split("T")[0],
     speakableSelectors: [".speakable-summary", ".direct-answer"],
   });
   const breadcrumbJsonLd = generateJsonLd.breadcrumb([

@@ -233,17 +233,52 @@ const buildFaqItems = (company: CompanyCore, snapshot: CompanySeoSourceSnapshot)
   return faqItems;
 };
 
-export const buildCompanySeoContent = ({
-  company,
+type DatedRecord = { created_at?: string | null };
+
+/**
+ * Returns the freshest YYYY-MM-DD date across the company and its dated content
+ * (reviews/salaries/interviews), falling back to the company creation date and
+ * finally to a stable default. Used for an accurate schema.org `dateModified`
+ * instead of "today", which would falsely signal a daily-changing page.
+ */
+export const latestContentDate = (
+  company: { created_at?: string | null },
+  ...recordLists: Array<readonly DatedRecord[]>
+): string => {
+  const candidates: string[] = [];
+  if (company.created_at) candidates.push(company.created_at);
+  for (const list of recordLists) {
+    for (const record of list) {
+      if (record.created_at) candidates.push(record.created_at);
+    }
+  }
+
+  const timestamps = candidates
+    .map((value) => ({ value, time: Date.parse(value) }))
+    .filter((entry) => !Number.isNaN(entry.time));
+
+  if (timestamps.length === 0) {
+    return "2026-01-01";
+  }
+
+  const newest = timestamps.reduce((latest, entry) => (entry.time > latest.time ? entry : latest));
+  return newest.value.split("T")[0];
+};
+
+/**
+ * Computes the aggregate source snapshot used both by the deterministic builder
+ * and by the AI prompt builder, so AI generation and fallback share one data
+ * source.
+ */
+export const computeCompanySnapshot = ({
   reviews,
   salaries,
   interviews,
 }: {
-  company: CompanyCore;
   reviews: ReviewInput[];
   salaries: SalaryInput[];
   interviews: InterviewInput[];
-}): CompanySeoProfileContent => {
+}): CompanySeoSourceSnapshot => {
   const validRatings = reviews
     .map((review) => review.rating)
     .filter((rating): rating is number => typeof rating === "number");
@@ -259,7 +294,7 @@ export const buildCompanySeoContent = ({
   const topSalaryTitles = summarizeCounts(salaries.map((salary) => salary.job_title));
   const topInterviewPositions = summarizeCounts(interviews.map((interview) => interview.position));
 
-  const snapshot: CompanySeoSourceSnapshot = {
+  return {
     reviewCount: reviews.length,
     salaryCount: salaries.length,
     interviewCount: interviews.length,
@@ -269,6 +304,21 @@ export const buildCompanySeoContent = ({
     topSalaryTitles,
     topInterviewPositions,
   };
+};
+
+export const buildCompanySeoContent = ({
+  company,
+  reviews,
+  salaries,
+  interviews,
+}: {
+  company: CompanyCore;
+  reviews: ReviewInput[];
+  salaries: SalaryInput[];
+  interviews: InterviewInput[];
+}): CompanySeoProfileContent => {
+  const snapshot = computeCompanySnapshot({ reviews, salaries, interviews });
+  const { recommendationRate, topDepartments, topSalaryTitles, topInterviewPositions } = snapshot;
 
   const dataSignals = reviews.length + salaries.length + interviews.length;
   const generationStatus: CompanySeoGenerationStatus =
