@@ -1,0 +1,24 @@
+{
+  "name": "firmascope-scrape-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "External, queue-based company scraper for FirmaScope. Polls scrape_jobs via the Supabase service role key, crawls external company directories HTTP-first (Crawlee), and lands normalized results in company_import_staging for manual admin approval.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "run-once": "RUN_ONCE=1 tsx src/index.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "crawlee": "^3.11.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "@types/node": "^20.14.0"
+  }
+}
