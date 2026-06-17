@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import Admin from "@/pages/Admin";
+import AdminLayout from "@/layouts/AdminLayout";
+import AdminAnnouncements from "@/components/AdminAnnouncements";
+import AdminCompanies from "@/pages/admin/AdminCompanies";
+import AdminUsers from "@/pages/admin/AdminUsers";
 
 const mockUser = {
   id: "admin-123",
@@ -69,12 +71,19 @@ vi.mock("react-helmet-async", () => ({
   HelmetProvider: ({ children }: { children: any }) => <>{children}</>,
 }));
 
-function renderAdmin() {
+// Mounts the new nested-route admin shell. `initialPath` selects the child route,
+// replacing the old click-to-switch tab interaction.
+function renderAdmin(initialPath = "/admin") {
   return render(
-    <MemoryRouter initialEntries={["/admin"]}>
+    <MemoryRouter initialEntries={[initialPath]}>
       <Routes>
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminAnnouncements />} />
+          <Route path="companies" element={<AdminCompanies />} />
+          <Route path="users" element={<AdminUsers />} />
+        </Route>
         <Route path="/" element={<div>Home Page</div>} />
+        <Route path="/giris" element={<div>Login Page</div>} />
       </Routes>
     </MemoryRouter>
   );
@@ -131,10 +140,10 @@ describe("Admin Page Authorization", () => {
     mockState.rpcMock.mockResolvedValue({ data: null, error: null });
   });
 
-  it("redirects to home when not logged in", async () => {
+  it("redirects to login when not logged in", async () => {
     renderAdmin();
     await waitFor(() => {
-      expect(screen.getByText("Home Page")).toBeInTheDocument();
+      expect(screen.getByText("Login Page")).toBeInTheDocument();
     });
   });
 
@@ -147,7 +156,7 @@ describe("Admin Page Authorization", () => {
     });
   });
 
-  it("renders admin panel for admin users", async () => {
+  it("renders admin panel shell for admin users", async () => {
     authContextValue.user = mockUser;
     authContextValue.isAdmin = true;
     renderAdmin();
@@ -162,29 +171,19 @@ describe("Admin Page Authorization", () => {
     expect(screen.getByText("Yükleniyor...")).toBeInTheDocument();
   });
 
-  it("shows provenance badges in companies tab", async () => {
+  it("shows provenance badges in companies route", async () => {
     authContextValue.user = mockUser;
     authContextValue.isAdmin = true;
-    const user = userEvent.setup();
-
-    renderAdmin();
-
-    await screen.findByText("Yönetim Paneli");
-    await user.click(screen.getByText("Şirketler"));
+    renderAdmin("/admin/companies");
 
     expect(await screen.findByText("Legacy Import")).toBeInTheDocument();
     expect(screen.getByText("Before")).toBeInTheDocument();
   });
 
-  it("shows sql upload tools and admin import guidance in companies tab", async () => {
+  it("shows sql upload tools and admin import guidance in companies route", async () => {
     authContextValue.user = mockUser;
     authContextValue.isAdmin = true;
-    const user = userEvent.setup();
-
-    renderAdmin();
-
-    await screen.findByText("Yönetim Paneli");
-    await user.click(screen.getByText("Şirketler"));
+    renderAdmin("/admin/companies");
 
     expect(await screen.findByText("SQL Dosyasi Yukle")).toBeInTheDocument();
     expect(screen.getByText("Calisma Notu")).toBeInTheDocument();
@@ -192,15 +191,10 @@ describe("Admin Page Authorization", () => {
     expect(screen.getByText(/300 sirket senin tarafindan 100-100-100 paylastirilacak/i)).toBeInTheDocument();
   });
 
-  it("shows admin role controls in users tab", async () => {
+  it("shows admin role controls in users route", async () => {
     authContextValue.user = mockUser;
     authContextValue.isAdmin = true;
-    const user = userEvent.setup();
-
-    renderAdmin();
-
-    await screen.findByText("Yönetim Paneli");
-    await user.click(screen.getByText("Kullanıcılar"));
+    renderAdmin("/admin/users");
 
     expect(await screen.findByText("Ana Admin")).toBeInTheDocument();
     expect(screen.getByText("Editor User")).toBeInTheDocument();
@@ -211,12 +205,7 @@ describe("Admin Page Authorization", () => {
   it("hides admin role controls for non-super-admin accounts", async () => {
     authContextValue.user = { ...mockUser, email: "admin@example.com" };
     authContextValue.isAdmin = true;
-    const user = userEvent.setup();
-
-    renderAdmin();
-
-    await screen.findByText("Yönetim Paneli");
-    await user.click(screen.getByText("Kullanıcılar"));
+    renderAdmin("/admin/users");
 
     expect(await screen.findAllByText("Sadece super admin")).toHaveLength(2);
     expect(screen.queryByRole("button", { name: "Admin Yap" })).not.toBeInTheDocument();

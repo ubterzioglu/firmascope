@@ -47,6 +47,201 @@ export type Database = {
         }
         Relationships: []
       }
+      scrape_jobs: {
+        Row: {
+          config: Json
+          created_at: string
+          created_by: string | null
+          finished_at: string | null
+          id: string
+          seed_urls: string[]
+          source: string
+          started_at: string | null
+          stats: Json
+          status: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          finished_at?: string | null
+          id?: string
+          seed_urls?: string[]
+          source: string
+          started_at?: string | null
+          stats?: Json
+          status?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          finished_at?: string | null
+          id?: string
+          seed_urls?: string[]
+          source?: string
+          started_at?: string | null
+          stats?: Json
+          status?: string
+        }
+        Relationships: []
+      }
+      scrape_job_items: {
+        Row: {
+          attempt: number
+          created_at: string
+          entity_key: string | null
+          error_code: string | null
+          error_message: string | null
+          http_status: number | null
+          id: string
+          job_id: string
+          status: string
+          url: string
+        }
+        Insert: {
+          attempt?: number
+          created_at?: string
+          entity_key?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          http_status?: number | null
+          id?: string
+          job_id: string
+          status?: string
+          url: string
+        }
+        Update: {
+          attempt?: number
+          created_at?: string
+          entity_key?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          http_status?: number | null
+          id?: string
+          job_id?: string
+          status?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scrape_job_items_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_import_staging: {
+        Row: {
+          city: string | null
+          created_at: string
+          dedupe_status: string
+          description: string | null
+          facebook_url: string | null
+          id: string
+          instagram_url: string | null
+          job_id: string
+          linkedin_url: string | null
+          matched_company_id: string | null
+          name: string
+          normalized: Json
+          review_status: string
+          sector: string | null
+          size: string | null
+          slug: string
+          source_url: string
+          twitter_url: string | null
+          website_url: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          dedupe_status?: string
+          description?: string | null
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          job_id: string
+          linkedin_url?: string | null
+          matched_company_id?: string | null
+          name: string
+          normalized?: Json
+          review_status?: string
+          sector?: string | null
+          size?: string | null
+          slug: string
+          source_url: string
+          twitter_url?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          dedupe_status?: string
+          description?: string | null
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          job_id?: string
+          linkedin_url?: string | null
+          matched_company_id?: string | null
+          name?: string
+          normalized?: Json
+          review_status?: string
+          sector?: string | null
+          size?: string | null
+          slug?: string
+          source_url?: string
+          twitter_url?: string | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_import_staging_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crawl_job_logs: {
+        Row: {
+          context: Json
+          created_at: string
+          id: string
+          job_id: string
+          level: string
+          message: string
+        }
+        Insert: {
+          context?: Json
+          created_at?: string
+          id?: string
+          job_id: string
+          level?: string
+          message: string
+        }
+        Update: {
+          context?: Json
+          created_at?: string
+          id?: string
+          job_id?: string
+          level?: string
+          message?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crawl_job_logs_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           banner_url: string | null
@@ -954,6 +1149,14 @@ export type Database = {
       execute_company_import_sql: {
         Args: { sql_text: string }
         Returns: Json
+      }
+      approve_company_import: {
+        Args: { p_staging_id: string }
+        Returns: Json
+      }
+      reject_company_import: {
+        Args: { p_staging_id: string }
+        Returns: undefined
       }
       has_role: {
         Args: {
