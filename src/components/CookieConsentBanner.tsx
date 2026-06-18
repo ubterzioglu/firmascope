@@ -26,7 +26,7 @@ const CookieConsentBanner = () => {
         <div className="max-w-3xl">
           <p className="text-sm font-medium text-foreground">Deneyimi iyileştirmek ve kullanım akışını anlamak için analiz çerezleri kullanabiliriz.</p>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            Ayrıntılar için <Link to="/yasal" className="font-medium text-foreground underline underline-offset-2">yasal bilgiler</Link>.
+            Ayrıntılar için <Link to="/cerez-politikasi" className="font-medium text-foreground underline underline-offset-2">çerez politikası</Link>.
           </p>
         </div>
 

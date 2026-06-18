@@ -2,14 +2,20 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import FirmaPill from "@/components/FirmaPill";
 import ClarityTracker from "@/components/ClarityTracker";
 import Index from "./pages/Index";
 import Companies from "./pages/Companies";
 import CompanyDetail from "./pages/CompanyDetail";
-import Legal from "./pages/Legal";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Careers from "./pages/Careers";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfUse from "./pages/TermsOfUse";
+import Kvkk from "./pages/Kvkk";
+import CookiePolicy from "./pages/CookiePolicy";
 import Auth from "./pages/Auth";
 import CompanyAdmin from "./pages/CompanyAdmin";
 import SuggestCompany from "./pages/SuggestCompany";
@@ -31,6 +37,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminScrapeJobs from "./pages/admin/AdminScrapeJobs";
 import AdminScrapeJobDetail from "./pages/admin/AdminScrapeJobDetail";
 import AdminImports from "./pages/admin/AdminImports";
+import AdminGuides from "./pages/admin/AdminGuides";
 
 const queryClient = new QueryClient();
 
@@ -49,7 +56,14 @@ const App = () => (
             <Route path="/sirket/:slug" element={<CompanyDetail />} />
             <Route path="/sektor/:slug" element={<TaxonomyPage mode="sector" />} />
             <Route path="/sehir/:slug" element={<TaxonomyPage mode="city" />} />
-            <Route path="/yasal" element={<Legal />} />
+            <Route path="/hakkimizda" element={<About />} />
+            <Route path="/iletisim" element={<Contact />} />
+            <Route path="/kariyer" element={<Careers />} />
+            <Route path="/gizlilik-politikasi" element={<PrivacyPolicy />} />
+            <Route path="/kullanim-sartlari" element={<TermsOfUse />} />
+            <Route path="/kvkk-gdpr-ccpa" element={<Kvkk />} />
+            <Route path="/cerez-politikasi" element={<CookiePolicy />} />
+            <Route path="/yasal" element={<Navigate to="/kullanim-sartlari" replace />} />
             <Route path="/giris" element={<Auth />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminAnnouncements />} />
@@ -65,6 +79,7 @@ const App = () => (
               <Route path="scrape" element={<AdminScrapeJobs />} />
               <Route path="scrape/:id" element={<AdminScrapeJobDetail />} />
               <Route path="imports" element={<AdminImports />} />
+              <Route path="guides" element={<AdminGuides />} />
             </Route>
             <Route path="/sirket-yonetimi" element={<CompanyAdmin />} />
             <Route path="/sirket-oner" element={<SuggestCompany />} />

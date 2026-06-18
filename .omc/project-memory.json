@@ -270,15 +270,15 @@
       "type": "file"
     },
     {
-      "path": "src\\integrations\\supabase\\types.ts",
-      "accessCount": 19,
-      "lastAccessed": 1781727589131,
+      "path": "src\\App.tsx",
+      "accessCount": 22,
+      "lastAccessed": 1781772441083,
       "type": "file"
     },
     {
-      "path": "src\\App.tsx",
-      "accessCount": 13,
-      "lastAccessed": 1781730473161,
+      "path": "src\\integrations\\supabase\\types.ts",
+      "accessCount": 19,
+      "lastAccessed": 1781727589131,
       "type": "file"
     },
     {
@@ -318,21 +318,21 @@
       "type": "directory"
     },
     {
+      "path": "src\\components\\FirmaPill.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1781770989377,
+      "type": "file"
+    },
+    {
       "path": "supabase\\migrations\\20260208003732_22349738-44f4-4632-9dd2-c214b4a4efe8.sql",
       "accessCount": 5,
       "lastAccessed": 1781725349677,
       "type": "file"
     },
     {
-      "path": "src\\components\\FirmaPill.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1781694786212,
-      "type": "file"
-    },
-    {
       "path": "src\\components\\AdminReports.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1781725363850,
+      "accessCount": 5,
+      "lastAccessed": 1781770678941,
       "type": "file"
     },
     {
@@ -363,6 +363,12 @@
       "path": "supabase\\migrations\\20260207230937_6fde44f2-71c7-4a35-aee7-fd77aa70221a.sql",
       "accessCount": 4,
       "lastAccessed": 1781725889494,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\Layout.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1781770724169,
       "type": "file"
     },
     {
@@ -402,9 +408,9 @@
       "type": "file"
     },
     {
-      "path": "src\\components\\Layout.tsx",
+      "path": "src\\components\\AdminAnnouncements.tsx",
       "accessCount": 3,
-      "lastAccessed": 1781726635153,
+      "lastAccessed": 1781770678058,
       "type": "file"
     },
     {
@@ -435,12 +441,6 @@
       "path": "src\\pages\\CompanyAdmin.tsx",
       "accessCount": 2,
       "lastAccessed": 1781725339842,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\AdminAnnouncements.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1781725339888,
       "type": "file"
     },
     {

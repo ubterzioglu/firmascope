@@ -12,7 +12,7 @@ const menuItems = [
   { label: "Değerlendirme Ekle", icon: Star, color: "bg-alm-yellow", href: "/sirketler" },
   { label: "Mülakat Bilgisi", icon: Users, color: "bg-alm-blue", href: "/sirketler" },
   { label: "Maaş Bilgisi", icon: DollarSign, color: "bg-alm-green", href: "/sirketler" },
-  { label: "Yasal Bilgiler", icon: Scale, color: "bg-alm-red", href: "/yasal" },
+  { label: "Hakkımızda", icon: Scale, color: "bg-alm-red", href: "/hakkimizda" },
 ];
 
 const FirmaPill = () => {

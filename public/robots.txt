@@ -33,7 +33,6 @@ Allow: /
 Disallow: /admin
 Disallow: /giris
 Disallow: /sirket-yonetimi
-Disallow: /yasal
 Disallow: /sirket-oner
 
 Sitemap: https://firmascope.com/sitemap.xml

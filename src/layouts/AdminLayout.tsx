@@ -2,7 +2,7 @@ import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
   Shield, Megaphone, Lightbulb, FileCheck, Building2, Star, Banknote,
-  UserCheck, Users, MessageSquare, Flag, Bot, Inbox,
+  UserCheck, Users, MessageSquare, Flag, Bot, Inbox, BookOpen,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import Layout from "@/components/Layout";
@@ -34,6 +34,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/admin/reports", label: "Raporlar", icon: Flag },
   { to: "/admin/scrape", label: "Scrape İşleri", icon: Bot },
   { to: "/admin/imports", label: "İçe Aktarımlar", icon: Inbox },
+  { to: "/admin/guides", label: "Kılavuzlar", icon: BookOpen },
 ];
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {

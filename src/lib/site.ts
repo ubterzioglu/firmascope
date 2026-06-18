@@ -3,12 +3,21 @@ export const SITE_URL = "https://firmascope.com";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/firmascope_og.png`;
 export const DEFAULT_LOCALE = "tr_TR";
 
-export const INDEXABLE_STATIC_ROUTES = ["/", "/sirketler"] as const;
+export const INDEXABLE_STATIC_ROUTES = [
+  "/",
+  "/sirketler",
+  "/hakkimizda",
+  "/iletisim",
+  "/kariyer",
+  "/gizlilik-politikasi",
+  "/kullanim-sartlari",
+  "/kvkk-gdpr-ccpa",
+  "/cerez-politikasi",
+] as const;
 export const NOINDEX_STATIC_ROUTES = [
   "/admin",
   "/giris",
   "/sirket-yonetimi",
-  "/yasal",
   "/sirket-oner",
 ] as const;
 

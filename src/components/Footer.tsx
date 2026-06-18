@@ -1,4 +1,6 @@
+import { Fragment } from "react";
 import { Link } from "react-router-dom";
+import { FOOTER_PAGES } from "@/lib/footer-pages";
 
 const Footer = () => {
   return (
@@ -8,9 +10,23 @@ const Footer = () => {
           <Link to="/" className="font-display text-sm font-bold text-foreground">
             firmascope
           </Link>
-          <Link to="/yasal" className="font-display text-sm font-bold text-foreground hover:text-foreground/80 transition-colors">
-            yasal bilgiler
-          </Link>
+          <nav className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+            {FOOTER_PAGES.map((page, index) => (
+              <Fragment key={page.path}>
+                {index > 0 && (
+                  <span aria-hidden="true" className="text-border">
+                    |
+                  </span>
+                )}
+                <Link
+                  to={page.path}
+                  className="transition-colors hover:text-foreground"
+                >
+                  {page.label}
+                </Link>
+              </Fragment>
+            ))}
+          </nav>
         </div>
         <div className="mt-4 border-t border-border pt-4 text-center">
           <span className="text-[10px] text-muted-foreground">
