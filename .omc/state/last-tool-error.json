@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"git status --short 2>/dev/null\",\"description\":\"Final git status check\"}",
+  "error": "Exit code 1\n M .omc/project-memory.json\n M .omc/state/mission-state.json\n M src/components/JsonLd.tsx\n M src/lib/company-seo.ts\n?? .omc/sessions/fe976cf5-d436-4eeb-a0ca-9ad962096cb3.json\n?? .omc/state/agent-replay-1d972ae2-7536-4b6b-b9b1-2c385ce0e8f6.jsonl\n?? .omc/state/agent-replay-e447d8e7-b30a-4c08-aa41-951dc7e3e762.jsonl\n?? .omc/state/idle-notif-cooldown.json\n?? .omc/state/last-tool-error.json\n?? .omc/state/subagent-tracking.json\n/usr/bin/bash: line 1: /c/Users/BARIS-~1/AppData/Local/Temp/cl...",
+  "timestamp": "2026-07-06T20:44:03.742Z",
+  "retry_count": 6
+}

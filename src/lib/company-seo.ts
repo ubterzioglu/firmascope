@@ -104,39 +104,39 @@ type InterviewInput = {
 
 const sectorReferenceMap: Record<string, CompanySeoExternalLink> = {
   teknoloji: {
-    label: "Teknoloji sektoru ozeti",
+    label: "Teknoloji sektörü özeti",
     url: "https://en.wikipedia.org/wiki/Information_technology",
   },
   finans: {
-    label: "Finans sektoru ozeti",
+    label: "Finans sektörü özeti",
     url: "https://en.wikipedia.org/wiki/Financial_services",
   },
   saglik: {
-    label: "Saglik sektoru ozeti",
+    label: "Sağlık sektörü özeti",
     url: "https://en.wikipedia.org/wiki/Health_care",
   },
   enerji: {
-    label: "Enerji sektoru ozeti",
+    label: "Enerji sektörü özeti",
     url: "https://en.wikipedia.org/wiki/Energy_industry",
   },
   lojistik: {
-    label: "Lojistik sektoru ozeti",
+    label: "Lojistik sektörü özeti",
     url: "https://en.wikipedia.org/wiki/Logistics",
   },
   otomotiv: {
-    label: "Otomotiv sektoru ozeti",
+    label: "Otomotiv sektörü özeti",
     url: "https://en.wikipedia.org/wiki/Automotive_industry",
   },
   medya: {
-    label: "Medya sektoru ozeti",
+    label: "Medya sektörü özeti",
     url: "https://en.wikipedia.org/wiki/Media_(communication)",
   },
   insaat: {
-    label: "Insaat sektoru ozeti",
+    label: "İnşaat sektörü özeti",
     url: "https://en.wikipedia.org/wiki/Construction",
   },
   egitim: {
-    label: "Egitim sektoru ozeti",
+    label: "Eğitim sektörü özeti",
     url: "https://en.wikipedia.org/wiki/Education",
   },
 };
@@ -176,7 +176,7 @@ const formatCurrency = (value: number, currency: string | null) =>
 const buildExternalLinks = (company: CompanyCore): CompanySeoExternalLink[] => {
   const links: CompanySeoExternalLink[] = [
     {
-      label: `${company.name} LinkedIn aramasi`,
+      label: `${company.name} LinkedIn araması`,
       url: `https://www.linkedin.com/search/results/companies/?keywords=${encodeURIComponent(company.name)}`,
     },
   ];
@@ -190,7 +190,7 @@ const buildExternalLinks = (company: CompanyCore): CompanySeoExternalLink[] => {
 
   if (company.city) {
     links.push({
-      label: `${company.city} is pazari baglami`,
+      label: `${company.city} iş pazarı bağlamı`,
       url: `https://tr.wikipedia.org/wiki/${encodeURIComponent(company.city)}`,
     });
   }
@@ -201,32 +201,32 @@ const buildExternalLinks = (company: CompanyCore): CompanySeoExternalLink[] => {
 const buildFaqItems = (company: CompanyCore, snapshot: CompanySeoSourceSnapshot): CompanySeoFaqItem[] => {
   const faqItems: CompanySeoFaqItem[] = [
     {
-      question: `${company.name} nasil bir sirket olarak goruluyor?`,
+      question: `${company.name} nasıl bir şirket olarak görülüyor?`,
       answer:
         snapshot.reviewCount > 0
-          ? `${company.name} icin platformda ${snapshot.reviewCount} yorum bulunuyor. Ortalama puan ve tekrar eden yorum temalari, kultur ve beklenti yonetimi konusunda ilk sinyali veriyor.`
-          : `${company.name} icin henuz yeterli yorum birikimi bulunmuyor. Sayfa yine de sektor, sehir ve pozisyon bazli ilk arastirma icin temel bir baslangic sunuyor.`,
+          ? `${company.name} için platformda ${snapshot.reviewCount} yorum bulunuyor. Ortalama puan ve tekrar eden yorum temaları, kültür ve beklenti yönetimi konusunda ilk sinyali veriyor.`
+          : `${company.name} için henüz yeterli yorum birikimi bulunmuyor. Sayfa yine de sektör, şehir ve pozisyon bazlı ilk araştırma için temel bir başlangıç sunuyor.`,
     },
     {
-      question: `${company.name} maas beklentisi nasil degerlendirilmeli?`,
+      question: `${company.name} maaş beklentisi nasıl değerlendirilmeli?`,
       answer:
         snapshot.salaryCount > 0
-          ? `${company.name} icin kayitli maas girdileri pozisyon ve kidem bazli dagilimi gosteriyor. Tek bir rakama odaklanmak yerine kidem, departman ve calisma modelini birlikte okumak daha saglikli olur.`
-          : `${company.name} icin maas verisi sinirli oldugunda benzer sektor ve sehirdeki rollerle kiyaslama yapmak gerekir. Bu sayfa, topluluk verisi geldikce daha net bantlar sunmak uzere tasarlandi.`,
+          ? `${company.name} için kayıtlı maaş girdileri pozisyon ve kıdem bazlı dağılımı gösteriyor. Tek bir rakama odaklanmak yerine kıdem, departman ve çalışma modelini birlikte okumak daha sağlıklı olur.`
+          : `${company.name} için maaş verisi sınırlı olduğunda benzer sektör ve şehirdeki rollerle kıyaslama yapmak gerekir. Bu sayfa, topluluk verisi geldikçe daha net bantlar sunmak üzere tasarlandı.`,
     },
     {
-      question: `${company.name} mulakat sureci zor mu?`,
+      question: `${company.name} mülakat süreci zor mu?`,
       answer:
         snapshot.interviewCount > 0
-          ? `${company.name} sayfasindaki mulakat kayitlari surecin kac asamali oldugu, hangi formatta ilerledigi ve geri donus hizinin nasil oldugu konusunda somut fikir verir.`
-          : `${company.name} icin mulakat verisi sinirliyse adaylarin pozisyon bazli beklentilerini sektor ortalamasi ve benzer roller uzerinden kurmasi gerekir.`,
+          ? `${company.name} sayfasındaki mülakat kayıtları sürecin kaç aşamalı olduğu, hangi formatta ilerlediği ve geri dönüş hızının nasıl olduğu konusunda somut fikir verir.`
+          : `${company.name} için mülakat verisi sınırlıysa adayların pozisyon bazlı beklentilerini sektör ortalaması ve benzer roller üzerinden kurması gerekir.`,
     },
   ];
 
   if (company.sector || company.city) {
     faqItems.push({
       question: `${company.name} hangi aday profiline daha uygun olabilir?`,
-      answer: `${company.sector || "ilgili"} sektorunde ${company.city || "Türkiye"} baglaminda is arayan adaylar icin bu sayfa; kultur, ucret ve surec beklentisini ayni yerde toplar. En dogru okuma, yorum sayisi, maas girdisi ve mulakat ayrintilarini birlikte degerlendirmekle yapilir.`,
+      answer: `${company.sector || "ilgili"} sektöründe ${company.city || "Türkiye"} bağlamında iş arayan adaylar için bu sayfa; kültür, ücret ve süreç beklentisini aynı yerde toplar. En doğru okuma, yorum sayısı, maaş girdisi ve mülakat ayrıntılarını birlikte değerlendirmekle yapılır.`,
     });
   }
 
@@ -347,94 +347,94 @@ export const buildCompanySeoContent = ({
 
   const introSummary = generationStatus === "generated"
     ? [
-        `${company.name}, ${company.city || "Türkiye"} merkezli ${company.sector ? `${company.sector.toLowerCase()} alaninda` : "farkli is fonksiyonlarinda"} konumlanan bir ${company.company_type || "sirket"} profili sunuyor. firmascope uzerindeki bu sayfa, adaylarin ve calisanlarin tek tek yorumlari yerine daha butunlu bir resim gorebilmesi icin yorum, maas ve mulakat verilerini ayni akista bir araya getiriyor.`,
+        `${company.name}, ${company.city || "Türkiye"} merkezli ${company.sector ? `${company.sector.toLowerCase()} alanında` : "farklı iş fonksiyonlarında"} konumlanan bir ${company.company_type || "şirket"} profili sunuyor. firmascope üzerindeki bu sayfa, adayların ve çalışanların tek tek yorumları yerine daha bütünlü bir resim görebilmesi için yorum, maaş ve mülakat verilerini aynı akışta bir araya getiriyor.`,
         company.description
-          ? `${capitalizeSentence(company.description)} Bu tanim, topluluk verisiyle birlikte okundugunda sirketin resmi anlatisi ile kullanici deneyiminin ne kadar ortustugunu anlamaya yardimci olur.`
-          : `${company.name} icin resmi tanim sinirli olsa da sayfadaki topluluk verisi, kultur ve beklenti yonetimi konusunda ilk sinyalleri sunar.`,
+          ? `${capitalizeSentence(company.description)} Bu tanım, topluluk verisiyle birlikte okunduğunda şirketin resmi anlatısı ile kullanıcı deneyiminin ne kadar örtüştüğünü anlamaya yardımcı olur.`
+          : `${company.name} için resmi tanım sınırlı olsa da sayfadaki topluluk verisi, kültür ve beklenti yönetimi konusunda ilk sinyalleri sunar.`,
         reviews.length > 0 || salaries.length > 0 || interviews.length > 0
-          ? `${reviews.length} yorum, ${salaries.length} maas girdisi ve ${interviews.length} mulakat kaydi; bu sayfayi sadece bir sirket karti olmaktan cikarip arastirma odakli bir referans noktasina donusturuyor. Adaylar bu verileri roller, calisma modeli ve kidem beklentisiyle birlikte okumali.`
-          : `${company.name} icin topluluk verisi henuz yeni olusuyor. Sayfa yine de sektor, sehir ve isveren markasi baglaminda temel arastirma icin hazir bir iskelet sunuyor.`,
+          ? `${reviews.length} yorum, ${salaries.length} maaş girdisi ve ${interviews.length} mülakat kaydı; bu sayfayı sadece bir şirket kartı olmaktan çıkarıp araştırma odaklı bir referans noktasına dönüştürüyor. Adaylar bu verileri roller, çalışma modeli ve kıdem beklentisiyle birlikte okumalı.`
+          : `${company.name} için topluluk verisi henüz yeni oluşuyor. Sayfa yine de sektör, şehir ve işveren markası bağlamında temel araştırma için hazır bir iskelet sunuyor.`,
       ].join(" ")
     : null;
 
   const cultureSummary = reviews.length > 0
     ? [
-        `${company.name} kulturunu okurken sadece ortalama puana bakmak yeterli degil. Sayfadaki yorumlar, ekip ici iletisim, yonetici yaklasimi, gorev netligi ve is-ozel hayat dengesi gibi basliklarda tekrar eden ortak bir ton uretiyor.`,
+        `${company.name} kültürünü okurken sadece ortalama puana bakmak yeterli değil. Sayfadaki yorumlar, ekip içi iletişim, yönetici yaklaşımı, görev netliği ve iş-özel hayat dengesi gibi başlıklarda tekrar eden ortak bir ton üretiyor.`,
         snapshot.averageRating
-          ? `Mevcut yorumlara gore ortalama puan ${snapshot.averageRating}/5 seviyesinde. ${recommendationRate !== null ? `Tavsiye orani ise yaklasik %${recommendationRate}.` : ""} Bu iki veri birlikte, memnuniyetin sadece duygusal degil davranissal olarak da ne kadar tutarli oldugunu gosterir.`
-          : `${company.name} icin puan dagilimi sinirli olsa da metin yorumlar, kulturel beklentiyi anlamak acisindan rakamlardan daha zengin sinyal verir.`,
+          ? `Mevcut yorumlara göre ortalama puan ${snapshot.averageRating}/5 seviyesinde. ${recommendationRate !== null ? `Tavsiye oranı ise yaklaşık %${recommendationRate}.` : ""} Bu iki veri birlikte, memnuniyetin sadece duygusal değil davranışsal olarak da ne kadar tutarlı olduğunu gösterir.`
+          : `${company.name} için puan dağılımı sınırlı olsa da metin yorumlar, kültürel beklentiyi anlamak açısından rakamlardan daha zengin sinyal verir.`,
         topDepartments.length > 0
-          ? `En cok geri bildirim gelen alanlar ${topDepartments.join(", ")} olarak one cikiyor. Bu durum, yorumlarin belirli ekiplerden yogunlastigini ve kultur analizinin departman baglamiyla birlikte okunmasi gerektigini gosterir.`
-          : `${company.name} icin departman dagilimi henuz net degil. Bu nedenle kultur okumasi yaparken tekil deneyimlerin temsil gucunu dikkatli yorumlamak gerekir.`,
+          ? `En çok geri bildirim gelen alanlar ${topDepartments.join(", ")} olarak öne çıkıyor. Bu durum, yorumların belirli ekiplerden yoğunlaştığını ve kültür analizinin departman bağlamıyla birlikte okunması gerektiğini gösterir.`
+          : `${company.name} için departman dağılımı henüz net değil. Bu nedenle kültür okuması yaparken tekil deneyimlerin temsil gücünü dikkatli yorumlamak gerekir.`,
         frequentPros.length > 0 || frequentCons.length > 0
-          ? `Pozitif tarafta ${frequentPros.join(", ")} gibi temalar sik tekrarlaniyor. Diger yandan ${frequentCons.join(", ")} benzeri elestiriler de karar surecinde dikkate alinmali.`
-          : `${company.name} yorumlarinda keskin sekilde ayrisan bir tema yoksa bu genellikle ya veri sayisinin sinirli olduguna ya da deneyimlerin ekipten ekibe belirgin bicimde degistigine isaret eder.`,
+          ? `Pozitif tarafta ${frequentPros.join(", ")} gibi temalar sık tekrarlanıyor. Diğer yandan ${frequentCons.join(", ")} benzeri eleştiriler de karar sürecinde dikkate alınmalı.`
+          : `${company.name} yorumlarında keskin şekilde ayrışan bir tema yoksa bu genellikle ya veri sayısının sınırlı olduğuna ya da deneyimlerin ekipten ekibe belirgin biçimde değiştiğine işaret eder.`,
       ].join(" ")
     : null;
 
   const salarySummary = salaries.length > 0
     ? [
-        `${company.name} maas verileri, adaylarin sadece tek bir rakam gormesi icin degil; rol, kidem ve calisma modeli farklarini okuyabilmesi icin yorumlanmali. Bu sayfadaki maas kayitlari, brut-net tercihi, sehir etkisi ve hibrit ya da uzaktan calisma gibi degiskenleri birlikte dusunmeyi gerektirir.`,
+        `${company.name} maaş verileri, adayların sadece tek bir rakam görmesi için değil; rol, kıdem ve çalışma modeli farklarını okuyabilmesi için yorumlanmalı. Bu sayfadaki maaş kayıtları, brüt-net tercihi, şehir etkisi ve hibrit ya da uzaktan çalışma gibi değişkenleri birlikte düşünmeyi gerektirir.`,
         averageSalary
-          ? `Kayitli girdiler baz alindiginda ortalama maas seviyesi ${formatCurrency(Math.round(averageSalary), salaries[0]?.currency || "TRY")} civarinda gorunuyor. Bu rakam bir teklif standardi degil, topluluk tarafindan paylasilan orneklerin merkezi egilimini temsil eder.`
-          : `${company.name} icin maas kayitlari sayisal olarak sinirli olsa da mevcut girdiler, beklenti bandini anlamak icin yine de faydali bir baslangic noktasi sunuyor.`,
+          ? `Kayıtlı girdiler baz alındığında ortalama maaş seviyesi ${formatCurrency(Math.round(averageSalary), salaries[0]?.currency || "TRY")} civarında görünüyor. Bu rakam bir teklif standardı değil, topluluk tarafından paylaşılan örneklerin merkezi eğilimini temsil eder.`
+          : `${company.name} için maaş kayıtları sayısal olarak sınırlı olsa da mevcut girdiler, beklenti bandını anlamak için yine de faydalı bir başlangıç noktası sunuyor.`,
         topSalaryTitles.length > 0
-          ? `En sik karsilasilan pozisyonlar ${topSalaryTitles.join(", ")} olarak goze carpiyor. Bu da sayfada gorulen maas sinyallerinin hangi rol ailelerinde daha temsil guclu oldugunu acikca gosteriyor.`
-          : `${company.name} maas sayfasinda pozisyon dagilimi henuz daginik olabilir. Bu nedenle en dogru okuma, benzer kidem ve departmandaki ilanlarla capraz kontrol yapilarak yapilir.`,
+          ? `En sık karşılaşılan pozisyonlar ${topSalaryTitles.join(", ")} olarak göze çarpıyor. Bu da sayfada görülen maaş sinyallerinin hangi rol ailelerinde daha temsil güçlü olduğunu açıkça gösteriyor.`
+          : `${company.name} maaş sayfasında pozisyon dağılımı henüz dağınık olabilir. Bu nedenle en doğru okuma, benzer kıdem ve departmandaki ilanlarla çapraz kontrol yapılarak yapılır.`,
         remoteShare !== null
-          ? `Uzaktan veya hibrit kayitlarin payi yaklasik %${remoteShare} seviyesinde. Bu oran, ayni sirket icindeki paketlerin sadece taban maasla degil, esneklik ve lokasyon tercihleriyle de degerlendirildigini hatirlatiyor.`
-          : `${company.name} icin calisma modeli dagilimi sinirli oldugunda maas verisini sehir ve ofis beklentileriyle birlikte okumak daha dogru olur.`,
+          ? `Uzaktan veya hibrit kayıtların payı yaklaşık %${remoteShare} seviyesinde. Bu oran, aynı şirket içindeki paketlerin sadece taban maaşla değil, esneklik ve lokasyon tercihleriyle de değerlendirildiğini hatırlatıyor.`
+          : `${company.name} için çalışma modeli dağılımı sınırlı olduğunda maaş verisini şehir ve ofis beklentileriyle birlikte okumak daha doğru olur.`,
       ].join(" ")
     : null;
 
   const interviewSummary = interviews.length > 0
     ? [
-        `${company.name} mulakat sureci hakkindaki en degerli sinyal, adaylarin hangi asamalardan gectigini ve ne kadar hizli geri donus aldigini gosteriyor olmasi. Bu sayfadaki kayitlar, surecin sadece zor ya da kolay olup olmadigini degil, aday deneyiminin ne kadar tutarli oldugunu anlamaya yardimci olur.`,
+        `${company.name} mülakat süreci hakkındaki en değerli sinyal, adayların hangi aşamalardan geçtiğini ve ne kadar hızlı geri dönüş aldığını gösteriyor olması. Bu sayfadaki kayıtlar, sürecin sadece zor ya da kolay olup olmadığını değil, aday deneyiminin ne kadar tutarlı olduğunu anlamaya yardımcı olur.`,
         interviewStageAverage
-          ? `Paylasilan verilere gore ortalama asama sayisi yaklasik ${interviewStageAverage.toFixed(1)}. Bu, surecin tek gorusmeli hizli bir akis mi yoksa birden fazla filtreyle ilerleyen daha secici bir yapi mi oldugunu anlamak icin guclu bir ipucu verir.`
-          : `${company.name} icin asama sayisi bilgisi her kayitta bulunmasa da mevcut deneyimler surecin yapisi hakkinda yonlendirici ipuclari saglar.`,
+          ? `Paylaşılan verilere göre ortalama aşama sayısı yaklaşık ${interviewStageAverage.toFixed(1)}. Bu, sürecin tek görüşmeli hızlı bir akış mı yoksa birden fazla filtreyle ilerleyen daha seçici bir yapı mı olduğunu anlamak için güçlü bir ipucu verir.`
+          : `${company.name} için aşama sayısı bilgisi her kayıtta bulunmasa da mevcut deneyimler sürecin yapısı hakkında yönlendirici ipuçları sağlar.`,
         responseDaysAverage
-          ? `Geri donus hizi ortalama ${responseDaysAverage.toFixed(1)} gun civarinda gorunuyor. Adaylar icin bu veri, beklenti yonetimi ve paralel surec planlamasi acisindan oldukca kritiktir.`
-          : `${company.name} icin geri donus hizi verisi eksik olsa bile yorum metinleri surecin temposu ve iletisim kalitesi hakkinda fikir verebilir.`,
+          ? `Geri dönüş hızı ortalama ${responseDaysAverage.toFixed(1)} gün civarında görünüyor. Adaylar için bu veri, beklenti yönetimi ve paralel süreç planlaması açısından oldukça kritiktir.`
+          : `${company.name} için geri dönüş hızı verisi eksik olsa bile yorum metinleri sürecin temposu ve iletişim kalitesi hakkında fikir verebilir.`,
         topInterviewPositions.length > 0
-          ? `En cok paylasim gelen roller ${topInterviewPositions.join(", ")} oldugu icin mulakat okumasini bu pozisyonlarin temsil gucuyle birlikte degerlendirmek gerekir.`
-          : `${company.name} icin mulakat pozisyonlari genis bir yelpazeye yayiliyorsa tek bir deneyimi tum organizasyona genellemek yerine rol bazli okumak daha sagliklidir.`,
+          ? `En çok paylaşım gelen roller ${topInterviewPositions.join(", ")} olduğu için mülakat okumasını bu pozisyonların temsil gücüyle birlikte değerlendirmek gerekir.`
+          : `${company.name} için mülakat pozisyonları geniş bir yelpazeye yayılıyorsa tek bir deneyimi tüm organizasyona genellemek yerine rol bazlı okumak daha sağlıklıdır.`,
       ].join(" ")
     : null;
 
   const prosSummary = frequentPros.length > 0
     ? [
-        `${company.name} icin one cikan arti basliklari genellikle calisma deneyimini gunluk hayatta hissedilen yonleriyle tarif ediyor. Toplulugun tekrar eden pozitif sinyalleri, resmi isveren markasi mesajlarindan daha guvenilir bir operasyonel resim sunabiliyor.`,
-        `En sik vurgulanan guclu taraflar ${frequentPros.join(", ")} seklinde ozetlenebilir. Bu temalar, adaylarin sadece unvan ya da paket degil; ekip ritmi, yonetim sekli ve ogreni hizi konusunda da beklenti olusturmasina yardimci olur.`,
-        `${company.name} benzeri sirketlerde arti olarak yazilan noktalarin gercek degeri, bunlarin farkli kullanicilar tarafindan bagimsiz bicimde tekrar edilmesiyle artar. Bu nedenle ayni tema ne kadar cok tekrar ediyorsa karar surecindeki agirligi de o kadar yukselir.`,
+        `${company.name} için öne çıkan artı başlıkları genellikle çalışma deneyimini günlük hayatta hissedilen yönleriyle tarif ediyor. Topluluğun tekrar eden pozitif sinyalleri, resmi işveren markası mesajlarından daha güvenilir bir operasyonel resim sunabiliyor.`,
+        `En sık vurgulanan güçlü taraflar ${frequentPros.join(", ")} şeklinde özetlenebilir. Bu temalar, adayların sadece unvan ya da paket değil; ekip ritmi, yönetim şekli ve öğrenme hızı konusunda da beklenti oluşturmasına yardımcı olur.`,
+        `${company.name} benzeri şirketlerde artı olarak yazılan noktaların gerçek değeri, bunların farklı kullanıcılar tarafından bağımsız biçimde tekrar edilmesiyle artar. Bu nedenle aynı tema ne kadar çok tekrar ediyorsa karar sürecindeki ağırlığı da o kadar yükselir.`,
       ].join(" ")
     : null;
 
   const consSummary = frequentCons.length > 0
     ? [
-        `${company.name} sayfasindaki eksi basliklari, adaylarin gozden kacirabilecegi riskleri erken fark etmesi acisindan en az pozitif yorumlar kadar degerlidir. Buradaki amac tekil serzenisleri buyutmek degil, tekrar eden sorun alanlarini ayiklamaktir.`,
-        `En cok tekrar eden elestiriler ${frequentCons.join(", ")} etrafinda toplaniyor. Bu sinyaller; is yuku, iletisim kalitesi, rol netligi veya terfi beklentisinin ne kadar dengeli yonetildigine dair erken uyari gorevi gorebilir.`,
-        `${company.name} icin bu eksiler, teklif kabul edilmeden once sorulacak mulakat sorularini da sekillendirebilir. Ozellikle ayni tema farkli zamanlarda birden fazla kullanici tarafindan aktariliyorsa bunun sistematik olma ihtimali artar.`,
+        `${company.name} sayfasındaki eksi başlıkları, adayların gözden kaçırabileceği riskleri erken fark etmesi açısından en az pozitif yorumlar kadar değerlidir. Buradaki amaç tekil serzenişleri büyütmek değil, tekrar eden sorun alanlarını ayıklamaktır.`,
+        `En çok tekrar eden eleştiriler ${frequentCons.join(", ")} etrafında toplanıyor. Bu sinyaller; iş yükü, iletişim kalitesi, rol netliği veya terfi beklentisinin ne kadar dengeli yönetildiğine dair erken uyarı görevi görebilir.`,
+        `${company.name} için bu eksiler, teklif kabul edilmeden önce sorulacak mülakat sorularını da şekillendirebilir. Özellikle aynı tema farklı zamanlarda birden fazla kullanıcı tarafından aktarılıyorsa bunun sistematik olma ihtimali artar.`,
       ].join(" ")
     : null;
 
   const candidateTakeaway = [
-    `${company.name} hakkinda karar verirken en saglikli yaklasim, yorum, maas ve mulakat sinyallerini tek tek degil birlikte okumaktir. Tek bir yorum veya tek bir maas girdisi sirket gercegini temsil etmeyebilir; ancak ayni yonde biriken sinyaller beklenti cizmek icin oldukca faydalidir.`,
+    `${company.name} hakkında karar verirken en sağlıklı yaklaşım, yorum, maaş ve mülakat sinyallerini tek tek değil birlikte okumaktır. Tek bir yorum veya tek bir maaş girdisi şirket gerçeğini temsil etmeyebilir; ancak aynı yönde biriken sinyaller beklenti çizmek için oldukça faydalıdır.`,
     company.sector || company.city
-      ? `${company.sector ? `${company.sector} sektorunde` : "Bu segmentte"} ${company.city ? `${company.city} merkezli` : "yer alan"} alternatiflerle kiyaslama yapmak, bu sayfadaki verinin anlamini daha da guclendirir. Benzer rol ve kidem duzeyindeki adaylar, teklif paketi kadar kultur ve iletisim kalitesini de sorgulamali.`
-      : `${company.name} icin veri sayisi arttikca bu sayfa daha guclu bir karar aracina donusecek. Simdilik mevcut sinyaller; beklenti kalibrasyonu, mulakat hazirligi ve maas pazarligi icin kullanilabilir bir temel sunuyor.`,
-    `${company.name} sayfasi bu nedenle sadece bilgi toplama noktasi degil; teklif oncesi kontrol listesi olarak da kullanilabilir. Adaylarin rolu, ekip yapisini, yonetici beklentisini, ucret bandini ve surecin hizini birlikte sorgulamasi daha kaliteli kararlar dogurur.`,
+      ? `${company.sector ? `${company.sector} sektöründe` : "Bu segmentte"} ${company.city ? `${company.city} merkezli` : "yer alan"} alternatiflerle kıyaslama yapmak, bu sayfadaki verinin anlamını daha da güçlendirir. Benzer rol ve kıdem düzeyindeki adaylar, teklif paketi kadar kültür ve iletişim kalitesini de sorgulamalı.`
+      : `${company.name} için veri sayısı arttıkça bu sayfa daha güçlü bir karar aracına dönüşecek. Şimdilik mevcut sinyaller; beklenti kalibrasyonu, mülakat hazırlığı ve maaş pazarlığı için kullanılabilir bir temel sunuyor.`,
+    `${company.name} sayfası bu nedenle sadece bilgi toplama noktası değil; teklif öncesi kontrol listesi olarak da kullanılabilir. Adayların rolü, ekip yapısını, yönetici beklentisini, ücret bandını ve sürecin hızını birlikte sorgulaması daha kaliteli kararlar doğurur.`,
   ].join(" ");
 
   const faqItems = buildFaqItems(company, snapshot);
   const externalLinks = buildExternalLinks(company);
   const keywords = [
-    `${company.name} yorumlari`,
-    `${company.name} maas`,
-    `${company.name} mulakat`,
-    `${company.name} calisma kosullari`,
-    company.sector ? `${company.sector} sirket yorumlari` : null,
-    company.city ? `${company.city} sirket yorumlari` : null,
+    `${company.name} yorumları`,
+    `${company.name} maaş`,
+    `${company.name} mülakat`,
+    `${company.name} çalışma koşulları`,
+    company.sector ? `${company.sector} şirket yorumları` : null,
+    company.city ? `${company.city} şirket yorumları` : null,
   ].filter((keyword): keyword is string => Boolean(keyword));
 
   const wordCount = countWords([
