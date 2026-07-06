@@ -41,6 +41,13 @@ const Footer = () => {
               Canlı Destek Yazılımı
             </a>
             <a
+              href="https://ufuksoynakliyat.com.tr/kartal-evden-eve-nakliyat"
+              rel="dofollow"
+              className="transition-colors hover:text-foreground/80"
+            >
+              Kartal Evden Eve Nakliyat
+            </a>
+            <a
               href="https://www.spindorai.com/seo/en-iyi-seo-ajansi"
               rel="dofollow"
               className="transition-colors hover:text-foreground/80"
