@@ -54,6 +54,13 @@ const Footer = () => {
             >
               Seo Ajansı
             </a>
+            <a
+              href="https://tekhurdametal.com/hurda-demir-fiyatlari/"
+              rel="dofollow"
+              className="transition-colors hover:text-foreground/80"
+            >
+              Demir Hurda Fiyatları
+            </a>
             <span>
               powered by{" "}
               <a
