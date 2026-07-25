@@ -33,44 +33,19 @@ const Footer = () => {
             © {new Date().getFullYear()} firmascope. tüm hakları saklıdır.
           </span>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
-            <a
-              href="https://chatio.com.tr/"
-              rel="dofollow"
-              className="transition-colors hover:text-foreground/80"
-            >
-              Canlı Destek Yazılımı
-            </a>
-            <a
-              href="https://ufuksoynakliyat.com.tr/kartal-evden-eve-nakliyat"
-              rel="dofollow"
-              className="transition-colors hover:text-foreground/80"
-            >
-              Kartal Evden Eve Nakliyat
-            </a>
-            <a
-              href="https://www.spindorai.com/seo/en-iyi-seo-ajansi"
-              rel="dofollow"
-              className="transition-colors hover:text-foreground/80"
-            >
-              Seo Ajansı
-            </a>
-            <a
-              href="https://tekhurdametal.com/hurda-demir-fiyatlari/"
-              rel="dofollow"
-              className="transition-colors hover:text-foreground/80"
-            >
-              Demir Hurda Fiyatları
-            </a>
+            <a href="https://chatio.com.tr/" rel="dofollow" className="transition-colors hover:text-foreground/80">Canlı Destek Yazılımı</a>
+            <a href="https://ufuksoynakliyat.com.tr/kartal-evden-eve-nakliyat" rel="dofollow" className="transition-colors hover:text-foreground/80">Kartal Evden Eve Nakliyat</a>
+            <a href="https://www.spindorai.com/seo/en-iyi-seo-ajansi" rel="dofollow" className="transition-colors hover:text-foreground/80">Seo Ajansı</a>
+            <a href="https://tekhurdametal.com/istanbul-hurdaci/" rel="dofollow" className="transition-colors hover:text-foreground/80">İstanbul Hurdacı</a>
+            <a href="https://tekhurdametal.com/hurda-fiyatlari/" rel="dofollow" className="transition-colors hover:text-foreground/80">Hurda Fiyatları</a>
+            <a href="https://tekhurdametal.com/hurda-demir-fiyatlari/" rel="dofollow" className="transition-colors hover:text-foreground/80">Demir Hurda Fiyatları</a>
+            <a href="https://tekhurdametal.com/beylikduzu-hurdaci/" rel="dofollow" className="transition-colors hover:text-foreground/80">Beylikdüzü Hurdacı</a>
+            <a href="https://lionerotik.com/urunler/fetis-urunleri" rel="dofollow" className="transition-colors hover:text-foreground/80">Antalya Sex Shop</a>
+            <a href="https://lionerotik.com/urunler/fetis-urunleri" rel="dofollow" className="transition-colors hover:text-foreground/80">Antalya Erotik Shop</a>
+            <a href="https://lionerotik.com/urunler/fetis-urunleri" rel="dofollow" className="transition-colors hover:text-foreground/80">Antalya Seks Shop</a>
             <span>
               powered by{" "}
-              <a
-                href="https://www.spindorai.com/seo/istanbul-seo"
-                target="_blank"
-                rel="noreferrer"
-                className="font-display font-bold text-foreground transition-colors hover:text-foreground/80"
-              >
-                Spindora
-              </a>
+              <a href="https://www.spindorai.com/seo/istanbul-seo" target="_blank" rel="noreferrer" className="font-display font-bold text-foreground transition-colors hover:text-foreground/80">Spindora</a>
             </span>
           </div>
         </div>
