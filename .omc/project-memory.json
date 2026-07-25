@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1783368649125,
+  "lastScanned": 1784926436072,
   "projectRoot": "c:\\temp_private\\firmascope",
   "techStack": {
     "languages": [
@@ -89,7 +89,7 @@
       "path": "0docu",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1783368649029,
+      "lastAccessed": 1784926436008,
       "keyFiles": [
         "status.md"
       ]
@@ -98,7 +98,7 @@
       "path": "0images",
       "purpose": null,
       "fileCount": 5,
-      "lastAccessed": 1783368649030,
+      "lastAccessed": 1784926436009,
       "keyFiles": [
         "5.png",
         "6.png",
@@ -111,7 +111,7 @@
       "path": "data",
       "purpose": "Data files",
       "fileCount": 6,
-      "lastAccessed": 1783368649031,
+      "lastAccessed": 1784926436040,
       "keyFiles": [
         "company-import-batch-examples.sql",
         "company-import-single-examples.sql",
@@ -124,7 +124,7 @@
       "path": "dist",
       "purpose": "Distribution/build output",
       "fileCount": 9,
-      "lastAccessed": 1783368649101,
+      "lastAccessed": 1784926436041,
       "keyFiles": [
         "favicon.ico",
         "favicon.svg",
@@ -137,14 +137,14 @@
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 0,
-      "lastAccessed": 1783368649101,
+      "lastAccessed": 1784926436042,
       "keyFiles": []
     },
     "docu": {
       "path": "docu",
       "purpose": null,
       "fileCount": 11,
-      "lastAccessed": 1783368649102,
+      "lastAccessed": 1784926436043,
       "keyFiles": [
         "ADMIN_COMPANY_IMPORT_GUIDE.md",
         "APIFY_LINKEDIN_GUIDE.md",
@@ -157,7 +157,7 @@
       "path": "public",
       "purpose": "Public files",
       "fileCount": 8,
-      "lastAccessed": 1783368649102,
+      "lastAccessed": 1784926436043,
       "keyFiles": [
         "favicon.ico",
         "favicon.svg",
@@ -170,7 +170,7 @@
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 16,
-      "lastAccessed": 1783368649103,
+      "lastAccessed": 1784926436044,
       "keyFiles": [
         "check-data.cjs",
         "check-run.cjs",
@@ -183,14 +183,14 @@
       "path": "services",
       "purpose": "Business logic services",
       "fileCount": 0,
-      "lastAccessed": 1783368649103,
+      "lastAccessed": 1784926436044,
       "keyFiles": []
     },
     "src": {
       "path": "src",
       "purpose": "Source code",
       "fileCount": 5,
-      "lastAccessed": 1783368649104,
+      "lastAccessed": 1784926436045,
       "keyFiles": [
         "App.css",
         "App.tsx",
@@ -203,7 +203,7 @@
       "path": "supabase",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1783368649104,
+      "lastAccessed": 1784926436045,
       "keyFiles": [
         "config.toml"
       ]
@@ -212,7 +212,7 @@
       "path": "worker",
       "purpose": null,
       "fileCount": 6,
-      "lastAccessed": 1783368649105,
+      "lastAccessed": 1784926436046,
       "keyFiles": [
         "package-lock.json",
         "package.json",
@@ -224,17 +224,17 @@
       "path": "dist\\assets",
       "purpose": "Static assets",
       "fileCount": 2,
-      "lastAccessed": 1783368649107,
+      "lastAccessed": 1784926436048,
       "keyFiles": [
-        "index-CkfmJ5J9.css",
-        "index-CSt7W0Ud.js"
+        "index-C65idepr.js",
+        "index-CkfmJ5J9.css"
       ]
     },
     "scripts\\lib": {
       "path": "scripts\\lib",
       "purpose": "Library code",
       "fileCount": 5,
-      "lastAccessed": 1783368649109,
+      "lastAccessed": 1784926436051,
       "keyFiles": [
         "env.ts",
         "gemini.ts",
@@ -245,7 +245,7 @@
       "path": "src\\assets",
       "purpose": "Static assets",
       "fileCount": 3,
-      "lastAccessed": 1783368649109,
+      "lastAccessed": 1784926436052,
       "keyFiles": [
         "hero-keyhole.jpg",
         "hero.jpg",
@@ -256,7 +256,7 @@
       "path": "src\\components",
       "purpose": "UI components",
       "fileCount": 29,
-      "lastAccessed": 1783368649110,
+      "lastAccessed": 1784926436053,
       "keyFiles": [
         "AdminAnnouncements.tsx",
         "AdminPosts.tsx",
@@ -267,7 +267,7 @@
       "path": "src\\lib",
       "purpose": "Library code",
       "fileCount": 11,
-      "lastAccessed": 1783368649110,
+      "lastAccessed": 1784926436053,
       "keyFiles": [
         "clarity.ts",
         "company-seo.ts",
@@ -278,7 +278,7 @@
       "path": "supabase\\migrations",
       "purpose": "Database migrations",
       "fileCount": 17,
-      "lastAccessed": 1783368649111,
+      "lastAccessed": 1784926436054,
       "keyFiles": [
         "20260207230937_6fde44f2-71c7-4a35-aee7-fd77aa70221a.sql",
         "20260207232943_e6923fb0-1124-4b37-9587-a7cc3861eb5c.sql",
@@ -289,14 +289,14 @@
       "path": "worker\\node_modules",
       "purpose": "Dependencies",
       "fileCount": 1,
-      "lastAccessed": 1783368649111,
+      "lastAccessed": 1784926436056,
       "keyFiles": []
     },
     "worker\\src": {
       "path": "worker\\src",
       "purpose": "Source code",
       "fileCount": 4,
-      "lastAccessed": 1783368649112,
+      "lastAccessed": 1784926436056,
       "keyFiles": [
         "env.ts",
         "index.ts",
@@ -304,217 +304,6 @@
       ]
     }
   },
-  "hotPaths": [
-    {
-      "path": "src\\lib\\company-seo.ts",
-      "accessCount": 13,
-      "lastAccessed": 1783369965614,
-      "type": "file"
-    },
-    {
-      "path": "src",
-      "accessCount": 3,
-      "lastAccessed": 1783369685913,
-      "type": "directory"
-    },
-    {
-      "path": "src\\components\\JsonLd.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1783369992928,
-      "type": "file"
-    },
-    {
-      "path": "src\\lib\\seo.ts",
-      "accessCount": 2,
-      "lastAccessed": 1783369556939,
-      "type": "file"
-    },
-    {
-      "path": "src\\pages\\CompanyDetail.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1783369602994,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\SeoHead.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1783369670489,
-      "type": "file"
-    },
-    {
-      "path": "scripts\\lib\\route-manifest.ts",
-      "accessCount": 2,
-      "lastAccessed": 1783370035807,
-      "type": "file"
-    },
-    {
-      "path": "package.json",
-      "accessCount": 1,
-      "lastAccessed": 1783368684282,
-      "type": "file"
-    },
-    {
-      "path": "SEO_GEO_HANDOVER_2026-04-14.md",
-      "accessCount": 1,
-      "lastAccessed": 1783368691560,
-      "type": "file"
-    },
-    {
-      "path": "public\\robots.txt",
-      "accessCount": 1,
-      "lastAccessed": 1783368697112,
-      "type": "file"
-    },
-    {
-      "path": "public\\llms.txt",
-      "accessCount": 1,
-      "lastAccessed": 1783368697169,
-      "type": "file"
-    },
-    {
-      "path": "scripts\\generate-company-seo-ai.ts",
-      "accessCount": 1,
-      "lastAccessed": 1783368701636,
-      "type": "file"
-    },
-    {
-      "path": "scripts\\lib\\seo-prompt.ts",
-      "accessCount": 1,
-      "lastAccessed": 1783368702061,
-      "type": "file"
-    },
-    {
-      "path": "scripts\\lib\\gemini.ts",
-      "accessCount": 1,
-      "lastAccessed": 1783368702330,
-      "type": "file"
-    },
-    {
-      "path": "scripts\\generate-sitemap.ts",
-      "accessCount": 1,
-      "lastAccessed": 1783368707071,
-      "type": "file"
-    },
-    {
-      "path": "scripts\\validate-jsonld.ts",
-      "accessCount": 1,
-      "lastAccessed": 1783368707838,
-      "type": "file"
-    },
-    {
-      "path": "scripts\\prerender.ts",
-      "accessCount": 1,
-      "lastAccessed": 1783368708082,
-      "type": "file"
-    },
-    {
-      "path": "src\\lib\\site.ts",
-      "accessCount": 1,
-      "lastAccessed": 1783368716745,
-      "type": "file"
-    },
-    {
-      "path": "scripts",
-      "accessCount": 1,
-      "lastAccessed": 1783368716897,
-      "type": "directory"
-    },
-    {
-      "path": "index.html",
-      "accessCount": 1,
-      "lastAccessed": 1783368718953,
-      "type": "file"
-    },
-    {
-      "path": "src\\pages",
-      "accessCount": 1,
-      "lastAccessed": 1783368725860,
-      "type": "directory"
-    },
-    {
-      "path": "src\\pages\\TaxonomyPage.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1783368730928,
-      "type": "file"
-    },
-    {
-      "path": "src\\pages\\Index.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1783368738459,
-      "type": "file"
-    },
-    {
-      "path": "src\\App.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1783368738755,
-      "type": "file"
-    },
-    {
-      "path": "src\\pages\\Companies.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1783368746422,
-      "type": "file"
-    },
-    {
-      "path": "src\\pages\\NotFound.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1783368746502,
-      "type": "file"
-    },
-    {
-      "path": "vercel.json",
-      "accessCount": 1,
-      "lastAccessed": 1783368756460,
-      "type": "file"
-    },
-    {
-      "path": "nginx.conf",
-      "accessCount": 1,
-      "lastAccessed": 1783368756483,
-      "type": "file"
-    },
-    {
-      "path": "Dockerfile",
-      "accessCount": 1,
-      "lastAccessed": 1783368762070,
-      "type": "file"
-    },
-    {
-      "path": "",
-      "accessCount": 1,
-      "lastAccessed": 1783368765509,
-      "type": "directory"
-    },
-    {
-      "path": "src\\lib\\footer-pages.ts",
-      "accessCount": 1,
-      "lastAccessed": 1783368768447,
-      "type": "file"
-    },
-    {
-      "path": "HANDOVER.md",
-      "accessCount": 1,
-      "lastAccessed": 1783368774006,
-      "type": "file"
-    },
-    {
-      "path": "PROJECT_STATUS.md",
-      "accessCount": 1,
-      "lastAccessed": 1783368774051,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\Footer.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1783368780041,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\StaticContentPage.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1783370026080,
-      "type": "file"
-    }
-  ],
+  "hotPaths": [],
   "userDirectives": []
 }
