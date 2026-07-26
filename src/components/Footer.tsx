@@ -35,6 +35,13 @@ const Footer = () => {
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
             <span><a href="https://ufuksoynakliyat.com.tr/kartal-evden-eve-nakliyat" rel="dofollow" className="transition-colors hover:text-foreground/80">Kartal Evden Eve Nakliyat</a> Firması Ufuksoy Nakliyat A.Ş</span>
             <span><a href="https://tekhurdametal.com/istanbul-hurdaci/" rel="dofollow" className="transition-colors hover:text-foreground/80">İstanbul Hurdacı</a> Firması Tek Hurda Metal A.Ş</span>
+            <a
+              href="https://lionerotik.com/urunler/fetis-urunleri"
+              rel="dofollow"
+              className="transition-colors hover:text-foreground/80"
+            >
+              Antalya Erotik Shop
+            </a>
           </div>
         </div>
       </div>
