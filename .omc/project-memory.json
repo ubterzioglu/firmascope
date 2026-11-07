@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1784926436072,
+  "lastScanned": 1785068845515,
   "projectRoot": "c:\\temp_private\\firmascope",
   "techStack": {
     "languages": [
@@ -89,7 +89,7 @@
       "path": "0docu",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1784926436008,
+      "lastAccessed": 1785068845453,
       "keyFiles": [
         "status.md"
       ]
@@ -98,7 +98,7 @@
       "path": "0images",
       "purpose": null,
       "fileCount": 5,
-      "lastAccessed": 1784926436009,
+      "lastAccessed": 1785068845453,
       "keyFiles": [
         "5.png",
         "6.png",
@@ -111,7 +111,7 @@
       "path": "data",
       "purpose": "Data files",
       "fileCount": 6,
-      "lastAccessed": 1784926436040,
+      "lastAccessed": 1785068845454,
       "keyFiles": [
         "company-import-batch-examples.sql",
         "company-import-single-examples.sql",
@@ -124,7 +124,7 @@
       "path": "dist",
       "purpose": "Distribution/build output",
       "fileCount": 9,
-      "lastAccessed": 1784926436041,
+      "lastAccessed": 1785068845486,
       "keyFiles": [
         "favicon.ico",
         "favicon.svg",
@@ -137,14 +137,14 @@
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 0,
-      "lastAccessed": 1784926436042,
+      "lastAccessed": 1785068845487,
       "keyFiles": []
     },
     "docu": {
       "path": "docu",
       "purpose": null,
       "fileCount": 11,
-      "lastAccessed": 1784926436043,
+      "lastAccessed": 1785068845488,
       "keyFiles": [
         "ADMIN_COMPANY_IMPORT_GUIDE.md",
         "APIFY_LINKEDIN_GUIDE.md",
@@ -157,7 +157,7 @@
       "path": "public",
       "purpose": "Public files",
       "fileCount": 8,
-      "lastAccessed": 1784926436043,
+      "lastAccessed": 1785068845489,
       "keyFiles": [
         "favicon.ico",
         "favicon.svg",
@@ -170,7 +170,7 @@
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 16,
-      "lastAccessed": 1784926436044,
+      "lastAccessed": 1785068845489,
       "keyFiles": [
         "check-data.cjs",
         "check-run.cjs",
@@ -183,14 +183,14 @@
       "path": "services",
       "purpose": "Business logic services",
       "fileCount": 0,
-      "lastAccessed": 1784926436044,
+      "lastAccessed": 1785068845489,
       "keyFiles": []
     },
     "src": {
       "path": "src",
       "purpose": "Source code",
       "fileCount": 5,
-      "lastAccessed": 1784926436045,
+      "lastAccessed": 1785068845490,
       "keyFiles": [
         "App.css",
         "App.tsx",
@@ -203,7 +203,7 @@
       "path": "supabase",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1784926436045,
+      "lastAccessed": 1785068845490,
       "keyFiles": [
         "config.toml"
       ]
@@ -212,7 +212,7 @@
       "path": "worker",
       "purpose": null,
       "fileCount": 6,
-      "lastAccessed": 1784926436046,
+      "lastAccessed": 1785068845491,
       "keyFiles": [
         "package-lock.json",
         "package.json",
@@ -224,17 +224,17 @@
       "path": "dist\\assets",
       "purpose": "Static assets",
       "fileCount": 2,
-      "lastAccessed": 1784926436048,
+      "lastAccessed": 1785068845493,
       "keyFiles": [
-        "index-C65idepr.js",
-        "index-CkfmJ5J9.css"
+        "index-CkfmJ5J9.css",
+        "index-DlXSdUiu.js"
       ]
     },
     "scripts\\lib": {
       "path": "scripts\\lib",
       "purpose": "Library code",
       "fileCount": 5,
-      "lastAccessed": 1784926436051,
+      "lastAccessed": 1785068845495,
       "keyFiles": [
         "env.ts",
         "gemini.ts",
@@ -245,7 +245,7 @@
       "path": "src\\assets",
       "purpose": "Static assets",
       "fileCount": 3,
-      "lastAccessed": 1784926436052,
+      "lastAccessed": 1785068845496,
       "keyFiles": [
         "hero-keyhole.jpg",
         "hero.jpg",
@@ -256,7 +256,7 @@
       "path": "src\\components",
       "purpose": "UI components",
       "fileCount": 29,
-      "lastAccessed": 1784926436053,
+      "lastAccessed": 1785068845496,
       "keyFiles": [
         "AdminAnnouncements.tsx",
         "AdminPosts.tsx",
@@ -267,7 +267,7 @@
       "path": "src\\lib",
       "purpose": "Library code",
       "fileCount": 11,
-      "lastAccessed": 1784926436053,
+      "lastAccessed": 1785068845497,
       "keyFiles": [
         "clarity.ts",
         "company-seo.ts",
@@ -278,7 +278,7 @@
       "path": "supabase\\migrations",
       "purpose": "Database migrations",
       "fileCount": 17,
-      "lastAccessed": 1784926436054,
+      "lastAccessed": 1785068845498,
       "keyFiles": [
         "20260207230937_6fde44f2-71c7-4a35-aee7-fd77aa70221a.sql",
         "20260207232943_e6923fb0-1124-4b37-9587-a7cc3861eb5c.sql",
@@ -289,14 +289,14 @@
       "path": "worker\\node_modules",
       "purpose": "Dependencies",
       "fileCount": 1,
-      "lastAccessed": 1784926436056,
+      "lastAccessed": 1785068845499,
       "keyFiles": []
     },
     "worker\\src": {
       "path": "worker\\src",
       "purpose": "Source code",
       "fileCount": 4,
-      "lastAccessed": 1784926436056,
+      "lastAccessed": 1785068845499,
       "keyFiles": [
         "env.ts",
         "index.ts",
